@@ -7,6 +7,9 @@ cmake_minimum_required(
 
 # variables
 set(PROJECT_NAME seatest)
+set(MAIN_EXECUTABLE_NAME seatest)
+set(STATIC_LIBRARY_NAME seatest_static)
+set(SHARED_LIBRARY_NAME seatest_shared)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
@@ -38,5 +41,127 @@ project(
     ${PROJECT_NAME}
     VERSION 0.1.0
     LANGUAGES C
-    DESCRIPTION "seatest: A test framework for C."
+    DESCRIPTION "seatest: a test framework for c."
+)
+
+# debug/release preprocessor
+add_compile_definitions(
+    $<$<CONFIG:Debug>:DEBUG>
+    $<$<CONFIG:Release>:NDEBUG>
+)
+
+if (MSVC)
+    add_compile_options(
+        /W4 /MP /GS /experimental:c11atomics /wd4267
+        $<$<CONFIG:Debug>:/Od>
+        $<$<CONFIG:Debug>:/Zi>
+        $<$<CONFIG:Release>:/Ox>
+    )
+else()
+    add_compile_options( # -Wformat-nonliteral is also an option
+        -Wall -Wextra -Wpedantic -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -Wno-string-conversion -Wshift-overflow
+        $<$<CONFIG:Debug>:-O0>
+        $<$<CONFIG:Debug>:-g3>
+        $<$<CONFIG:Release>:-O3>
+    )
+
+    if (CMAKE_COMPILER_IS_GNUCC)
+        add_compile_options(
+            -Wformat-truncation
+        )
+    endif()
+
+    add_compile_definitions(
+        $<$<CONFIG:Release>:_FORTIFY_SOURCE=2>
+    )
+endif()
+
+execute_process(
+    COMMAND git rev-parse --short --verify HEAD
+    OUTPUT_VARIABLE GIT_COMMIT_HASH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ECHO_OUTPUT_VARIABLE
+)
+
+# TODO: version.h
+#configure_file(
+#    include/seatest/version.h.in
+#    include/seatest/version.h
+#    NEWLINE_STYLE LF
+#)
+
+add_executable(
+    ${MAIN_EXECUTABLE_NAME}
+    src/main.c
+)
+
+add_library(
+    ${STATIC_LIBRARY_NAME}
+    STATIC
+    src/seatest.c
+    src/seatest_guts.c
+)
+
+add_library(
+    ${SHARED_LIBRARY_NAME}
+    SHARED
+    src/seatest.c
+    src/seatest_guts.c
+)
+
+if(!WIN32)
+    set_target_properties(
+        ${STATIC_LIBRARY_NAME}
+        PROPERTIES OUTPUT_NAME
+        ${PROJECT_NAME}
+    )
+    set_target_properties(
+        ${SHARED_LIBRARY_NAME}
+        PROPERTIES OUTPUT_NAME
+        ${PROJECT_NAME}
+    )
+endif()
+
+target_include_directories(
+    ${MAIN_EXECUTABLE_NAME}
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_BINARY_DIR}/include
+)
+
+target_include_directories(
+    ${STATIC_LIBRARY_NAME}
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_BINARY_DIR}/include
+)
+
+target_include_directories(
+    ${SHARED_LIBRARY_NAME}
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_BINARY_DIR}/include
+)
+
+target_link_libraries(
+    ${MAIN_EXECUTABLE_NAME}
+    ${STATIC_LIBRARY_NAME}
+)
+
+target_compile_features(
+    ${MAIN_EXECUTABLE_NAME}
+    PUBLIC
+    ${C_STANDARD}
+)
+
+target_compile_features(
+    ${STATIC_LIBRARY_NAME}
+    PUBLIC
+    ${C_STANDARD}
+)
+
+target_compile_features(
+    ${SHARED_LIBRARY_NAME}
+    PUBLIC
+    ${C_STANDARD}
 )
