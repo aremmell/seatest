@@ -56,7 +56,7 @@ ST_END_TEST_IMPL()
 
 ST_BEGIN_TEST_IMPL(bar)
 {
-    ST_SUCCESS_0("all good around here");
+    ST_SUCCESS0("all good around here");
     st_sleep_msec(50);
 }
 ST_END_TEST_IMPL()
@@ -65,6 +65,7 @@ ST_BEGIN_TEST_IMPL(baz)
 {
     st_sleep_msec(560);
     int foo = 12345;
+    ST_SUCCESS0("all good around here");
     ST_EXPECT(foo < 1200);
 }
 ST_END_TEST_IMPL()

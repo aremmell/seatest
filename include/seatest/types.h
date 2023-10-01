@@ -36,6 +36,7 @@ typedef struct {
 /** Type returned by each test function. */
 typedef struct {
     uint32_t line_start;
+    bool skipped;
     bool pass;
     bool fatal;
 } st_testres;
@@ -59,7 +60,7 @@ typedef struct {
     double msec;
     int conds;
     bool run;
-} st_testinfo;
+} st_test;
 
 /** A command line argument. */
 typedef struct {

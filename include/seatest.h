@@ -44,22 +44,22 @@
  * ~~~
  */
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
-    size_t num_args, st_testinfo* tests, size_t num_tests);
+    size_t num_args, st_test* tests, size_t num_tests);
 
-bool st_sanity_check(st_testinfo* tests, size_t num_tests);
+bool st_sanity_check(st_test* tests, size_t num_tests);
 
 void st_print_intro(size_t to_run);
 void st_print_test_intro(size_t num, size_t to_run, const char* name);
-void st_print_test_outro(size_t num, size_t to_run, const char* name, st_testres* res);
-void st_print_test_summary(size_t passed, size_t to_run, st_testinfo* tests,
+void st_print_test_outro(size_t num, size_t to_run, const char* name, st_test* test);
+void st_print_test_summary(size_t passed, size_t to_run, st_test* tests,
     size_t num_tests, double elapsed);
 
 /** Marks a test to be executed during the current run. Returns false if unable to
  * locate the specified test. */
-bool st_mark_test_to_run(const char* const name, st_testinfo* tests, size_t num_tests);
+bool st_mark_test_to_run(const char* const name, st_test* tests, size_t num_tests);
 
 /** Prints the entire list of available tests. */
-void st_print_test_list(const st_testinfo* tests, size_t num_tests);
+void st_print_test_list(const st_test* tests, size_t num_tests);
 
 /** Prints usage information. */
 void st_print_usage_info(const st_cl_arg* args, size_t num_args);
@@ -76,7 +76,7 @@ const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t 
  * should immediately exit with EXIT_FAILURE.
  */
 bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_args,
-    st_testinfo* tests, size_t num_tests, st_cl_config* config);
+    st_test* tests, size_t num_tests, st_cl_config* config);
 
 bool st_getchar(char* input);
 void st_wait_for_keypress(void);

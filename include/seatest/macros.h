@@ -134,7 +134,7 @@
 
 /** Begins the declaration of the global list of available tests. */
 # define ST_BEGIN_DECLARE_TEST_LIST(...) \
-    static st_testinfo st_tests[] = {
+    static st_test st_tests[] = {
 
 /** Adds an entry to the global list of tests. `name` is the name used to refer
  * to the test on the command-line; it must not contain spaces. `fn_name` must
@@ -174,30 +174,36 @@
         {ST_CL_HELP_FLAG, "", ST_CL_HELP_DESC} \
     }
 
-/** Indentation placed before test message output. */
 # define _ST_INDENT "  "
+# define __ST_MESSAGE(...) (void)printf(__VA_ARGS__)
 
-/** Outputs a test message. */
-# define _ST_MESSAGE(msg, ...) (void)printf(_ST_INDENT msg "\n", __VA_ARGS__)
+/** Outputs a diagnostic or informative test message. */
+# define ST_MESSAGE(msg, ...) __ST_MESSAGE(_ST_INDENT WHITE(msg) "\n", __VA_ARGS__)
+# define ST_MESSAGE0(msg)     __ST_MESSAGE(_ST_INDENT WHITE(msg) "\n")
 
-/** Outputs a formatted test message in white. */
-# define ST_MESSAGE(msg, ...) _ST_MESSAGE(WHITE(msg), __VA_ARGS__)
-# define ST_MESSAGE_0(msg)    ST_MESSAGE(msg "%s", "")
+/** Outputs a test message in green. */
+# define ST_SUCCESS(msg, ...) __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
+# define ST_SUCCESS0(msg)     __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 40, msg) "\n")
 
-/** Outputs a formatted test message in red. */
-# define ST_ERROR(msg, ...) _ST_MESSAGE(FG_COLOR(0, 196, msg), __VA_ARGS__)
-# define ST_ERROR_0(msg)    ST_ERROR(msg "%s", "")
+/** Outputs a test message in orange. */
+# define ST_WARNING(msg, ...) __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 208, msg) "\n", __VA_ARGS__)
+# define ST_WARNING0(msg)     __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 208, msg) "\n")
 
-/** Outputs a formatted test message in orange. */
-# define ST_WARNING(msg, ...) _ST_MESSAGE(FG_COLOR(0, 208, msg), __VA_ARGS__)
-# define ST_WARNING_0(msg)    ST_WARNING(msg "%s", "")
+/** Outputs a test message in red. */
+# define ST_ERROR(msg, ...) __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
+# define ST_ERROR0(msg)      __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n")
 
-/** Outputs a formatted test message in green. */
-# define ST_SUCCESS(msg, ...) _ST_MESSAGE(FG_COLOR(0, 46, msg), __VA_ARGS__)
-# define ST_SUCCESS_0(msg)    ST_SUCCESS(msg "%s", "")
+# define _ST_MESSAGE(msg, ...) __ST_MESSAGE(WHITE(msg) "\n", __VA_ARGS__)
+# define _ST_SUCCESS(msg, ...) __ST_MESSAGE(FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
+# define _ST_SKIPPED(msg, ...) __ST_MESSSAGE(FG_COLOR(0, 178, msg) "\n", __VA_ARGS__)
+# define _ST_WARNING(msg, ...) __ST_MESSAGE(FG_COLOR(0, 208, msg) "\n", __VA_ARGS__)
+# define _ST_ERROR(msg, ...) __ST_MESSAGE(FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
 
-# define ST_PASSFAILWARN(res) (res->pass ? FG_COLOR(1, 46, "PASS") \
-    : (res->fatal ? FG_COLOR(1, 196, "FAIL") : FG_COLOR(1, 208, "WARN")))
+# define ST_PASSFAILWARN(test) \
+    (test->res.skipped ? FG_COLOR(1, 178, "SKIP") \
+    : test->res.pass ? FG_COLOR(1, 40, "PASS") \
+    : test->res.fatal ? FG_COLOR(1, 196, "FAIL") \
+    : FG_COLOR(1, 208, "WARN"))
 
 # define _ST_TESTLINE() (__LINE__ - _retval.line_start)
 # define _ST_FATAL() \

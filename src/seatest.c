@@ -28,7 +28,7 @@
 static st_state _state = {0};
 
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
-    size_t num_args, st_testinfo* tests, size_t num_tests)
+    size_t num_args, st_test* tests, size_t num_tests)
 {
     if (!st_sanity_check(tests, num_tests)) {
         return EXIT_FAILURE;
@@ -57,12 +57,12 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
         st_print_test_intro(n + 1, to_run, tests[n].name);
 
         tests[n].res = tests[n].fn();
-        tests[n].msec = (st_timer_elapsed(&timer) - started_at) / 1e3;
+        tests[n].msec = st_timer_elapsed(&timer) - started_at;
 
         if (tests[n].res.pass || !tests[n].res.fatal)
             passed++;
 
-        st_print_test_outro(n + 1, to_run, tests[n].name, &tests[n].res);
+        st_print_test_outro(n + 1, to_run, tests[n].name, &tests[n]);
     }
 
     st_print_test_summary(passed, to_run, tests, num_tests, st_timer_elapsed(&timer));
@@ -73,13 +73,12 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     return passed == to_run ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-bool st_sanity_check(st_testinfo* tests, size_t num_tests)
+bool st_sanity_check(st_test* tests, size_t num_tests)
 {
     bool all_valid = true;
     for (size_t n = 0; n < num_tests; n++) {
-        /* check for invalid test names. */
         if (strnstr(tests[n].name, " ", ST_CL_MAX_TEST)) {
-            ST_ERROR("seatest error: test name '%s' is invalid (test names may"
+            _ST_ERROR("seatest error: test name '%s' is invalid (test names may"
                 " not contain spaces)", tests[n].name);
             all_valid = false;
         }
@@ -98,24 +97,24 @@ void st_print_test_intro(size_t num, size_t to_run, const char* name)
     (void)printf("\n" WHITEB("(%zu/%zu) '%s' ...") "\n\n", num, to_run, name);
 }
 
-void st_print_test_outro(size_t num, size_t to_run, const char* name, st_testres* res)
+void st_print_test_outro(size_t num, size_t to_run, const char* name, st_test* test)
 {
-    (void)printf("\n" WHITEB("(%zu/%zu) '%s' finished: ") "%s\n", num, to_run, name,
-        ST_PASSFAILWARN(res));
+    (void)printf("\n" WHITEB("(%zu/%zu) '%s' finished (") WHITE("%.fms") WHITEB("): ")
+        "%s\n", num, to_run, name, test->msec, ST_PASSFAILWARN(test));
 }
 
-void st_print_test_summary(size_t passed, size_t to_run, st_testinfo* tests,
+void st_print_test_summary(size_t passed, size_t to_run, st_test* tests,
     size_t num_tests, double elapsed)
 {
     elapsed = (elapsed / 1e3);
     if (passed == to_run) {
         (void)printf("\n" WHITEB("done: ")
-            FG_COLOR(0, 46, "%s%zu " ULINE("%s") " %s " EMPH("passed") " in %.03fsec!") "\n\n",
+            FG_COLOR(1, 40, "%s%zu " ULINE("%s") " %s " EMPH("passed") " in %.03fsec!") "\n\n",
                 to_run > 1 ? "all " : "", to_run, _state.app_name, ST_PLURAL("test", to_run),
                 elapsed);
     } else {
         (void)printf("\n" WHITEB("done: ")
-            FG_COLOR(0, 196, "%zu of %zu " ULINE("%s") " %s " EMPH("failed") " in %.03fsec") "\n\n",
+            FG_COLOR(1, 196, "%zu of %zu " ULINE("%s") " %s " EMPH("failed") " in %.03fsec") "\n\n",
                 to_run - passed, to_run, _state.app_name, ST_PLURAL("test", to_run), elapsed);
     }
 
@@ -123,7 +122,7 @@ void st_print_test_summary(size_t passed, size_t to_run, st_testinfo* tests,
     ST_UNUSED(num_tests);
 }
 
-bool st_mark_test_to_run(const char* const name, st_testinfo* tests, size_t num_tests)
+bool st_mark_test_to_run(const char* const name, st_test* tests, size_t num_tests)
 {
     for (size_t n = 0; n < num_tests; n++) {
         if (0 == strncmp(name, tests[n].name, strlen(tests[n].name))) {
@@ -134,7 +133,7 @@ bool st_mark_test_to_run(const char* const name, st_testinfo* tests, size_t num_
     return false;
 }
 
-void st_print_test_list(const st_testinfo* tests, size_t num_tests)
+void st_print_test_list(const st_test* tests, size_t num_tests)
 {
     static const size_t tab_size = 4;
 
@@ -208,7 +207,7 @@ const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t 
 }
 
 bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_args,
-    st_testinfo* tests, size_t num_tests, st_cl_config* config)
+    st_test* tests, size_t num_tests, st_cl_config* config)
 {
     if (!argv || !args || !tests || !config)
         return false;
@@ -218,7 +217,7 @@ bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_
     for (int n = 1; n < argc; n++) {
         const st_cl_arg* this_arg = st_find_cl_arg(argv[n], args, num_args);
         if (!this_arg) {
-            ST_ERROR("unknown option '%s'", argv[n]);
+            _ST_ERROR("unknown option '%s'", argv[n]);
             st_print_usage_info(args, num_args);
             return false;
         }
@@ -229,14 +228,14 @@ bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_
                 if (!argv[n] || !*argv[n])
                     continue;
                 if (*argv[n] == '-' || !st_mark_test_to_run(argv[n], tests, num_tests)) {
-                    ST_ERROR("invalid argument to %s: '%s'", ST_CL_ONLY_FLAG, argv[n]);
+                    _ST_ERROR("invalid argument to %s: '%s'", ST_CL_ONLY_FLAG, argv[n]);
                     st_print_usage_info(args, num_args);
                     return false;
                 }
                 config->to_run++;
             }
             if (0 == config->to_run) {
-                ST_ERROR("value expected for '%s'", ST_CL_ONLY_FLAG);
+                _ST_ERROR("value expected for '%s'", ST_CL_ONLY_FLAG);
                 st_print_usage_info(args, num_args);
                 return false;
             }
@@ -250,7 +249,7 @@ bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_
             st_print_usage_info(args, num_args);
             return false;
         } else {
-            ST_ERROR("unknown option '%s'", this_arg->flag);
+            _ST_ERROR("unknown option '%s'", this_arg->flag);
             return false;
         }
     }
