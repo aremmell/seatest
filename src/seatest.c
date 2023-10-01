@@ -62,6 +62,9 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     st_print_test_summary(passed, to_run, tests, num_tests, st_timer_elapsed(&timer),
         app_name);
 
+    if (cl_cfg.wait)
+        st_wait_for_keypress();
+
     return EXIT_SUCCESS;
 }
 
@@ -88,12 +91,12 @@ void st_print_test_summary(size_t passed, size_t to_run, st_testinfo* tests,
     elapsed = (elapsed / 1e3);
     if (passed == to_run) {
         (void)printf("\n" WHITEB("done: ")
-            GREENB("%s%zu " ULINE("%s") " %s " EMPH("passed") " in %.03fsec!") "\n\n",
+            FG_COLOR(0, 46, "%s%zu " ULINE("%s") " %s " EMPH("passed") " in %.03fsec!") "\n\n",
                 to_run > 1 ? "all " : "", to_run, app_name, ST_PLURAL("test", to_run),
                 elapsed);
     } else {
         (void)printf("\n" WHITEB("done: ")
-            REDB("%zu of %zu " ULINE("%s") " %s " EMPH("failed") " in %.03fsec") "\n\n",
+            FG_COLOR(0, 196, "%zu of %zu " ULINE("%s") " %s " EMPH("failed") " in %.03fsec") "\n\n",
                 to_run - passed, to_run, app_name, ST_PLURAL("test", to_run), elapsed);
     }
 
@@ -153,7 +156,7 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
     (void)fprintf(stderr, "\n" WHITE("Usage:") "\n\n");
 
     for (size_t n = 0; n < num_args; n++) {
-        (void)fprintf(stderr, "\t%s", args[n].flag);
+        (void)fprintf(stderr, "\t%s ", args[n].flag);
 
         size_t len = strnlen(args[n].flag, ST_CL_MAX_FLAG);
         if (len < longest) {
@@ -190,7 +193,7 @@ bool st_parse_cmd_line(int argc, char** argv, const char* app_name, const st_cl_
     for (int n = 1; n < argc; n++) {
         const st_cl_arg* this_arg = st_find_cl_arg(argv[n], args, num_args);
         if (!this_arg) {
-            (void)printf(FG_COLOR(0, 196, "unknown option '%s'"), argv[n]);
+            ST_ERROR("unknown option '%s'", argv[n]);
             st_print_usage_info(args, num_args);
             return false;
         }
@@ -201,15 +204,14 @@ bool st_parse_cmd_line(int argc, char** argv, const char* app_name, const st_cl_
                 if (!argv[n] || !*argv[n])
                     continue;
                 if (*argv[n] == '-' || !st_mark_test_to_run(argv[n], tests, num_tests)) {
-                    (void)printf(FG_COLOR(0, 196, "invalid argument to %s: '%s'"),
-                        ST_CL_ONLY_FLAG, argv[n]);
+                    ST_ERROR("invalid argument to %s: '%s'", ST_CL_ONLY_FLAG, argv[n]);
                     st_print_usage_info(args, num_args);
                     return false;
                 }
                 config->to_run++;
             }
             if (0 == config->to_run) {
-                (void)printf(FG_COLOR(0, 196, "value expected for '%s'"), ST_CL_ONLY_FLAG);
+                ST_ERROR("value expected for '%s'", ST_CL_ONLY_FLAG);
                 st_print_usage_info(args, num_args);
                 return false;
             }
@@ -225,9 +227,16 @@ bool st_parse_cmd_line(int argc, char** argv, const char* app_name, const st_cl_
             st_print_usage_info(args, num_args);
             return false;
         } else {
-            (void)printf(FG_COLOR(0, 196, "unknown option '%s'"), this_arg->flag);
+            ST_ERROR("unknown option '%s'", this_arg->flag);
             return false;
         }
     }
     return true;
+}
+
+void st_wait_for_keypress(void)
+{
+    (void)printf(WHITEB("Press any key to continue...\n"));
+    bool get = _st_getchar(NULL);
+    ST_UNUSED(get);
 }
