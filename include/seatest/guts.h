@@ -1,5 +1,5 @@
 /*
- * seatest.h
+ * guts.h
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2023
@@ -23,13 +23,11 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _SEATEST_H_INCLUDED
-# define _SEATEST_H_INCLUDED
+#ifndef _SEATEST_GUTS_H_INCLUDED
+# define _SEATEST_GUTS_H_INCLUDED
 
-# include "seatest/platform.h"
-# include "seatest/macros.h"
+# include "seatest/types.h"
 
-/** Pauses until the user presses a key. */
-void st_wait_for_keypress(void);
+bool _st_getchar(char* input);
 
-#endif /* !_SEATEST_H_INCLUDED */
+#endif /* !_SEATEST_GUTS_H_INCLUDED */

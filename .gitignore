@@ -53,3 +53,6 @@ dkms.conf
 
 # direnv
 .envrc
+
+# build artifacts
+build/

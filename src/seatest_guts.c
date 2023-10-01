@@ -1,5 +1,5 @@
 /*
- * seatest.h
+ * seatest_guts.c
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2023
@@ -23,13 +23,29 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _SEATEST_H_INCLUDED
-# define _SEATEST_H_INCLUDED
+#include "seatest/guts.h"
 
-# include "seatest/platform.h"
-# include "seatest/macros.h"
+bool _st_getchar(char* input) {
+#if defined(__WIN__)
+    if (input)
+        *input = (char)_getch();
+     return true;
+#else /* !__WIN__ */
+    struct termios cur = {0};
+    if (0 != tcgetattr(STDIN_FILENO, &cur))
+        return false;
 
-/** Pauses until the user presses a key. */
-void st_wait_for_keypress(void);
+    struct termios new = cur;
+    new.c_lflag &= ~(ICANON | ECHO);
 
-#endif /* !_SEATEST_H_INCLUDED */
+    if (0 != tcsetattr(STDIN_FILENO, TCSANOW, &new))
+        return false;
+
+    int ch = getchar();
+
+    if (NULL != input)
+        *input = (char)ch;
+
+    return 0 == tcsetattr(STDIN_FILENO, TCSANOW, &cur) ? true : false;
+#endif
+}

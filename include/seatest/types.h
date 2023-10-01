@@ -1,5 +1,5 @@
 /*
- * seatest.h
+ * types.h
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2023
@@ -23,13 +23,19 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _SEATEST_H_INCLUDED
-# define _SEATEST_H_INCLUDED
+#ifndef _SEATEST_TYPES_H_INCLUDED
+# define _SEATEST_TYPES_H_INCLUDED
 
 # include "seatest/platform.h"
-# include "seatest/macros.h"
 
-/** Pauses until the user presses a key. */
-void st_wait_for_keypress(void);
+/** Elapsed time marker. */
+typedef struct {
+# if !defined(__WIN__)
+    time_t sec;
+    long msec;
+# else /* __WIN__ */
+    LARGE_INTEGER counter;
+# endif
+} st_timer;
 
-#endif /* !_SEATEST_H_INCLUDED */
+#endif /* !_SEATEST_TYPES_H_INCLUDED */
