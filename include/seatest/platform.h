@@ -27,37 +27,37 @@
 # define _SEATEST_PLATFORM_H_INCLUDED
 
 # if !defined(_WIN32)
-# if defined(__APPLE__) && defined(__MACH__)
-#  define __MACOS__
-#  define _DARWIN_C_SOURCE
-# elif defined(_WIN32)
-#  define __WIN__
-# elif defined(__FreeBSD__) || defined(__DragonFly__)
-#  define __BSD__
-#  define _BSD_SOURCE
-#  if !defined(_DEFAULT_SOURCE)
-#   define _DEFAULT_SOURCE
+#  if defined(__APPLE__) && defined(__MACH__)
+#   define __MACOS__
+#   define _DARWIN_C_SOURCE
+#  elif defined(_WIN32)
+#   define __WIN__
+#  elif defined(__FreeBSD__) || defined(__DragonFly__)
+#   define __BSD__
+#   define _BSD_SOURCE
+#   if !defined(_DEFAULT_SOURCE)
+#    define _DEFAULT_SOURCE
+#   endif
+#  elif defined(__NetBSD__)
+#   define __BSD__
+#   if !defined(_NETBSD_SOURCE)
+#    define _NETBSD_SOURCE 1
+#   endif
+#  elif defined(__OpenBSD__)
+#   define __BSD__
+#  elif defined(__linux__)
+#   define _GNU_SOURCE
+#  else
+#   if !defined(_POSIX_C_SOURCE)
+#    define _POSIX_C_SOURCE 200809L
+#   endif
+#   if !defined(_DEFAULT_SOURCE)
+#    define _DEFAULT_SOURCE
+#   endif
+#   if !defined(_XOPEN_SOURCE)
+#    define _XOPEN_SOURCE 700
+#   endif
 #  endif
-# elif defined(__NetBSD__)
-#  define __BSD__
-#  if !defined(_NETBSD_SOURCE)
-#   define _NETBSD_SOURCE 1
-#  endif
-# elif defined(__OpenBSD__)
-#  define __BSD__
-# elif defined(__linux__)
-#  define _GNU_SOURCE
-# else
-#  if !defined(_POSIX_C_SOURCE)
-#   define _POSIX_C_SOURCE 200809L
-#  endif
-#  if !defined(_DEFAULT_SOURCE)
-#   define _DEFAULT_SOURCE
-#  endif
-#  if !defined(_XOPEN_SOURCE)
-#   define _XOPEN_SOURCE 700
-#  endif
-# endif
 
 #  define __STDC_WANT_LIB_EXT1__ 1
 
@@ -85,6 +85,11 @@
 #   include <stdatomic.h>
 #   define __HAVE_STDATOMICS__
 #  endif
+
+#  define ST_MSEC_TIMER
+#  define ST_MSEC_WIN32
+#  define ST_WALLCLOCK 0
+#  define ST_INTERVALCLOCK 1
 
 # endif /* !_WIN32 */
 
@@ -115,6 +120,26 @@
 #  define __HAVE_GNU_STRERROR_R__
 # elif defined(__HAVE_STDC_SECURE_OR_EXT1__)
 #  define __HAVE_STRERROR_S__
+# endif
+
+#  if (defined(_POSIX_TIMERS) && _POSIX_TIMERS > 0) || \
+       defined(__MACOS__) || defined(__OpenBSD__)
+#   define ST_MSEC_TIMER
+#   define ST_MSEC_POSIX
+#  else
+#   undef ST_MSEC_TIMER
+#  endif
+
+# if defined(CLOCK_UPTIME)
+#  define ST_INTERVALCLOCK CLOCK_UPTIME
+# elif defined(CLOCK_BOOTTIME)
+#  define ST_INTERVALCLOCK CLOCK_BOOTTIME
+# elif defined(CLOCK_HIGHRES)
+#  define ST_INTERVALCLOCK CLOCK_HIGHRES
+# elif defined(CLOCK_MONOTONIC)
+#  define ST_INTERVALCLOCK CLOCK_MONOTONIC
+# else
+#  define ST_INTERVALCLOCK CLOCK_REALTIME
 # endif
 
 # if (defined(__clang__) || defined(__GNUC__)) && defined(__FILE_NAME__)

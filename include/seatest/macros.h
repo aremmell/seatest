@@ -100,4 +100,7 @@
 # define WHITE(s)     FG_COLOR(0, 15, s) /**< White foreground text. */
 # define WHITEB(s)    FG_COLOR(1, 15, s) /**< Bold white foreground text. */
 
+/** Blots out a variable, avoiding compiler warnings/errors. */
+# define ST_UNUSED(var) (void)var
+
 #endif /* !_SEATEST_MACROS_H_INCLUDED */

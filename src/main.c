@@ -1,5 +1,5 @@
 /*
- * seatest.h
+ * main.c
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2023
@@ -23,17 +23,12 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _SEATEST_H_INCLUDED
-# define _SEATEST_H_INCLUDED
+#include "seatest.h"
 
-# include "seatest/types.h"
-# include "seatest/macros.h"
+int main(int argc, char** argv)
+{
+    ST_UNUSED(argc);
+    ST_UNUSED(argv);
 
-void st_timer_begin(st_timer* timer);
-double st_timer_elapsed(const st_timer* timer);
-long st_timer_getres(void);
-
-bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf);
-double st_msec_since(const st_timer* when, st_timer* out);
-
-#endif /* !_SEATEST_H_INCLUDED */
+    return EXIT_SUCCESS;
+}
