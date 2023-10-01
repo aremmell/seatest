@@ -4,5 +4,12 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"*.i": "swig",
+			"CODEOWNERS": "ignore",
+			"*.h": "c",
+			"ratio": "c"
+		}
+	}
 }

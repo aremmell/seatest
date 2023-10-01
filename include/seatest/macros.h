@@ -102,10 +102,18 @@
 # define WHITE(s)     FG_COLOR(0, 15, s) /**< White foreground text. */
 # define WHITEB(s)    FG_COLOR(1, 15, s) /**< Bold white foreground text. */
 
-/** Blots out a variable, avoiding compiler warnings/errors. */
+/** Blots out a variable, avoiding compiler warnings/errors in the event that it
+ * is unreferenced. */
 # define ST_UNUSED(var) (void)(var)
 
-/** Declares an individual test function. The name must only contain characters
+/** Returns the number of entries in an array. */
+# define ST_COUNTOF(arr) (sizeof(arr) / sizeof(arr[0]))
+
+/** Returns the plural or singular form of a word based on the count supplied.
+ * Only works for words whose plural form is just an 's'. */
+# define ST_PLURAL(word, count) ((!(count) || (count) > 1) ? word "s" : word)
+
+/** Declares an individual test function. `name` must only contain characters
  * allowed in C function names. */
 # define ST_DECLARE_TEST(name) \
     st_testres st_test_##name(void)
@@ -124,7 +132,50 @@
         return _retval; \
     }
 
-# define _ST_INDENT "  " /**< Indentation placed before test message output. */
+/** Begins the declaration of the global list of available tests. */
+# define ST_BEGIN_DECLARE_TEST_LIST(...) \
+    static st_testinfo st_tests[] = {
+
+/** Adds an entry to the global list of tests. `name` is the name used to refer
+ * to the test on the command-line; it must not contain spaces. `fn_name` must
+ * be the same value passed to ST_DECLARE_TEST. `conds` is a bitmask of zero or
+ * more conditions the test relies upon from the st_conds enum. */
+# define ST_DECLARE_TEST_INFO(name, fn_name, conds) \
+    {#name, st_test_##fn_name, {0}, 0.0, conds, false},
+
+/** Ends the declaration of the global list of available tests. */
+# define ST_END_DECLARE_TEST_LIST(...) \
+    };
+
+# define ST_CL_MAX_FLAG  32
+# define ST_CL_MAX_USAGE 96
+# define ST_CL_MAX_TEST  32
+
+# define ST_CL_WAIT_FLAG "--wait"
+# define ST_CL_ONLY_FLAG "--only"
+# define ST_CL_LIST_FLAG "--list"
+# define ST_CL_VERS_FLAG "--version"
+# define ST_CL_HELP_FLAG "--help"
+
+# define ST_CL_ONLY_USAGE ULINE("name") " [, " ULINE("name") ", ...]"
+
+# define ST_CL_WAIT_DESC "After running all test(s), wait for a keypress before exiting"
+# define ST_CL_ONLY_DESC "Run only the test(s) specified"
+# define ST_CL_LIST_DESC "Print a list of all available tests"
+# define ST_CL_VERS_DESC "Displays version information"
+# define ST_CL_HELP_DESC "Displays this message"
+
+# define ST_DECLARE_CL_ARGS(...) \
+    static const st_cl_arg st_cl_args[] = { \
+        {ST_CL_WAIT_FLAG, "", ST_CL_WAIT_DESC}, \
+        {ST_CL_ONLY_FLAG, ST_CL_ONLY_USAGE, ST_CL_ONLY_DESC}, \
+        {ST_CL_LIST_FLAG, "", ST_CL_LIST_DESC}, \
+        {ST_CL_VERS_FLAG, "", ST_CL_VERS_DESC}, \
+        {ST_CL_HELP_FLAG, "", ST_CL_HELP_DESC} \
+    }
+
+/** Indentation placed before test message output. */
+# define _ST_INDENT "  "
 
 /** Outputs a test message. */
 # define _ST_MESSAGE(msg, ...) (void)printf(_ST_INDENT msg "\n", __VA_ARGS__)
@@ -144,6 +195,9 @@
 /** Outputs a formatted test message in green. */
 # define ST_SUCCESS(msg, ...) _ST_MESSAGE(FG_COLOR(0, 46, msg), __VA_ARGS__)
 # define ST_SUCCESS_0(msg)    ST_SUCCESS(msg "%s", "")
+
+# define ST_PASSFAILWARN(res) (res->pass ? FG_COLOR(1, 46, "PASS") \
+    : (res->fatal ? FG_COLOR(1, 196, "FAIL") : FG_COLOR(1, 208, "WARN")))
 
 # define _ST_TESTLINE() (__LINE__ - _retval.line_start)
 # define _ST_FATAL() \

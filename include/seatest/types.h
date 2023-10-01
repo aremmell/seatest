@@ -35,6 +35,41 @@ typedef struct {
     bool fatal;
 } st_testres;
 
+/** Function type for seatest tests. */
+typedef st_testres (*st_test_fn)(void);
+
+/** Enumeration of conditions which must be met in order for a given test to run
+ * successfully; if the conditions are not met, the test is skipped. */
+enum {
+    INET = 1 << 1, /**< An Internet connection is available. */
+    DISK = 1 << 2, /**< At least n GiB of space is available on the drive. */
+    CPUS = 1 << 3, /**< At least n logical CPUs must exist on the system. */
+} st_conds; // TODO: Think of more conditions
+
+/** An entry in the list of available tests. */
+typedef struct {
+    const char* const name;
+    st_test_fn fn;
+    st_testres res;
+    double msec;
+    int conds;
+    bool run;
+} st_testinfo;
+
+/** A command line argument. */
+typedef struct {
+    const char* const flag;  /**< e.g. --whiz-bang. */
+    const char* const usage; /**< e.g. [file, ...]. */
+    const char* const desc;  /**< e.g. 'causes you to levitate'. */
+} st_cl_arg;
+
+/** Command line configuration. */
+typedef struct {
+    bool wait;
+    bool only;
+    size_t to_run;
+} st_cl_config;
+
 /** Millisecond timer. */
 typedef struct {
 # if !defined(__WIN__)

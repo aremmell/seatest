@@ -25,17 +25,22 @@
  */
 #include "seatest.h"
 
+ST_DECLARE_CL_ARGS();
+
 ST_DECLARE_TEST(foo);
+ST_DECLARE_TEST(bar);
+ST_DECLARE_TEST(baz);
+
+ST_BEGIN_DECLARE_TEST_LIST()
+    ST_DECLARE_TEST_INFO(foo, foo, 0)
+    ST_DECLARE_TEST_INFO(bar, bar, 0)
+    ST_DECLARE_TEST_INFO(baz, baz, 0)
+ST_END_DECLARE_TEST_LIST()
 
 int main(int argc, char** argv)
 {
-    ST_UNUSED(argc);
-    ST_UNUSED(argv);
-
-    st_testres res = st_test_foo();
-    ST_UNUSED(res);
-
-    return EXIT_SUCCESS;
+    return st_main(argc, argv, "Acme Inc.", st_cl_args, ST_COUNTOF(st_cl_args),
+        st_tests, ST_COUNTOF(st_tests));
 }
 
 ST_BEGIN_TEST_IMPL(foo)
@@ -45,11 +50,19 @@ ST_BEGIN_TEST_IMPL(foo)
 
     const char* msg = "hello there";
     ST_REQUIRE(strlen(msg) > 15);
+}
+ST_END_TEST_IMPL()
 
-    const char* msg2 = "hello there, sir";
-    ST_STREQUAL(msg, msg2);
-    ST_STREQUAL("sups?", "sups?!");
+ST_BEGIN_TEST_IMPL(bar)
+{
+    ST_SUCCESS_0("all good around here");
+    st_sleep_msec(50);
+}
+ST_END_TEST_IMPL()
 
-    ST_STRIEQUAL("SUPS", "sUpS");
+ST_BEGIN_TEST_IMPL(baz)
+{
+    int foo = 12345;
+    ST_EXPECT(foo < 1200);
 }
 ST_END_TEST_IMPL()
