@@ -70,8 +70,8 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
 
 void st_print_intro(const char* name, size_t to_run)
 {
-    (void)printf("\n" WHITEB("running %zu " ULINE("%s") " %s %s...") "\n",
-        to_run, name, ST_PLURAL("test", to_run), MOVEME_TRAILER);
+    (void)printf("\n" WHITEB("running %zu " ULINE("%s") " %s (seatest %s)...") "\n",
+        to_run, name, ST_PLURAL("test", to_run), st_get_version_string());
 }
 
 void st_print_test_intro(size_t num, size_t to_run, const char* name)
@@ -172,6 +172,12 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
     (void)fprintf(stderr, "\n");
 }
 
+void st_print_version_info(const char* app_name)
+{
+    (void)printf("\n" ULINE("%s") " test suite. built with seatest %s\n\n",
+        app_name, st_get_version_string());
+}
+
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args)
 {
     for (size_t n = 0; n < num_args; n++) {
@@ -219,9 +225,7 @@ bool st_parse_cmd_line(int argc, char** argv, const char* app_name, const st_cl_
             st_print_test_list(tests, num_tests);
             return false;
         } else if (0 == strncmp(this_arg->flag, ST_CL_VERS_FLAG, strlen(ST_CL_VERS_FLAG))) {
-#pragma message("TODO: print version")
-            ST_UNUSED(app_name);
-            printf("TODO: print version\n");
+            st_print_version_info(app_name);
             return false;
         } else if (0 == strncmp(this_arg->flag, ST_CL_HELP_FLAG, strlen(ST_CL_HELP_FLAG))) {
             st_print_usage_info(args, num_args);

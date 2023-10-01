@@ -50,6 +50,9 @@ void st_print_test_list(const st_testinfo* tests, size_t num_tests);
 /** Prints usage information. */
 void st_print_usage_info(const st_cl_arg* args, size_t num_args);
 
+/** Prints version information. */
+void st_print_version_info(const char* app_name);
+
 /** Looks up a command line argument by flag. Returns NULL if no match was found. */
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args);
 
