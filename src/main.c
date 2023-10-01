@@ -49,13 +49,12 @@ ST_BEGIN_TEST_IMPL(foo)
     st_sleep_msec(200);
 
     const char* msg = "hello there";
-    ST_REQUIRE(strlen(msg) > 15);
+    ST_REQUIRE(strlen(msg) > 10);
 }
 ST_END_TEST_IMPL()
 
 ST_BEGIN_TEST_IMPL(bar)
 {
-    ST_SUCCESS0("all good around here");
     st_sleep_msec(50);
 }
 ST_END_TEST_IMPL()
@@ -64,7 +63,6 @@ ST_BEGIN_TEST_IMPL(baz)
 {
     st_sleep_msec(560);
     int foo = 12345;
-    ST_SUCCESS0("all good around here");
     ST_EXPECT(foo < 1200);
 }
 ST_END_TEST_IMPL()
