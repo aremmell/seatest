@@ -31,18 +31,6 @@
 # include "seatest/timing.h"
 # include "seatest/version.h"
 
-/**
- * This should be the only call made from the entry point (e.g., main()), and
- * its return value should be returned from the entry point:
- *
- * ~~~
- * int main(int argc, char** argv)
- * {
- *   return st_main(argc, argv, "My App", st_cl_args, ST_COUNTOF(st_cl_args),
- *      st_tests, ST_COUNTOF(st_tests));
- * }
- * ~~~
- */
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_test* tests, size_t num_tests);
 

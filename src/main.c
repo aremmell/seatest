@@ -39,8 +39,7 @@ ST_END_DECLARE_TEST_LIST()
 
 int main(int argc, char** argv)
 {
-    return st_main(argc, argv, "Acme Inc.", st_cl_args, ST_COUNTOF(st_cl_args),
-        st_tests, ST_COUNTOF(st_tests));
+    return ST_MAIN_IMPL("Acme Inc.");
 }
 
 ST_BEGIN_TEST_IMPL(foo)

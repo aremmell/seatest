@@ -113,6 +113,12 @@
  * Only works for words whose plural form is just an 's'. */
 # define ST_PLURAL(word, count) ((!(count) || (count) > 1) ? word "s" : word)
 
+/** The only code needed in main()/the entry point. `name` is a name to associate
+ * with your test suite, like the product or company name. */
+# define ST_MAIN_IMPL(name) \
+    st_main(argc, argv, name, st_cl_args, ST_COUNTOF(st_cl_args), \
+        st_tests, ST_COUNTOF(st_tests))
+
 /** Declares an individual test function. `name` must only contain characters
  * allowed in C function names. */
 # define ST_DECLARE_TEST(name) \
