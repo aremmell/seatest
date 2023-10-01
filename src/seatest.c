@@ -25,8 +25,6 @@
  */
 #include "seatest.h"
 
-#define MOVEME_TRAILER "(powered by seatest)"
-
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_testinfo* tests, size_t num_tests)
 {
