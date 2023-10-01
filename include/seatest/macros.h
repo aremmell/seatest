@@ -140,8 +140,8 @@
  * to the test on the command-line; it must not contain spaces. `fn_name` must
  * be the same value passed to ST_DECLARE_TEST. `conds` is a bitmask of zero or
  * more conditions the test relies upon from the st_conds enum. */
-# define ST_DECLARE_TEST_INFO(name, fn_name, conds) \
-    {#name, st_test_##fn_name, {0}, 0.0, conds, false},
+# define ST_DECLARE_TEST_INFO(name, fn_name) \
+    {#name, st_test_##fn_name, {0}, 0.0, 0, false},
 
 /** Ends the declaration of the global list of available tests. */
 # define ST_END_DECLARE_TEST_LIST(...) \

@@ -32,9 +32,9 @@ ST_DECLARE_TEST(bar);
 ST_DECLARE_TEST(baz);
 
 ST_BEGIN_DECLARE_TEST_LIST()
-    ST_DECLARE_TEST_INFO(foo, foo, 0)
-    ST_DECLARE_TEST_INFO(bar, bar, 0)
-    ST_DECLARE_TEST_INFO(baz, baz, 0)
+    ST_DECLARE_TEST_INFO(do-headstand, foo)
+    ST_DECLARE_TEST_INFO(jump-thru-hoops, bar)
+    ST_DECLARE_TEST_INFO(triple-backflip, baz)
 ST_END_DECLARE_TEST_LIST()
 
 int main(int argc, char** argv)

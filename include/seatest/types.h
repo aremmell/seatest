@@ -28,6 +28,11 @@
 
 # include "seatest/platform.h"
 
+/** Global state container. */
+typedef struct {
+    const char* app_name;
+} st_state;
+
 /** Type returned by each test function. */
 typedef struct {
     uint32_t line_start;

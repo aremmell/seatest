@@ -25,18 +25,26 @@
  */
 #include "seatest.h"
 
+static st_state _state = {0};
+
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_testinfo* tests, size_t num_tests)
 {
+    if (!st_sanity_check(tests, num_tests)) {
+        return EXIT_FAILURE;
+    }
+
+    _state.app_name = app_name;
+
     st_cl_config cl_cfg = {0};
-    if (!st_parse_cmd_line(argc, argv, app_name, args, num_args, tests,
+    if (!st_parse_cmd_line(argc, argv, args, num_args, tests,
         num_tests, &cl_cfg))
         return EXIT_FAILURE;
 
     size_t to_run = cl_cfg.only ? cl_cfg.to_run : num_tests;
     size_t passed = 0;
 
-    st_print_intro(app_name, to_run);
+    st_print_intro(to_run);
 
     st_timer timer;
     st_timer_begin(&timer);
@@ -57,19 +65,32 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
         st_print_test_outro(n + 1, to_run, tests[n].name, &tests[n].res);
     }
 
-    st_print_test_summary(passed, to_run, tests, num_tests, st_timer_elapsed(&timer),
-        app_name);
+    st_print_test_summary(passed, to_run, tests, num_tests, st_timer_elapsed(&timer));
 
     if (cl_cfg.wait)
         st_wait_for_keypress();
 
-    return EXIT_SUCCESS;
+    return passed == to_run ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-void st_print_intro(const char* name, size_t to_run)
+bool st_sanity_check(st_testinfo* tests, size_t num_tests)
+{
+    bool all_valid = true;
+    for (size_t n = 0; n < num_tests; n++) {
+        /* check for invalid test names. */
+        if (strnstr(tests[n].name, " ", ST_CL_MAX_TEST)) {
+            ST_ERROR("seatest error: test name '%s' is invalid (test names may"
+                " not contain spaces)", tests[n].name);
+            all_valid = false;
+        }
+    }
+    return all_valid;
+}
+
+void st_print_intro(size_t to_run)
 {
     (void)printf("\n" WHITEB("running %zu " ULINE("%s") " %s (seatest %s)...") "\n",
-        to_run, name, ST_PLURAL("test", to_run), st_get_version_string());
+        to_run, _state.app_name, ST_PLURAL("test", to_run), st_get_version_string());
 }
 
 void st_print_test_intro(size_t num, size_t to_run, const char* name)
@@ -84,18 +105,18 @@ void st_print_test_outro(size_t num, size_t to_run, const char* name, st_testres
 }
 
 void st_print_test_summary(size_t passed, size_t to_run, st_testinfo* tests,
-    size_t num_tests, double elapsed, const char* app_name)
+    size_t num_tests, double elapsed)
 {
     elapsed = (elapsed / 1e3);
     if (passed == to_run) {
         (void)printf("\n" WHITEB("done: ")
             FG_COLOR(0, 46, "%s%zu " ULINE("%s") " %s " EMPH("passed") " in %.03fsec!") "\n\n",
-                to_run > 1 ? "all " : "", to_run, app_name, ST_PLURAL("test", to_run),
+                to_run > 1 ? "all " : "", to_run, _state.app_name, ST_PLURAL("test", to_run),
                 elapsed);
     } else {
         (void)printf("\n" WHITEB("done: ")
             FG_COLOR(0, 196, "%zu of %zu " ULINE("%s") " %s " EMPH("failed") " in %.03fsec") "\n\n",
-                to_run - passed, to_run, app_name, ST_PLURAL("test", to_run), elapsed);
+                to_run - passed, to_run, _state.app_name, ST_PLURAL("test", to_run), elapsed);
     }
 
     ST_UNUSED(tests);
@@ -170,10 +191,10 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
     (void)fprintf(stderr, "\n");
 }
 
-void st_print_version_info(const char* app_name)
+void st_print_version_info(void)
 {
-    (void)printf("\n" ULINE("%s") " test suite. built with seatest %s\n\n",
-        app_name, st_get_version_string());
+    (void)printf("\n" ULINE("%s") " test suite " EMPH("(built with seatest %s)")" \n\n",
+        _state.app_name, st_get_version_string());
 }
 
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args)
@@ -186,8 +207,8 @@ const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t 
     return NULL;
 }
 
-bool st_parse_cmd_line(int argc, char** argv, const char* app_name, const st_cl_arg* args,
-    size_t num_args, st_testinfo* tests, size_t num_tests, st_cl_config* config)
+bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_args,
+    st_testinfo* tests, size_t num_tests, st_cl_config* config)
 {
     if (!argv || !args || !tests || !config)
         return false;
@@ -223,7 +244,7 @@ bool st_parse_cmd_line(int argc, char** argv, const char* app_name, const st_cl_
             st_print_test_list(tests, num_tests);
             return false;
         } else if (0 == strncmp(this_arg->flag, ST_CL_VERS_FLAG, strlen(ST_CL_VERS_FLAG))) {
-            st_print_version_info(app_name);
+            st_print_version_info();
             return false;
         } else if (0 == strncmp(this_arg->flag, ST_CL_HELP_FLAG, strlen(ST_CL_HELP_FLAG))) {
             st_print_usage_info(args, num_args);

@@ -31,14 +31,28 @@
 # include "seatest/timing.h"
 # include "seatest/version.h"
 
+/**
+ * This should be the only call made from the entry point (e.g., main()), and
+ * its return value should be returned from the entry point:
+ *
+ * ~~~
+ * int main(int argc, char** argv)
+ * {
+ *   return st_main(argc, argv, "My App", st_cl_args, ST_COUNTOF(st_cl_args),
+ *      st_tests, ST_COUNTOF(st_tests));
+ * }
+ * ~~~
+ */
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_testinfo* tests, size_t num_tests);
 
-void st_print_intro(const char* name, size_t to_run);
+bool st_sanity_check(st_testinfo* tests, size_t num_tests);
+
+void st_print_intro(size_t to_run);
 void st_print_test_intro(size_t num, size_t to_run, const char* name);
 void st_print_test_outro(size_t num, size_t to_run, const char* name, st_testres* res);
 void st_print_test_summary(size_t passed, size_t to_run, st_testinfo* tests,
-    size_t num_tests, double elapsed, const char* app_name);
+    size_t num_tests, double elapsed);
 
 /** Marks a test to be executed during the current run. Returns false if unable to
  * locate the specified test. */
@@ -51,7 +65,7 @@ void st_print_test_list(const st_testinfo* tests, size_t num_tests);
 void st_print_usage_info(const st_cl_arg* args, size_t num_args);
 
 /** Prints version information. */
-void st_print_version_info(const char* app_name);
+void st_print_version_info(void);
 
 /** Looks up a command line argument by flag. Returns NULL if no match was found. */
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args);
@@ -61,8 +75,8 @@ const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t 
  * returns a configuration to be used by the test rig. Returns false if the test rig
  * should immediately exit with EXIT_FAILURE.
  */
-bool st_parse_cmd_line(int argc, char** argv, const char* app_name, const st_cl_arg* args,
-    size_t num_args, st_testinfo* tests, size_t num_tests, st_cl_config* config);
+bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_args,
+    st_testinfo* tests, size_t num_tests, st_cl_config* config);
 
 bool st_getchar(char* input);
 void st_wait_for_keypress(void);
