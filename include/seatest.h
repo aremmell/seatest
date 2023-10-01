@@ -67,6 +67,9 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args);
 /** Prints version information. */
 void st_print_version_info(void);
 
+/** Allows for printing of 'seatests' in pretty colors. */
+void st_get_seatest_ansi(char buf[256], bool bold);
+
 /** Looks up a command line argument by flag. Returns NULL if no match was found. */
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args);
 

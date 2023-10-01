@@ -88,8 +88,10 @@ bool st_sanity_check(const st_test* tests, size_t num_tests)
 
 void st_print_intro(size_t to_run)
 {
-    (void)printf("\n" WHITEB("running %zu " ULINE("%s") " %s (seatest %s)...") "\n",
-        to_run, _state.app_name, ST_PLURAL("test", to_run), st_get_version_string());
+    char ansi[256] = {0};
+    st_get_seatest_ansi(ansi, true);
+    (void)printf("\n" WHITEB("running %zu " ULINE("%s") " %s (%s %s)...") "\n",
+        to_run, _state.app_name, ST_PLURAL("test", to_run), ansi, st_get_version_string());
 }
 
 void st_print_test_intro(size_t num, size_t to_run, const char* name)
@@ -192,8 +194,38 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
 
 void st_print_version_info(void)
 {
-    (void)printf("\n" ULINE("%s") " test suite " EMPH("(built with seatest %s)")" \n\n",
-        _state.app_name, st_get_version_string());
+    char ansi[256];
+    st_get_seatest_ansi(ansi, false);
+    (void)printf("\n" ULINE("%s") " test suite " EMPH("(built with %s %s)")" \n\n",
+        _state.app_name, ansi, st_get_version_string());
+}
+
+void st_get_seatest_ansi(char buf[256], bool bold)
+{
+    buf[0] = '\0';
+
+    static const struct {
+        unsigned char r;
+        unsigned char g;
+        unsigned char b;
+        char c;
+    } colors[] = {
+        { 42,  64, 199, 's'},
+        { 54,  82, 255, 'e'},
+        { 65, 113, 255, 'a'},
+        { 72, 145, 255, 't'},
+        { 74, 171, 255, 'e'},
+        { 74, 190, 255, 's'},
+        { 68, 211, 241, 't'},
+    };
+
+    for (size_t n = 0; n < ST_COUNTOF(colors); n++) {
+        char tmp[30] = {0};
+        (void)snprintf(tmp, 30, "\x1b[%d;38;2;%03d;%03d;%03d;49;2m%c",
+            bold ? 1 : 0, colors[n].r, colors[n].g, colors[n].b, colors[n].c);
+        (void)strncat(buf, tmp, 30);
+    }
+    (void)strncat(buf, "\x1b[0m", 4);
 }
 
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args)
