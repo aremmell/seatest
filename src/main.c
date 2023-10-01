@@ -47,6 +47,7 @@ ST_BEGIN_TEST_IMPL(foo)
 {
     int foo = 12345;
     ST_EXPECT(foo < 1200);
+    st_sleep_msec(200);
 
     const char* msg = "hello there";
     ST_REQUIRE(strlen(msg) > 15);
@@ -62,6 +63,7 @@ ST_END_TEST_IMPL()
 
 ST_BEGIN_TEST_IMPL(baz)
 {
+    st_sleep_msec(560);
     int foo = 12345;
     ST_EXPECT(foo < 1200);
 }

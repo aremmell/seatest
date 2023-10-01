@@ -11,6 +11,11 @@ set(MAIN_EXECUTABLE_NAME seatest)
 set(STATIC_LIBRARY_NAME seatest_static)
 set(SHARED_LIBRARY_NAME seatest_shared)
 
+# versioning
+set(PROJECT_VERSION_SUFFIX -dev)
+set(PROJECT_IS_REL_BUILD true)
+
+# compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
 # C17 standard
@@ -83,12 +88,11 @@ execute_process(
     ECHO_OUTPUT_VARIABLE
 )
 
-# TODO: version.h
-#configure_file(
-#    include/seatest/version.h.in
-#    include/seatest/version.h
-#    NEWLINE_STYLE LF
-#)
+configure_file(
+    include/seatest/version.h.in
+    include/seatest/version.h
+    NEWLINE_STYLE LF
+)
 
 add_executable(
     ${MAIN_EXECUTABLE_NAME}
@@ -99,7 +103,6 @@ add_library(
     ${STATIC_LIBRARY_NAME}
     STATIC
     src/seatest.c
-    src/seatest_guts.c
     src/seatest_timing.c
 )
 
@@ -107,7 +110,6 @@ add_library(
     ${SHARED_LIBRARY_NAME}
     SHARED
     src/seatest.c
-    src/seatest_guts.c
     src/seatest_timing.c
 )
 

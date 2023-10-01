@@ -234,9 +234,34 @@ bool st_parse_cmd_line(int argc, char** argv, const char* app_name, const st_cl_
     return true;
 }
 
+bool st_getchar(char* input) {
+#if defined(__WIN__)
+    if (input)
+        *input = (char)_getch();
+     return true;
+#else /* !__WIN__ */
+    struct termios cur = {0};
+    if (0 != tcgetattr(STDIN_FILENO, &cur))
+        return false;
+
+    struct termios new = cur;
+    new.c_lflag &= ~(ICANON | ECHO);
+
+    if (0 != tcsetattr(STDIN_FILENO, TCSANOW, &new))
+        return false;
+
+    int ch = getchar();
+
+    if (NULL != input)
+        *input = (char)ch;
+
+    return 0 == tcsetattr(STDIN_FILENO, TCSANOW, &cur) ? true : false;
+#endif
+}
+
 void st_wait_for_keypress(void)
 {
     (void)printf(WHITEB("Press any key to continue...\n"));
-    bool get = _st_getchar(NULL);
+    bool get = st_getchar(NULL);
     ST_UNUSED(get);
 }

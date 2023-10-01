@@ -1,5 +1,5 @@
 /*
- * seatest_guts.c
+ * version.h
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2023
@@ -23,29 +23,42 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "seatest/guts.h"
+#ifndef _SEATEST_VERSION_H_INCLUDED
+# define _SEATEST_VERSION_H_INCLUDED
 
-bool _st_getchar(char* input) {
-#if defined(__WIN__)
-    if (input)
-        *input = (char)_getch();
-     return true;
-#else /* !__WIN__ */
-    struct termios cur = {0};
-    if (0 != tcgetattr(STDIN_FILENO, &cur))
-        return false;
+# include <stdint.h>
+# include <stdbool.h>
 
-    struct termios new = cur;
-    new.c_lflag &= ~(ICANON | ECHO);
+# define SEATEST_VERSION_MAJOR  ${PROJECT_VERSION_MAJOR}
+# define SEATEST_VERSION_MINOR  ${PROJECT_VERSION_MINOR}
+# define SEATEST_VERSION_PATCH  ${PROJECT_VERSION_PATCH}
+# define SEATEST_VERSION_SUFFIX "${PROJECT_VERSION_SUFFIX}"
+# define SEATEST_VERSION_GIT    "${GIT_COMMIT_HASH}"
+# define SEATEST_IS_REL_BUILD   ${PROJECT_IS_REL_BUILD}
 
-    if (0 != tcsetattr(STDIN_FILENO, TCSANOW, &new))
-        return false;
+# define _STR(n) #n
+# define _SEATEST_MK_VERSTR(maj, min, patch) \
+    _STR(maj) "." _STR(min) "." _STR(patch) SEATEST_VERSION_SUFFIX \
+    " (" SEATEST_VERSION_GIT ")"
 
-    int ch = getchar();
-
-    if (NULL != input)
-        *input = (char)ch;
-
-    return 0 == tcsetattr(STDIN_FILENO, TCSANOW, &cur) ? true : false;
-#endif
+static inline
+const char* st_get_version_string(void)
+{
+    return _SEATEST_MK_VERSTR(SEATEST_VERSION_MAJOR, SEATEST_VERSION_MINOR,
+        SEATEST_VERSION_PATCH);
 }
+
+static inline
+uint32_t st_get_version_hex(void)
+{
+    return (SEATEST_VERSION_MAJOR << 16 | SEATEST_VERSION_MINOR << 8 |
+            SEATEST_VERSION_PATCH);
+}
+
+static inline
+bool st_is_release_build(void)
+{
+    return SEATEST_IS_REL_BUILD;
+}
+
+#endif /* !_SEATEST_VERSION_H_INCLUDED */

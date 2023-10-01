@@ -29,7 +29,7 @@
 # include "seatest/types.h"
 # include "seatest/macros.h"
 # include "seatest/timing.h"
-# include "seatest/guts.h"
+# include "seatest/version.h"
 
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_testinfo* tests, size_t num_tests);
@@ -61,6 +61,7 @@ const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t 
 bool st_parse_cmd_line(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_testinfo* tests, size_t num_tests, st_cl_config* config);
 
+bool st_getchar(char* input);
 void st_wait_for_keypress(void);
 
 #endif /* !_SEATEST_H_INCLUDED */
