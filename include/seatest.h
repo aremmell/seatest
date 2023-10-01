@@ -46,12 +46,12 @@
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_test* tests, size_t num_tests);
 
-bool st_sanity_check(st_test* tests, size_t num_tests);
+bool st_sanity_check(const st_test* tests, size_t num_tests);
 
 void st_print_intro(size_t to_run);
 void st_print_test_intro(size_t num, size_t to_run, const char* name);
-void st_print_test_outro(size_t num, size_t to_run, const char* name, st_test* test);
-void st_print_test_summary(size_t passed, size_t to_run, st_test* tests,
+void st_print_test_outro(size_t num, size_t to_run, const char* name, const st_test* test);
+void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,
     size_t num_tests, double elapsed);
 
 /** Marks a test to be executed during the current run. Returns false if unable to

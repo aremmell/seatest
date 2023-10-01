@@ -73,7 +73,7 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     return passed == to_run ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-bool st_sanity_check(st_test* tests, size_t num_tests)
+bool st_sanity_check(const st_test* tests, size_t num_tests)
 {
     bool all_valid = true;
     for (size_t n = 0; n < num_tests; n++) {
@@ -97,13 +97,13 @@ void st_print_test_intro(size_t num, size_t to_run, const char* name)
     (void)printf("\n" WHITEB("(%zu/%zu) '%s' ...") "\n\n", num, to_run, name);
 }
 
-void st_print_test_outro(size_t num, size_t to_run, const char* name, st_test* test)
+void st_print_test_outro(size_t num, size_t to_run, const char* name, const st_test* test)
 {
     (void)printf("\n" WHITEB("(%zu/%zu) '%s' finished (") WHITE("%.fms") WHITEB("): ")
         "%s\n", num, to_run, name, test->msec, ST_PASSFAILWARN(test));
 }
 
-void st_print_test_summary(size_t passed, size_t to_run, st_test* tests,
+void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,
     size_t num_tests, double elapsed)
 {
     elapsed = (elapsed / 1e3);
