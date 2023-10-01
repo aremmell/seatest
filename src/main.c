@@ -25,10 +25,31 @@
  */
 #include "seatest.h"
 
+ST_DECLARE_TEST(foo);
+
 int main(int argc, char** argv)
 {
     ST_UNUSED(argc);
     ST_UNUSED(argv);
 
+    st_testres res = st_test_foo();
+    ST_UNUSED(res);
+
     return EXIT_SUCCESS;
 }
+
+ST_BEGIN_TEST_IMPL(foo)
+{
+    int foo = 12345;
+    ST_EXPECT(foo < 1200);
+
+    const char* msg = "hello there";
+    ST_REQUIRE(strlen(msg) > 15);
+
+    const char* msg2 = "hello there, sir";
+    ST_STREQUAL(msg, msg2);
+    ST_STREQUAL("sups?", "sups?!");
+
+    ST_STRIEQUAL("SUPS", "sUpS");
+}
+ST_END_TEST_IMPL()

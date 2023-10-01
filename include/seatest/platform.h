@@ -88,8 +88,6 @@
 
 #  define ST_MSEC_TIMER
 #  define ST_MSEC_WIN32
-#  define ST_WALLCLOCK 0
-#  define ST_INTERVALCLOCK 1
 
 # endif /* !_WIN32 */
 

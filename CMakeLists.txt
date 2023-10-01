@@ -100,6 +100,7 @@ add_library(
     STATIC
     src/seatest.c
     src/seatest_guts.c
+    src/seatest_timing.c
 )
 
 add_library(
@@ -107,6 +108,7 @@ add_library(
     SHARED
     src/seatest.c
     src/seatest_guts.c
+    src/seatest_timing.c
 )
 
 if(!WIN32)

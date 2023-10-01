@@ -1,5 +1,5 @@
 /*
- * seatest.h
+ * timing.h
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2023
@@ -23,11 +23,19 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _SEATEST_H_INCLUDED
-# define _SEATEST_H_INCLUDED
+#ifndef _SEATEST_TIMING_H_INCLUDED
+# define _SEATEST_TIMING_H_INCLUDED
 
 # include "seatest/types.h"
-# include "seatest/macros.h"
-# include "seatest/timing.h"
 
-#endif /* !_SEATEST_H_INCLUDED */
+void st_timer_begin(st_timer* timer);
+double st_timer_elapsed(const st_timer* timer);
+long st_timer_getres(void);
+
+bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf);
+double st_msec_since(const st_timer* when, st_timer* out);
+
+/** Puts the current thread to sleep for `msec` milliseconds. */
+void st_sleep_msec(uint32_t msec);
+
+#endif /* !_SEATEST_TIMING_H_INCLUDED */

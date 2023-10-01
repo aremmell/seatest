@@ -26,6 +26,8 @@
 #ifndef _SEATEST_MACROS_H_INCLUDED
 # define _SEATEST_MACROS_H_INCLUDED
 
+# include "seatest/types.h"
+
 # define _ESC "\x1b[" /**< Begins an ANSI escape sequence. */
 # define _ESC_M "m"   /**< Marks the end of a sequence. */
 
@@ -101,6 +103,67 @@
 # define WHITEB(s)    FG_COLOR(1, 15, s) /**< Bold white foreground text. */
 
 /** Blots out a variable, avoiding compiler warnings/errors. */
-# define ST_UNUSED(var) (void)var
+# define ST_UNUSED(var) (void)(var)
+
+/** Declares an individual test function. The name must only contain characters
+ * allowed in C function names. */
+# define ST_DECLARE_TEST(name) \
+    st_testres st_test_##name(void)
+
+/** Begins the definition (implementation) of an individual test function. */
+# define ST_BEGIN_TEST_IMPL(name) \
+    st_testres st_test_##name(void) \
+    { \
+        st_testres _retval; \
+        _retval.line_start = __LINE__; \
+        _retval.pass = true; \
+        _retval.fatal = false;
+
+/** Ends the definition (implementation) of an individual test function. */
+# define ST_END_TEST_IMPL(...) \
+        return _retval; \
+    }
+
+# define _ST_INDENT "  " /**< Indentation placed before test message output. */
+
+/** Outputs a test message. */
+# define _ST_MESSAGE(msg, ...) (void)printf(_ST_INDENT msg "\n", __VA_ARGS__)
+
+/** Outputs a formatted test message in white. */
+# define ST_MESSAGE(msg, ...) _ST_MESSAGE(WHITE(msg), __VA_ARGS__)
+# define ST_MESSAGE_0(msg)    ST_MESSAGE(msg "%s", "")
+
+/** Outputs a formatted test message in red. */
+# define ST_ERROR(msg, ...) _ST_MESSAGE(FG_COLOR(0, 196, msg), __VA_ARGS__)
+# define ST_ERROR_0(msg)    ST_ERROR(msg "%s", "")
+
+/** Outputs a formatted test message in orange. */
+# define ST_WARNING(msg, ...) _ST_MESSAGE(FG_COLOR(0, 208, msg), __VA_ARGS__)
+# define ST_WARNING_0(msg)    ST_WARNING(msg "%s", "")
+
+/** Outputs a formatted test message in green. */
+# define ST_SUCCESS(msg, ...) _ST_MESSAGE(FG_COLOR(0, 46, msg), __VA_ARGS__)
+# define ST_SUCCESS_0(msg)    ST_SUCCESS(msg "%s", "")
+
+# define _ST_TESTLINE() (__LINE__ - _retval.line_start)
+# define _ST_FATAL() \
+    _retval.pass = false; \
+    _retval.fatal = true
+
+# define ST_EXPECT(expr) \
+    do { \
+        if (!(expr)) { \
+            _retval.pass = false; \
+            ST_WARNING("at line %"PRIu32": " #expr " == false", _ST_TESTLINE()); \
+        } \
+    } while (false)
+
+# define ST_REQUIRE(expr) \
+    do { \
+        if (!(expr)) { \
+            _ST_FATAL(); \
+            ST_ERROR("at line %"PRIu32": " #expr " == false", _ST_TESTLINE()); \
+        } \
+    } while (false)
 
 #endif /* !_SEATEST_MACROS_H_INCLUDED */

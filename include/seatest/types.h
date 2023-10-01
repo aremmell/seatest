@@ -28,7 +28,14 @@
 
 # include "seatest/platform.h"
 
-/** Elapsed time marker. */
+/** Type returned by each test function. */
+typedef struct {
+    uint32_t line_start;
+    bool pass;
+    bool fatal;
+} st_testres;
+
+/** Millisecond timer. */
 typedef struct {
 # if !defined(__WIN__)
     time_t sec;
@@ -37,5 +44,12 @@ typedef struct {
     LARGE_INTEGER counter;
 # endif
 } st_timer;
+
+/** Function comparing two strings for equality, ignoring case. */
+# if !defined(__WIN__)
+#  define st_strnicmp strncasecmp
+# else
+#  define st_strnicmp StrStrIA
+# endif
 
 #endif /* !_SEATEST_TYPES_H_INCLUDED */
