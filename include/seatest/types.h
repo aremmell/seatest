@@ -97,7 +97,7 @@ typedef struct {
 # if !defined(__WIN__)
 #  define st_strnicmp strncasecmp
 # else
-#  define st_strnicmp StrCmpIA
+#  define st_strnicmp StrCmpNIA
 # endif
 
 /** Function searching a string for a sub-string. */
