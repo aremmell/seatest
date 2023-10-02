@@ -1,16 +1,21 @@
 # seatest
 
-seatest&mdash;a featherweight cross-platform C17 test framework.
-
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2023 Ryan M. Lederman <lederman@gmail.com> -->
+
+seatest&mdash;a featherweight cross-platform C17 test framework.
+
+<img src="https://rml.dev/pub/seatest-logo.png" alt="logo" style="zoom: 50%;margin-bottom:2em;margin-top:2em;margin-left:auto;margin-right:auto;" />
+
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=aremmell_seatest&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=aremmell_seatest)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=aremmell_seatest&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=aremmell_seatest)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=aremmell_seatest&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=aremmell_seatest)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=aremmell_seatest&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=aremmell_seatest)
 
+
 ## WIP
+
 seatest is a work-in-progress, as it is essentially brand new. Luckily I have most of what I need on-hand already; I should have screenshots and code samples within the next few days, and something worth trying out within a week.
 
 ## What
