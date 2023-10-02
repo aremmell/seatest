@@ -123,13 +123,13 @@
 #  define __HAVE_STRERROR_S__
 # endif
 
-#  if (defined(_POSIX_TIMERS) && _POSIX_TIMERS > 0) || \
+# if (defined(_POSIX_TIMERS) && _POSIX_TIMERS > 0) || \
        defined(__MACOS__) || defined(__OpenBSD__)
-#   define ST_MSEC_TIMER
-#   define ST_MSEC_POSIX
-#  else
-#   undef ST_MSEC_TIMER
-#  endif
+#  define ST_MSEC_TIMER
+#  define ST_MSEC_POSIX
+# else
+#  undef ST_MSEC_TIMER
+# endif
 
 # if defined(CLOCK_UPTIME)
 #  define ST_INTERVALCLOCK CLOCK_UPTIME

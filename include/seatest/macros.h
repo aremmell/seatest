@@ -214,13 +214,13 @@
     : test->res.fatal ? FG_COLOR(1, 196, "FAIL") \
     : FG_COLOR(1, 208, "WARN"))
 
-#if defined(ST_RELATIVE_LINE_NUMBERS)
+# if defined(ST_RELATIVE_LINE_NUMBERS)
 #  define _ST_TESTLINE() (__LINE__ - _retval.line_start)
 # else
 #  define _ST_TESTLINE() __LINE__
 # endif
 
-#define _ST_EVALUATE_EXPR(expr, name) \
+# define _ST_EVALUATE_EXPR(expr, name) \
     do { \
         if (!(expr)) { \
             _retval.pass = false; \
@@ -242,59 +242,59 @@
 
 # define ST_REQUIRE(expr) _ST_EVALUATE_EXPR(expr, "ST_REQUIRE")
 
-#define ST_BITS_HIGH(bitmask, bits) \
+# define ST_BITS_HIGH(bitmask, bits) \
     _ST_EVALUATE_EXPR((bitmask & bits) == bits, "ST_BITS_HIGH")
 
-#define ST_BITS_LOW(bitmask, bits) \
+# define ST_BITS_LOW(bitmask, bits) \
     _ST_EVALUATE_EXPR((bitmask & bits) == 0, "ST_BITS_LOW")
 
-#define ST_EQUAL(lhs, rhs) \
+# define ST_EQUAL(lhs, rhs) \
     _ST_EVALUATE_EXPR(lhs == rhs, "ST_EQUAL")
 
-#define ST_NOT_EQUAL(lhs, rhs) \
+# define ST_NOT_EQUAL(lhs, rhs) \
     _ST_EVALUATE_EXPR(lhs != rhs, "ST_NOT_EQUAL")
 
-#define ST_LESS_THAN(lhs, rhs) \
+# define ST_LESS_THAN(lhs, rhs) \
     _ST_EVALUATE_EXPR(lhs < rhs, "ST_LESS_THAN")
 
-#define ST_EQUAL_OR_LESS(lhs, rhs) \
+# define ST_EQUAL_OR_LESS(lhs, rhs) \
     _ST_EVALUATE_EXPR(lhs <= rhs, "ST_EQUAL_OR_LESS")
 
-#define ST_GREATER_THAN(lhs, rhs) \
+# define ST_GREATER_THAN(lhs, rhs) \
     _ST_EVALUATE_EXPR(lhs > rhs, "ST_GREATER_THAN")
 
-#define ST_EQUAL_OR_GREATER(lhs, rhs) \
+# define ST_EQUAL_OR_GREATER(lhs, rhs) \
     _ST_EVALUATE_EXPR(lhs >= rhs, "ST_EQUAL_OR_GREATER")
 
 /**
  * String-specific
  */
 
-#define ST_STR_EQUAL(str1, str2, len) \
+# define ST_STR_EQUAL(str1, str2, len) \
     _ST_EVALUATE_EXPR(0 == st_strncmp(str1, str2, len), "ST_STR_EQUAL")
 
-#define ST_STR_EQUAL_I(str1, str2, len) \
+# define ST_STR_EQUAL_I(str1, str2, len) \
     _ST_EVALUATE_EXPR(0 == st_strnicmp(str1, str2, len), "ST_STR_EQUAL_I")
 
-#define ST_STR_CONTAINS(needle, haystack) \
+# define ST_STR_CONTAINS(needle, haystack) \
     _ST_EVALUATE_EXPR(NULL != st_strstr(haystack, needle), "ST_STR_CONTAINS")
 
-#define ST_STR_CONTAINS_I(needle, haystack) \
+# define ST_STR_CONTAINS_I(needle, haystack) \
     _ST_EVALUATE_EXPR(NULL != st_stristr(haystack, needle), "ST_STR_CONTAINS_I")
 
-#define ST_STR_BEGINSWITH(needle, haystack, needle_len) \
+# define ST_STR_BEGINSWITH(needle, haystack, needle_len) \
     _ST_EVALUATE_EXPR(0 == st_strncmp(haystack, needle, needle_len), "ST_STR_BEGINSWITH")
 
-#define ST_STR_BEGINSWITH_I(needle, haystack, needle_len) \
+# define ST_STR_BEGINSWITH_I(needle, haystack, needle_len) \
     _ST_EVALUATE_EXPR(0 == st_strnicmp(needle, haystack, needle_len), "ST_STR_BEGINSWITH_I")
 
-#define ST_STR_ENDSWITH(needle, haystack, needle_len, haystack_len) \
+# define ST_STR_ENDSWITH(needle, haystack, needle_len, haystack_len) \
     _ST_EVALUATE_EXPR( \
         0 == st_strncmp(haystack + (haystack_len - needle_len), needle, needle_len), \
         "ST_STR_ENDSWITH" \
     )
 
-#define ST_STR_ENDSWITH_I(needle, haystack, needle_len, haystack_len) \
+# define ST_STR_ENDSWITH_I(needle, haystack, needle_len, haystack_len) \
     _ST_EVALUATE_EXPR( \
         0 == st_strnicmp(haystack + (haystack_len - needle_len), needle, needle_len), \
         "ST_STR_ENDSWITH_I" \
@@ -304,31 +304,31 @@
  * Numeric
  */
 
-#define ST_NUM_POSITIVE(num) \
+# define ST_NUM_POSITIVE(num) \
     _ST_EVALUATE_EXPR(num > 0, "ST_NUM_POSITIVE")
 
-#define ST_NUM_NEGATIVE(num) \
+# define ST_NUM_NEGATIVE(num) \
     _ST_EVALUATE_EXPR(num < 0, "ST_NUM_NEGATIVE")
 
-#define ST_NUM_EVEN(num) \
+# define ST_NUM_EVEN(num) \
     { \
         div_t dt = div(num, 2); \
         _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_EVEN"); \
     }
 
-#define ST_NUM_ODD(num) \
+# define ST_NUM_ODD(num) \
     { \
         div_t dt = div(num, 2); \
         _ST_EVALUATE_EXPR(dt.rem != 0, "ST_NUM_ODD"); \
     }
 
-#define ST_NUM_POWER_2(num) \
+# define ST_NUM_POWER_2(num) \
     { \
         div_t dt = div(num, 2); \
         _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_POWER_2"); \
     }
 
-#define ST_NUM_POWER_10(num) \
+# define ST_NUM_POWER_10(num) \
     { \
         div_t dt = div(num, 10); \
         _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_POWER_10"); \
@@ -338,7 +338,7 @@
  * Array-specific
  */
 
-#define ST_ARRAY_EQUAL(arr1, arr2) \
+# define ST_ARRAY_EQUAL(arr1, arr2) \
     do { \
         size_t elem_size1 = sizeof(arr1[0]); \
         size_t elem_size2 = sizeof(arr2[0]); \
