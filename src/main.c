@@ -59,6 +59,18 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_STR_ENDSWITH("here", msg, 4, strlen(msg));
     ST_STR_ENDSWITH_I("HERE", msg, 4, strlen(msg));
 
+    // should fail
+    ST_REQUIRE(strlen(msg) == 0);
+    ST_EXPECT(0 > 1);
+
+    // should all fail
+    ST_STR_CONTAINS("sea", msg);
+    ST_STR_CONTAINS_I("tes", msg);
+    ST_STR_BEGINSWITH("s", msg, 1);
+    ST_STR_BEGINSWITH_I("S", msg, 1);
+    ST_STR_ENDSWITH("hell", msg, 4, strlen(msg));
+    ST_STR_ENDSWITH_I("HELL", msg, 4, strlen(msg));
+
     // should all succeed
     ST_NUM_EVEN(48);
     ST_NUM_ODD(49);
@@ -75,17 +87,19 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_NUM_POWER_2(8193);
     ST_NUM_POWER_10(10030000);
 
-    // should fail
-    ST_REQUIRE(strlen(msg) == 0);
-    ST_EXPECT(0 > 1);
+    // should succeed
+    struct foo {
+        int one;
+        int two;
+    };
 
-    // should all fail
-    ST_STR_CONTAINS("sea", msg);
-    ST_STR_CONTAINS_I("tes", msg);
-    ST_STR_BEGINSWITH("s", msg, 1);
-    ST_STR_BEGINSWITH_I("S", msg, 1);
-    ST_STR_ENDSWITH("hell", msg, 4, strlen(msg));
-    ST_STR_ENDSWITH_I("HELL", msg, 4, strlen(msg));
+    struct foo lhs = {1234, 5678};
+    struct foo rhs = {1234, 5678};
+    ST_BITWISE_EQUAL(lhs, rhs, sizeof(struct foo));
+
+    // should fail
+    lhs.one = 4321;
+    ST_BITWISE_EQUAL(lhs, rhs, sizeof(struct foo));
 
     // should succeed (same type, size,
     // and values)
