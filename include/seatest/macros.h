@@ -237,8 +237,8 @@
         } \
     } while (false)
 
-# define ST_IS_TEST_PASSED() (_retval.pass)
-# define ST_IS_FAILURE_FATAL() (_retval.fatal)
+# define ST_TEST_PASSING() (_retval.pass)
+# define ST_TEST_FAILED_FATALLY() (_retval.fatal)
 
 # define ST_REQUIRE(expr) _ST_EVALUATE_EXPR(expr, "ST_REQUIRE")
 

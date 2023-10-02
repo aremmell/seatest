@@ -93,7 +93,7 @@ ST_BEGIN_TEST_IMPL(test_tests)
     int arr2[] = {1, 2, 3, 4, 5};
     ST_ARRAY_EQUAL(arr1, arr2);
 
-    if (ST_IS_TEST_PASSED())
+    if (ST_TEST_PASSING())
         ST_MESSAGE0("arr1 == arr2");
 
     // should fail (different types)
