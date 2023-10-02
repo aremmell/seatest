@@ -44,12 +44,15 @@ int main(int argc, char** argv)
 
 ST_BEGIN_TEST_IMPL(foo)
 {
-    int foo = 12345;
-    ST_EXPECT(foo < 1200);
     st_sleep_msec(200);
 
     const char* msg = "hello there";
     ST_REQUIRE(strlen(msg) > 10);
+
+    //ST_STRCONTAINS("the", msg, strlen(msg));
+    ST_STRBEGINSWITH("hell", msg, 4);
+    //ST_STRENDSWITH("halp", msg, 4, strlen(msg));
+    //ST_STRCONTAINS_I("llo", msg);
 }
 ST_END_TEST_IMPL()
 
