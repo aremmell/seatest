@@ -130,6 +130,7 @@
     { \
         st_testres _retval; \
         _retval.line_start = __LINE__; \
+        _retval.skipped = false; \
         _retval.pass = true; \
         _retval.fatal = false;
 
