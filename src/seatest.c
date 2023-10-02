@@ -198,12 +198,10 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
 
 void st_print_version_info(void)
 {
-
     (void)printf("\n" ULINE("%s") " test suite " EMPH("(built with") " ",
         _state.app_name);
     st_print_seatest_ansi(false);
     (void)printf(EMPH("%s)")" \n\n", st_get_version_string());
-
 }
 
 void st_print_seatest_ansi(bool bold)
@@ -214,13 +212,13 @@ void st_print_seatest_ansi(bool bold)
         unsigned char b;
         char c;
     } colors[] = {
-        { 42,  64, 199, 's'},
-        { 54,  82, 255, 'e'},
-        { 65, 113, 255, 'a'},
-        { 72, 145, 255, 't'},
-        { 74, 171, 255, 'e'},
-        { 74, 190, 255, 's'},
-        { 68, 211, 241, 't'},
+        { 65, 105, 238, 's'},
+        { 63, 125, 238, 'e'},
+        { 71, 145, 237, 'a'},
+        { 74, 165, 236, 't'},
+        { 77, 185, 235, 'e'},
+        { 80, 205, 234, 's'},
+        { 83, 225, 233, 't'},
     };
 
     for (size_t n = 0; n < ST_COUNTOF(colors); n++) {
