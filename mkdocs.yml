@@ -16,6 +16,12 @@ theme:
       - navigation.expand
       - navigation.indexes
       - navigation.footer
+  palette:
+    scheme: slate
+    primary: indigo
+    accent: blue
+  font:
+    code: Source Code Pro
 nav:
   - Home: index.md
   - Installation: installation.md
