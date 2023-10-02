@@ -28,7 +28,6 @@
 
 # include "seatest/types.h"
 # include "seatest/macros.h"
-# include "seatest/timing.h"
 # include "seatest/version.h"
 
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
@@ -71,5 +70,15 @@ bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_
 
 bool st_getchar(char* input);
 void st_wait_for_keypress(void);
+
+void st_timer_begin(st_timer* timer);
+double st_timer_elapsed(const st_timer* timer);
+long st_timer_getres(void);
+
+bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf);
+double st_msec_since(const st_timer* when, st_timer* out);
+
+/** Puts the current thread to sleep for `msec` milliseconds. */
+void st_sleep_msec(uint32_t msec);
 
 #endif /* !_SEATEST_H_INCLUDED */

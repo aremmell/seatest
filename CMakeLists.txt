@@ -103,14 +103,12 @@ add_library(
     ${STATIC_LIBRARY_NAME}
     STATIC
     src/seatest.c
-    src/seatest_timing.c
 )
 
 add_library(
     ${SHARED_LIBRARY_NAME}
     SHARED
     src/seatest.c
-    src/seatest_timing.c
 )
 
 if(!WIN32)

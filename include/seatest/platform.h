@@ -81,6 +81,8 @@
 #  include <Windows.h>
 #  include <Shlwapi.h>
 #  include <conio.h>
+#  include <math.h>
+
 #  if defined(_MSC_VER) && _MSC_VER >= 1933
 #   include <stdatomic.h>
 #   define __HAVE_STDATOMICS__
