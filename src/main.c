@@ -27,12 +27,12 @@
 
 ST_DECLARE_CL_ARGS();
 
-ST_DECLARE_TEST(foo);
+ST_DECLARE_TEST(test_tests);
 ST_DECLARE_TEST(bar);
 ST_DECLARE_TEST(baz);
 
 ST_BEGIN_DECLARE_TEST_LIST()
-    ST_DECLARE_TEST_LIST_ENTRY(do-headstand, foo)
+    ST_DECLARE_TEST_LIST_ENTRY(testing-the-tests, test_tests)
     ST_DECLARE_TEST_LIST_ENTRY(jump-thru-hoops, bar)
     ST_DECLARE_TEST_LIST_ENTRY(triple-backflip, baz)
 ST_END_DECLARE_TEST_LIST()
@@ -42,19 +42,71 @@ int main(int argc, char** argv)
     return ST_MAIN_IMPL("Acme Inc.");
 }
 
-ST_BEGIN_TEST_IMPL(foo)
+ST_BEGIN_TEST_IMPL(test_tests)
 {
     st_sleep_msec(200);
 
+    // should succeed
     const char* msg = "hello there";
     ST_REQUIRE(strlen(msg) > 10);
+    ST_EXPECT(msg != NULL);
 
-    ST_STRCONTAINS("the", msg);
-    ST_STRBEGINSWITH("hell", msg, 4);
-    ST_STRBEGINSWITH_I("HELL", msg, 4);
-    ST_STRENDSWITH("here", msg, 4, strlen(msg));
-    ST_STRENDSWITH_I("HERE", msg, 4, strlen(msg));
-    ST_STRCONTAINS_I("LLO", msg);
+    // should all succeed
+    ST_STR_CONTAINS("the", msg);
+    ST_STR_CONTAINS_I("LLO", msg);
+    ST_STR_BEGINSWITH("hell", msg, 4);
+    ST_STR_BEGINSWITH_I("HELL", msg, 4);
+    ST_STR_ENDSWITH("here", msg, 4, strlen(msg));
+    ST_STR_ENDSWITH_I("HERE", msg, 4, strlen(msg));
+
+    // should all succeed
+    ST_NUM_EVEN(48);
+    ST_NUM_ODD(49);
+    ST_NUM_NEGATIVE(-4);
+    ST_NUM_POSITIVE(4);
+    ST_NUM_POWER_2(8192);
+    ST_NUM_POWER_10(10000000);
+
+    // should all fail
+    ST_NUM_EVEN(49);
+    ST_NUM_ODD(48);
+    ST_NUM_NEGATIVE(4);
+    ST_NUM_POSITIVE(-4);
+    ST_NUM_POWER_2(8193);
+    ST_NUM_POWER_10(10030000);
+
+    // should fail
+    ST_REQUIRE(strlen(msg) == 0);
+    ST_EXPECT(0 > 1);
+
+    // should all fail
+    ST_STR_CONTAINS("sea", msg);
+    ST_STR_CONTAINS_I("tes", msg);
+    ST_STR_BEGINSWITH("s", msg, 1);
+    ST_STR_BEGINSWITH_I("S", msg, 1);
+    ST_STR_ENDSWITH("hell", msg, 4, strlen(msg));
+    ST_STR_ENDSWITH_I("HELL", msg, 4, strlen(msg));
+
+    // should succeed (same type, size,
+    // and values)
+    int arr1[] = {1, 2, 3, 4, 5};
+    int arr2[] = {1, 2, 3, 4, 5};
+    ST_ARRAY_EQUAL(arr1, arr2);
+
+    if (ST_IS_TEST_PASSED())
+        ST_MESSAGE0("arr1 == arr2");
+
+    // should fail (different types)
+    short arr3[] = {1, 2, 3, 4, 5};
+    ST_ARRAY_EQUAL(arr1, arr3);
+
+    // should fail (different values)
+    arr1[2] = 6;
+    ST_ARRAY_EQUAL(arr1, arr2);
+
+    // should fail (different counts)
+    int arr4[] = {1, 2, 3, 4};
+    ST_ARRAY_EQUAL(arr2, arr4);
 }
 ST_END_TEST_IMPL()
 

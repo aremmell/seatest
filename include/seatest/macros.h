@@ -220,12 +220,12 @@
 #  define _ST_TESTLINE() __LINE__
 # endif
 
-#define _ST_EVALUATE_EXPR(expr) \
+#define _ST_EVALUATE_EXPR(expr, name) \
     do { \
         if (!(expr)) { \
             _retval.pass = false; \
             _retval.fatal = true; \
-            ST_ERROR("at line %"PRIu32": '" #expr "' evaluated to false", _ST_TESTLINE()); \
+            ST_ERROR("in " name " (line %"PRIu32"): '" #expr "' evaluated to false", _ST_TESTLINE()); \
         } \
     } while (false)
 
@@ -233,57 +233,131 @@
     do { \
         if (!(expr)) { \
             _retval.pass = false; \
-            ST_WARNING("at line %"PRIu32": '" #expr "' evaluated to false", _ST_TESTLINE()); \
+            ST_WARNING("in ST_EXPECT (line %"PRIu32"): '" #expr "' evaluated to false", _ST_TESTLINE()); \
         } \
     } while (false)
 
-# define ST_REQUIRE(expr) \
-    _ST_EVALUATE_EXPR(expr)
+# define ST_IS_TEST_PASSED() (_retval.pass)
+# define ST_IS_FAILURE_FATAL() (_retval.fatal)
+
+# define ST_REQUIRE(expr) _ST_EVALUATE_EXPR(expr, "ST_REQUIRE")
 
 #define ST_BITS_HIGH(bitmask, bits) \
-    _ST_EVALUATE_EXPR((bitmask & bits) == bits)
+    _ST_EVALUATE_EXPR((bitmask & bits) == bits, "ST_BITS_HIGH")
 
 #define ST_BITS_LOW(bitmask, bits) \
-    _ST_EVALUATE_EXPR((bitmask & bits) == 0)
+    _ST_EVALUATE_EXPR((bitmask & bits) == 0, "ST_BITS_LOW")
 
 #define ST_EQUAL(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs == rhs)
+    _ST_EVALUATE_EXPR(lhs == rhs, "ST_EQUAL")
 
-#define ST_NOTEQUAL(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs != rhs)
+#define ST_NOT_EQUAL(lhs, rhs) \
+    _ST_EVALUATE_EXPR(lhs != rhs, "ST_NOT_EQUAL")
 
-#define ST_LESSTHAN(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs < rhs)
+#define ST_LESS_THAN(lhs, rhs) \
+    _ST_EVALUATE_EXPR(lhs < rhs, "ST_LESS_THAN")
 
-#define ST_GREATERTHAN(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs > rhs)
+#define ST_EQUAL_OR_LESS(lhs, rhs) \
+    _ST_EVALUATE_EXPR(lhs <= rhs, "ST_EQUAL_OR_LESS")
 
-#define ST_STREQUAL(str1, str2, len) \
-    _ST_EVALUATE_EXPR(0 == st_strncmp(str1, str2, len))
+#define ST_GREATER_THAN(lhs, rhs) \
+    _ST_EVALUATE_EXPR(lhs > rhs, "ST_GREATER_THAN")
 
-#define ST_STREQUAL_I(str1, str2, len) \
-    _ST_EVALUATE_EXPR(0 == st_strnicmp(str1, str2, len))
+#define ST_EQUAL_OR_GREATER(lhs, rhs) \
+    _ST_EVALUATE_EXPR(lhs >= rhs, "ST_EQUAL_OR_GREATER")
 
-#define ST_STRCONTAINS(needle, haystack) \
-    _ST_EVALUATE_EXPR(NULL != st_strstr(haystack, needle))
+/**
+ * String-specific
+ */
 
-#define ST_STRCONTAINS_I(needle, haystack) \
-    _ST_EVALUATE_EXPR(NULL != st_stristr(haystack, needle))
+#define ST_STR_EQUAL(str1, str2, len) \
+    _ST_EVALUATE_EXPR(0 == st_strncmp(str1, str2, len), "ST_STR_EQUAL")
 
-#define ST_STRBEGINSWITH(needle, haystack, needle_len) \
-    _ST_EVALUATE_EXPR(0 == st_strncmp(haystack, needle, needle_len))
+#define ST_STR_EQUAL_I(str1, str2, len) \
+    _ST_EVALUATE_EXPR(0 == st_strnicmp(str1, str2, len), "ST_STR_EQUAL_I")
 
-#define ST_STRBEGINSWITH_I(needle, haystack, needle_len) \
-    _ST_EVALUATE_EXPR(0 == st_strnicmp(needle, haystack, needle_len))
+#define ST_STR_CONTAINS(needle, haystack) \
+    _ST_EVALUATE_EXPR(NULL != st_strstr(haystack, needle), "ST_STR_CONTAINS")
 
-#define ST_STRENDSWITH(needle, haystack, needle_len, haystack_len) \
+#define ST_STR_CONTAINS_I(needle, haystack) \
+    _ST_EVALUATE_EXPR(NULL != st_stristr(haystack, needle), "ST_STR_CONTAINS_I")
+
+#define ST_STR_BEGINSWITH(needle, haystack, needle_len) \
+    _ST_EVALUATE_EXPR(0 == st_strncmp(haystack, needle, needle_len), "ST_STR_BEGINSWITH")
+
+#define ST_STR_BEGINSWITH_I(needle, haystack, needle_len) \
+    _ST_EVALUATE_EXPR(0 == st_strnicmp(needle, haystack, needle_len), "ST_STR_BEGINSWITH_I")
+
+#define ST_STR_ENDSWITH(needle, haystack, needle_len, haystack_len) \
     _ST_EVALUATE_EXPR( \
-        0 == st_strncmp(haystack + (haystack_len - needle_len), needle, needle_len) \
+        0 == st_strncmp(haystack + (haystack_len - needle_len), needle, needle_len), \
+        "ST_STR_ENDSWITH" \
     )
 
-#define ST_STRENDSWITH_I(needle, haystack, needle_len, haystack_len) \
+#define ST_STR_ENDSWITH_I(needle, haystack, needle_len, haystack_len) \
     _ST_EVALUATE_EXPR( \
-        0 == st_strnicmp(haystack + (haystack_len - needle_len), needle, needle_len) \
+        0 == st_strnicmp(haystack + (haystack_len - needle_len), needle, needle_len), \
+        "ST_STR_ENDSWITH_I" \
     )
+
+/**
+ * Numeric
+ */
+
+#define ST_NUM_POSITIVE(num) \
+    _ST_EVALUATE_EXPR(num > 0, "ST_NUM_POSITIVE")
+
+#define ST_NUM_NEGATIVE(num) \
+    _ST_EVALUATE_EXPR(num < 0, "ST_NUM_NEGATIVE")
+
+#define ST_NUM_EVEN(num) \
+    { \
+        div_t dt = div(num, 2); \
+        _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_EVEN"); \
+    }
+
+#define ST_NUM_ODD(num) \
+    { \
+        div_t dt = div(num, 2); \
+        _ST_EVALUATE_EXPR(dt.rem != 0, "ST_NUM_ODD"); \
+    }
+
+#define ST_NUM_POWER_2(num) \
+    { \
+        div_t dt = div(num, 2); \
+        _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_POWER_2"); \
+    }
+
+#define ST_NUM_POWER_10(num) \
+    { \
+        div_t dt = div(num, 10); \
+        _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_POWER_10"); \
+    }
+
+/**
+ * Array-specific
+ */
+
+#define ST_ARRAY_EQUAL(arr1, arr2) \
+    do { \
+        size_t elem_size1 = sizeof(arr1[0]); \
+        size_t elem_size2 = sizeof(arr2[0]); \
+        if (elem_size1 != elem_size2) { \
+            _ST_EVALUATE_EXPR(elem_size1 == elem_size2, "ST_ARRAY_EQUAL"); \
+            break; \
+        } \
+        size_t count1 = sizeof(arr1) / elem_size1; \
+        size_t count2 = sizeof(arr2) / elem_size2; \
+        if (count1 != count2) { \
+            _ST_EVALUATE_EXPR(count1 == count2, "ST_ARRAY_EQUAL"); \
+            break; \
+        } \
+        for (size_t n = 0; n < count1; n++) { \
+            if (arr1[n] != arr2[n]) { \
+                _ST_EVALUATE_EXPR(arr1[n] == arr2[n], "ST_ARRAY_EQUAL"); \
+                break; \
+            } \
+        } \
+    } while (false)
 
 #endif /* !_SEATEST_MACROS_H_INCLUDED */
