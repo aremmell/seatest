@@ -6,6 +6,7 @@ repo_url: https://github.com/aremmell/seatest
 theme:
   name: material
   language: en
+  logo: sources/logo.png
   icon:
     repo: fontawesome/brands/github
   features:
@@ -15,10 +16,9 @@ theme:
       - navigation.sections
       - navigation.expand
       - navigation.indexes
-      - navigation.footer
   palette:
     scheme: slate
-    primary: indigo
+    primary: black
     accent: blue
   font:
     code: Source Code Pro
@@ -27,6 +27,14 @@ nav:
   - Installation: installation.md
   - Usage: usage.md
   - Troubleshooting: troubleshooting.md
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 extra:
   consent:
     title: Cookie consent
