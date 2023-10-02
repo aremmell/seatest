@@ -49,9 +49,11 @@ ST_BEGIN_TEST_IMPL(foo)
     const char* msg = "hello there";
     ST_REQUIRE(strlen(msg) > 10);
 
-    //ST_STRCONTAINS("the", msg, strlen(msg));
+    ST_STRCONTAINS("the", msg);
     ST_STRBEGINSWITH("hell", msg, 4);
-    //ST_STRENDSWITH("halp", msg, 4, strlen(msg));
+    ST_STRBEGINSWITH_I("HELL", msg, 4);
+    ST_STRENDSWITH("here", msg, 4, strlen(msg));
+    ST_STRENDSWITH_I("HERE", msg, 4, strlen(msg));
     ST_STRCONTAINS_I("LLO", msg);
 }
 ST_END_TEST_IMPL()
