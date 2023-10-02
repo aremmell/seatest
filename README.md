@@ -5,8 +5,9 @@
 
 seatest&mdash;a featherweight cross-platform C17 test framework.
 
+<div style="max-width:75%;">
 <img src="https://rml.dev/pub/seatest-logo.png" alt="logo" style="zoom: 50%;margin-bottom:2em;margin-top:2em;margin-left:auto;margin-right:auto;" />
-
+</div>
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=aremmell_seatest&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=aremmell_seatest)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=aremmell_seatest&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=aremmell_seatest)
