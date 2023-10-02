@@ -311,28 +311,28 @@
     _ST_EVALUATE_EXPR(num < 0, "ST_NUM_NEGATIVE")
 
 # define ST_NUM_EVEN(num) \
-    { \
+    do { \
         div_t dt = div(num, 2); \
         _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_EVEN"); \
-    }
+    } while (false)
 
 # define ST_NUM_ODD(num) \
-    { \
+    do { \
         div_t dt = div(num, 2); \
         _ST_EVALUATE_EXPR(dt.rem != 0, "ST_NUM_ODD"); \
-    }
+    } while (false)
 
 # define ST_NUM_POWER_2(num) \
-    { \
+    do { \
         div_t dt = div(num, 2); \
         _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_POWER_2"); \
-    }
+    } while (false)
 
 # define ST_NUM_POWER_10(num) \
-    { \
+    do { \
         div_t dt = div(num, 10); \
         _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_POWER_10"); \
-    }
+    } while (false)
 
 /**
  * Array-specific
