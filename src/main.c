@@ -52,7 +52,7 @@ ST_BEGIN_TEST_IMPL(foo)
     //ST_STRCONTAINS("the", msg, strlen(msg));
     ST_STRBEGINSWITH("hell", msg, 4);
     //ST_STRENDSWITH("halp", msg, 4, strlen(msg));
-    //ST_STRCONTAINS_I("llo", msg);
+    ST_STRCONTAINS_I("LLO", msg);
 }
 ST_END_TEST_IMPL()
 

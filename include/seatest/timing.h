@@ -27,6 +27,7 @@
 # define _SEATEST_TIMING_H_INCLUDED
 
 # include "seatest/types.h"
+# include "seatest/macros.h"
 
 void st_timer_begin(st_timer* timer);
 double st_timer_elapsed(const st_timer* timer);

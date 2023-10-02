@@ -25,6 +25,10 @@
  */
 #include "seatest.h"
 
+#if defined(__WIN__)
+# pragma comment(lib, "Shlwapi.lib")
+#endif
+
 static st_state _state = {0};
 
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
@@ -77,7 +81,7 @@ bool st_sanity_check(const st_test* tests, size_t num_tests)
 {
     bool all_valid = true;
     for (size_t n = 0; n < num_tests; n++) {
-        if (strnstr(tests[n].name, " ", ST_CL_MAX_TEST)) {
+        if (st_strstr(tests[n].name, " ")) {
             _ST_ERROR("seatest error: test name '%s' is invalid (test names may"
                 " not contain spaces)", tests[n].name);
             all_valid = false;

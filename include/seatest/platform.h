@@ -66,7 +66,6 @@
 #  include <termios.h>
 #  include <unistd.h>
 #  include <errno.h>
-#  include <stdlib.h>
 #  include <string.h>
 
 #  if !defined(__STDC_NO_ATOMICS__)
@@ -80,7 +79,8 @@
 #  define _CRT_SECURE_NO_WARNINGS
 #  define __WANT_STDC_SECURE_LIB__ 1
 #  include <Windows.h>
-
+#  include <Shlwapi.h>
+#  include <conio.h>
 #  if defined(_MSC_VER) && _MSC_VER >= 1933
 #   include <stdatomic.h>
 #   define __HAVE_STDATOMICS__
@@ -95,6 +95,7 @@
 # include <stdarg.h>
 # include <stdbool.h>
 # include <stdint.h>
+# include <stdlib.h>
 # include <inttypes.h>
 # include <assert.h>
 

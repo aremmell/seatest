@@ -24,6 +24,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "seatest/timing.h"
+#include <math.h>
 
 void st_timer_begin(st_timer* timer)
 {
@@ -130,7 +131,7 @@ double st_msec_since(const st_timer* when, st_timer* out)
     if (when == NULL || out->counter.QuadPart <= when->counter.QuadPart)
         return 0.0;
 
-    double msec_ratio = ((double)_sir_perfcntr_freq.QuadPart) / 1e3;
+    double msec_ratio = ((double)perf_freq.QuadPart) / 1e3;
     return ((double)(out->counter.QuadPart - when->counter.QuadPart)) / msec_ratio;
 #endif
 }
