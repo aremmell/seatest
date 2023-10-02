@@ -251,34 +251,34 @@
 # define ST_REQUIRE(expr) _ST_EVALUATE_EXPR(expr, "ST_REQUIRE")
 
 # define ST_EQUAL(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs == rhs, "ST_EQUAL")
+    _ST_EVALUATE_EXPR((lhs) == (rhs), "ST_EQUAL")
 
 # define ST_NOT_EQUAL(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs != rhs, "ST_NOT_EQUAL")
+    _ST_EVALUATE_EXPR((lhs) != (rhs), "ST_NOT_EQUAL")
 
 # define ST_LESS_THAN(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs < rhs, "ST_LESS_THAN")
+    _ST_EVALUATE_EXPR((lhs) < (rhs), "ST_LESS_THAN")
 
 # define ST_EQUAL_OR_LESS(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs <= rhs, "ST_EQUAL_OR_LESS")
+    _ST_EVALUATE_EXPR((lhs) <= (rhs), "ST_EQUAL_OR_LESS")
 
 # define ST_GREATER_THAN(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs > rhs, "ST_GREATER_THAN")
+    _ST_EVALUATE_EXPR((lhs) > (rhs), "ST_GREATER_THAN")
 
 # define ST_EQUAL_OR_GREATER(lhs, rhs) \
-    _ST_EVALUATE_EXPR(lhs >= rhs, "ST_EQUAL_OR_GREATER")
+    _ST_EVALUATE_EXPR((lhs) >= (rhs), "ST_EQUAL_OR_GREATER")
 
 /**
  * Bitwise evaluation
  */
 # define ST_BITS_HIGH(bitmask, bits) \
-    _ST_EVALUATE_EXPR((bitmask & bits) == bits, "ST_BITS_HIGH")
+    _ST_EVALUATE_EXPR(((bitmask) & (bits)) == (bits), "ST_BITS_HIGH")
 
 # define ST_BITS_LOW(bitmask, bits) \
-    _ST_EVALUATE_EXPR((bitmask & bits) == 0, "ST_BITS_LOW")
+    _ST_EVALUATE_EXPR(((bitmask) & (bits)) == 0, "ST_BITS_LOW")
 
 # define ST_BITWISE_EQUAL(lhs, rhs, len) \
-    _ST_EVALUATE_EXPR(0 == memcmp(&lhs, &rhs, len), "ST_BITWISE_EQUAL")
+    _ST_EVALUATE_EXPR(0 == memcmp(&(lhs), &(rhs), (len)), "ST_BITWISE_EQUAL")
 
 /**
  * String-specific
@@ -304,13 +304,13 @@
 
 # define ST_STR_ENDSWITH(needle, haystack, needle_len, haystack_len) \
     _ST_EVALUATE_EXPR( \
-        0 == st_strncmp(haystack + (haystack_len - needle_len), needle, needle_len), \
+        0 == st_strncmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
         "ST_STR_ENDSWITH" \
     )
 
 # define ST_STR_ENDSWITH_I(needle, haystack, needle_len, haystack_len) \
     _ST_EVALUATE_EXPR( \
-        0 == st_strnicmp(haystack + (haystack_len - needle_len), needle, needle_len), \
+        0 == st_strnicmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
         "ST_STR_ENDSWITH_I" \
     )
 
@@ -319,10 +319,10 @@
  */
 
 # define ST_NUM_POSITIVE(num) \
-    _ST_EVALUATE_EXPR(num > 0, "ST_NUM_POSITIVE")
+    _ST_EVALUATE_EXPR((num) > 0, "ST_NUM_POSITIVE")
 
 # define ST_NUM_NEGATIVE(num) \
-    _ST_EVALUATE_EXPR(num < 0, "ST_NUM_NEGATIVE")
+    _ST_EVALUATE_EXPR((num) < 0, "ST_NUM_NEGATIVE")
 
 # define ST_NUM_EVEN(num) \
     do { \
