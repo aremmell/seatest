@@ -49,7 +49,7 @@ typedef st_testres (*st_test_fn)(void);
 enum {
     INET = 1 << 1, /**< An Internet connection is available. */
     DISK = 1 << 2, /**< At least n GiB of space is available on the drive. */
-    CPUS = 1 << 3, /**< At least n logical CPUs must exist on the system. */
+    CPUS = 1 << 3, /**< At least n logical CPUs exist on the system. */
 } st_conds; // TODO: Think of more conditions
 
 /** An entry in the list of available tests. */

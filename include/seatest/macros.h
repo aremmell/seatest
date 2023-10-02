@@ -144,12 +144,13 @@
 # define ST_BEGIN_DECLARE_TEST_LIST(...) \
     static st_test st_tests[] = {
 
-/** Adds an entry to the global list of tests. `name` is the name used to refer
- * to the test on the command-line; it must not contain spaces. `fn_name` must
- * be the same value passed to ST_DECLARE_TEST. `conds` is a bitmask of zero or
- * more conditions the test relies upon from the st_conds enum. */
-# define ST_DECLARE_TEST_INFO(name, fn_name) \
-    {#name, st_test_##fn_name, {0}, 0.0, 0, false},
+/** Adds an entry to the global list of tests. */
+# define ST_DECLARE_TEST_LIST_ENTRY_COND(name, fn_name, conditions) \
+    {#name, st_test_##fn_name, {0}, 0.0, conditions, false},
+
+/** Adds an entry to the global list of tests. */
+# define ST_DECLARE_TEST_LIST_ENTRY(name, fn_name) \
+    ST_DECLARE_TEST_LIST_ENTRY_COND(name, fn_name, 0)
 
 /** Ends the declaration of the global list of available tests. */
 # define ST_END_DECLARE_TEST_LIST(...) \
