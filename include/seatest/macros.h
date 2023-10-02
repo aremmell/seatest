@@ -211,25 +211,78 @@
     : test->res.fatal ? FG_COLOR(1, 196, "FAIL") \
     : FG_COLOR(1, 208, "WARN"))
 
-# define _ST_TESTLINE() (__LINE__ - _retval.line_start)
-# define _ST_FATAL() \
-    _retval.pass = false; \
-    _retval.fatal = true
+#if defined(ST_RELATIVE_LINE_NUMBERS)
+#  define _ST_TESTLINE() (__LINE__ - _retval.line_start)
+# else
+#  define _ST_TESTLINE() __LINE__
+# endif
+
+#define _ST_EVALUATE_EXPR(expr) \
+    do { \
+        if (!(expr)) { \
+            _retval.pass = false; \
+            _retval.fatal = true; \
+            ST_ERROR("at line %"PRIu32": '" #expr "' evaluated to false", _ST_TESTLINE()); \
+        } \
+    } while (false)
 
 # define ST_EXPECT(expr) \
     do { \
         if (!(expr)) { \
             _retval.pass = false; \
-            ST_WARNING("at line %"PRIu32": " #expr " == false", _ST_TESTLINE()); \
+            ST_WARNING("at line %"PRIu32": '" #expr "' evaluated to false", _ST_TESTLINE()); \
         } \
     } while (false)
 
 # define ST_REQUIRE(expr) \
-    do { \
-        if (!(expr)) { \
-            _ST_FATAL(); \
-            ST_ERROR("at line %"PRIu32": " #expr " == false", _ST_TESTLINE()); \
-        } \
-    } while (false)
+    _ST_EVALUATE_EXPR(expr)
+
+#define ST_BITS_HIGH(bitmask, bits) \
+    _ST_EVALUATE_EXPR((bitmask & bits) == bits)
+
+#define ST_BITS_LOW(bitmask, bits) \
+    _ST_EVALUATE_EXPR((bitmask & bits) == 0)
+
+#define ST_EQUAL(lhs, rhs) \
+    _ST_EVALUATE_EXPR(lhs == rhs)
+
+#define ST_NOTEQUAL(lhs, rhs) \
+    _ST_EVALUATE_EXPR(lhs != rhs)
+
+#define ST_LESSTHAN(lhs, rhs) \
+    _ST_EVALUATE_EXPR(lhs < rhs)
+
+#define ST_GREATERTHAN(lhs, rhs) \
+    _ST_EVALUATE_EXPR(lhs > rhs)
+
+#define ST_STREQUAL(str1, str2, len) \
+    _ST_EVALUATE_EXPR(0 == strncmp(str1, str2, len))
+
+#if !defined(__WIN__)
+#define ST_STREQUAL_I(str1, str2, len) \
+    _ST_EVALUATE_EXPR(0 == strncasecmp(str1, str2, len))
+# else
+#define ST_STREQUAL_I(str1, str2, len) \
+    _ST_EVALUATE_EXPR(0 == StrNCmpI(str1, str2, len))
+#endif
+
+#define ST_STRCONTAINS(needle, haystack, haystack_len) \
+    _ST_EVALUATE_EXPR(NULL != strnstr(haystack, needle, haystack_len))
+
+#if !defined(__WIN__)
+#define ST_STRCONTAINS_I(needle, haystack) \
+    _ST_EVALUATE_EXPR(NULL != strcasestr(haystack, needle))
+#else
+#define ST_STRCONTAINS_I(needle, haystack) \
+    _ST_EVALUATE_EXPR(NULL != StrStrIA(haystack, needle))
+#endif
+
+#define ST_STRBEGINSWITH(needle, haystack, needle_len) \
+    _ST_EVALUATE_EXPR(NULL != strnstr(haystack, needle, needle_len))
+
+#define ST_STRENDSWITH(needle, haystack, needle_len, haystack_len) \
+    _ST_EVALUATE_EXPR( \
+        0 == strncmp(haystack + (haystack_len - needle_len), needle, needle_len) \
+    )
 
 #endif /* !_SEATEST_MACROS_H_INCLUDED */
