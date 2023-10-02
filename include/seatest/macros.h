@@ -239,14 +239,9 @@
 
 # define ST_TEST_PASSING() (_retval.pass)
 # define ST_TEST_FAILED_FATALLY() (_retval.fatal)
+# define ST_TEST_SKIPPED() (_retval.skipped)
 
 # define ST_REQUIRE(expr) _ST_EVALUATE_EXPR(expr, "ST_REQUIRE")
-
-# define ST_BITS_HIGH(bitmask, bits) \
-    _ST_EVALUATE_EXPR((bitmask & bits) == bits, "ST_BITS_HIGH")
-
-# define ST_BITS_LOW(bitmask, bits) \
-    _ST_EVALUATE_EXPR((bitmask & bits) == 0, "ST_BITS_LOW")
 
 # define ST_EQUAL(lhs, rhs) \
     _ST_EVALUATE_EXPR(lhs == rhs, "ST_EQUAL")
@@ -265,6 +260,18 @@
 
 # define ST_EQUAL_OR_GREATER(lhs, rhs) \
     _ST_EVALUATE_EXPR(lhs >= rhs, "ST_EQUAL_OR_GREATER")
+
+/**
+ * Bitwise evaluation
+ */
+# define ST_BITS_HIGH(bitmask, bits) \
+    _ST_EVALUATE_EXPR((bitmask & bits) == bits, "ST_BITS_HIGH")
+
+# define ST_BITS_LOW(bitmask, bits) \
+    _ST_EVALUATE_EXPR((bitmask & bits) == 0, "ST_BITS_LOW")
+
+# define ST_BITWISE_EQUAL(lhs, rhs, len) \
+    _ST_EVALUATE_EXPR(0 == memcmp(&lhs, &rhs, len), "ST_BITWISE_EQUAL")
 
 /**
  * String-specific
