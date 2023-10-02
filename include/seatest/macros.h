@@ -44,7 +44,7 @@
 
 /** Sets only the foreground color, setting background to its default. */
 # define FG_COLOR(attr, fg, s) \
-    _ESC_SEQ(#attr ";38;5;" #fg ";49;5", s) _ESC_RST
+    _ESC_SEQ(#attr ";38;5;" #fg ";48;5", s) _ESC_RST
 
 /** Sets only the background color, setting foreground to its default. */
 # define BG_COLOR(attr, bg, s) \
