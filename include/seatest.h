@@ -40,6 +40,8 @@ void st_print_test_intro(size_t num, size_t to_run, const char* name);
 void st_print_test_outro(size_t num, size_t to_run, const char* name, const st_test* test);
 void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,
     size_t num_tests, double elapsed);
+void st_print_failed_test_intro(size_t passed, size_t to_run);
+void st_print_failed_test(const char* const name);
 
 /** Marks a test to be executed during the current run. Returns false if unable to
  * locate the specified test. */

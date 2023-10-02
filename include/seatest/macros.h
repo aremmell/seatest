@@ -51,6 +51,13 @@
 # define BG_COLOR(attr, bg, s) \
     _ESC_SEQ(#attr ";39;5;48;5;" #bg, s) _ESC_RST
 
+/** Bulleted list item symbol. */
+# if !defined(__WIN__)
+#  define ST_BULLET "\xe2\x80\xa2"
+# else
+#  define ST_BULLET "-"
+# endif
+
 # define ULINE(s) _ESC_SEQ("4", s) _ESC_SEQE("24") /**< Underlined. */
 # define EMPH(s)  _ESC_SEQ("3", s) _ESC_SEQE("23") /**< Emphasis/italic. */
 # define BOLD(s)  _ESC_SEQ("1", s) _ESC_SEQE("22") /**< Bold. */

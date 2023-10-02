@@ -124,8 +124,25 @@ void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,
                 to_run - passed, to_run, _state.app_name, ST_PLURAL("test", to_run), elapsed);
     }
 
-    ST_UNUSED(tests);
-    ST_UNUSED(num_tests);
+    if (passed != to_run) {
+        st_print_failed_test_intro(passed, to_run);
+        for (size_t t = 0; t < num_tests; t++) {
+            if (!tests[t].res.pass && tests[t].res.fatal) {
+                st_print_failed_test(tests[t].name);
+            }
+        }
+        (void)printf("\n");
+    }
+}
+
+void st_print_failed_test_intro(size_t passed, size_t to_run)
+{
+    _ST_ERROR("Failed %s:\n", ST_PLURAL("test", to_run - passed));
+}
+
+void st_print_failed_test(const char* const name)
+{
+    _ST_ERROR("\t  " ST_BULLET " %s", name);
 }
 
 bool st_mark_test_to_run(const char* const name, st_test* tests, size_t num_tests)
