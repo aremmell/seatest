@@ -263,8 +263,8 @@
 #define ST_STREQUAL_I(str1, str2, len) \
     _ST_EVALUATE_EXPR(0 == st_strnicmp(str1, str2, len))
 
-#define ST_STRCONTAINS(needle, haystack, haystack_len) \
-    _ST_EVALUATE_EXPR(NULL != st_strstr(haystack, needle, haystack_len))
+#define ST_STRCONTAINS(needle, haystack) \
+    _ST_EVALUATE_EXPR(NULL != st_strstr(haystack, needle))
 
 #define ST_STRCONTAINS_I(needle, haystack) \
     _ST_EVALUATE_EXPR(NULL != st_stristr(haystack, needle))
@@ -272,9 +272,17 @@
 #define ST_STRBEGINSWITH(needle, haystack, needle_len) \
     _ST_EVALUATE_EXPR(0 == st_strncmp(haystack, needle, needle_len))
 
+#define ST_STRBEGINSWITH_I(needle, haystack, needle_len) \
+    _ST_EVALUATE_EXPR(0 == st_strnicmp(needle, haystack, needle_len))
+
 #define ST_STRENDSWITH(needle, haystack, needle_len, haystack_len) \
     _ST_EVALUATE_EXPR( \
         0 == st_strncmp(haystack + (haystack_len - needle_len), needle, needle_len) \
+    )
+
+#define ST_STRENDSWITH_I(needle, haystack, needle_len, haystack_len) \
+    _ST_EVALUATE_EXPR( \
+        0 == st_strnicmp(haystack + (haystack_len - needle_len), needle, needle_len) \
     )
 
 #endif /* !_SEATEST_MACROS_H_INCLUDED */
