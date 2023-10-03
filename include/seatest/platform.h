@@ -81,7 +81,6 @@
 #  include <Windows.h>
 #  include <Shlwapi.h>
 #  include <conio.h>
-#  include <math.h>
 
 #  if defined(_MSC_VER) && _MSC_VER >= 1933
 #   include <stdatomic.h>
@@ -93,6 +92,8 @@
 
 # endif /* !_WIN32 */
 
+# include <math.h>
+# include <time.h>
 # include <stdio.h>
 # include <stdarg.h>
 # include <stdbool.h>
