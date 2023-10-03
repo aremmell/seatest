@@ -33,15 +33,15 @@ typedef struct {
     const char* app_name;
 } st_state;
 
-/** Type returned by each test function. */
+/** Data associated with a test. */
 typedef struct {
-    uint32_t line_start;
-    bool skipped;
-    bool pass;
-    bool fatal;
+    uint32_t line_start; /**< Line number at which the test starts. */
+    bool skip;           /**< true if the test is skipped. */
+    bool pass;           /**< true if the test encountered error(s) or warning(s). */
+    bool fatal;          /**< true if the test encountered error(s). */
 } st_testres;
 
-/** Function type for seatest tests. */
+/** Function typedef for test routines. */
 typedef st_testres (*st_test_fn)(void);
 
 /**
@@ -50,17 +50,10 @@ typedef st_testres (*st_test_fn)(void);
  * See config.h for thresholds.
  */
 enum {
-    COND_INET = 1 << 1, /**< An Internet connection is available. */
-    COND_DISK = 1 << 2, /**< At least n GiB of space is available. */
-    COND_CPUS = 1 << 3, /**< At least n logical CPUs are available. */
+    COND_INET = 1 << 1, /**< Internet connection available. */
+    COND_DISK = 1 << 2, /**< At least ST_MIN_FS_AVAIL bytes of free space available. */
+    COND_CPUS = 1 << 3, /**< At least n logical CPUs available. */
 }; // TODO: Think of more conditions
-
-/** Type representing the current state of potentially required conditions. */
-typedef struct {
-    bool have_inet;      /**< Whether or not an Internet connection is available. */
-    uint64_t disk_avail; /**< Available disk space, in bytes. */
-    int ncpu;            /**< Number of logical CPUs. */
-} st_cond_state;
 
 /** An entry in the list of available tests. */
 typedef struct {

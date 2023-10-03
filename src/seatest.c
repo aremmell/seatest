@@ -42,9 +42,9 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     _state.app_name = app_name;
 
     st_cl_config cl_cfg = {0};
-    if (!st_parse_cmd_line(argc, argv, args, num_args, tests,
-        num_tests, &cl_cfg))
+    if (!st_parse_cmd_line(argc, argv, args, num_args, tests, num_tests, &cl_cfg)) {
         return EXIT_FAILURE;
+    }
 
     size_t to_run = cl_cfg.only ? cl_cfg.to_run : num_tests;
     size_t passed = 0;
@@ -55,25 +55,28 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     st_timer_begin(&timer);
 
     for (size_t n = 0; n < to_run; n++) {
-        if (cl_cfg.only && !tests[n].run)
+        if (cl_cfg.only && !tests[n].run) {
             continue;
-
+        }
         double started_at = st_timer_elapsed(&timer);
         st_print_test_intro(n + 1, to_run, tests[n].name);
 
-        tests[n].res = tests[n].fn();
+        if (!tests[n].res.skip) {
+            tests[n].res = tests[n].fn();
+        }
+
         tests[n].msec = st_timer_elapsed(&timer) - started_at;
-
-        if (tests[n].res.pass || !tests[n].res.fatal)
+        if (tests[n].res.pass || !tests[n].res.fatal || tests[n].res.skip) {
             passed++;
-
+        }
         st_print_test_outro(n + 1, to_run, tests[n].name, &tests[n]);
     }
 
     st_print_test_summary(passed, to_run, tests, num_tests, st_timer_elapsed(&timer));
 
-    if (cl_cfg.wait)
+    if (cl_cfg.wait) {
         st_wait_for_keypress();
+    }
 
     return passed == to_run ? EXIT_SUCCESS : EXIT_FAILURE;
 }
@@ -93,32 +96,57 @@ bool st_sanity_check(const st_test* tests, size_t num_tests)
 
 bool st_process_conditions(st_test* tests, size_t num_tests)
 {
-    /* determine current conditions. any tests relying on a condition whose state
-     * remains unknown will automatically be skipped. */
-    st_cond_state conds = {0};
+    if (!tests || !num_tests)
+        return false;
+
+    uint64_t fs_avail = 0;
     char* cwd = st_getcwd();
-    bool cond_disk = st_disk_get_avail_bytes(cwd, &conds.disk_avail);
+    bool cond_disk = st_get_avail_fs_bytes(cwd, &fs_avail);
     _st_safefree(&cwd);
 
 #if defined(ST_SIMULATE_DISK_ERROR)
     cond_disk = false;
-    conds.disk_avail = 0;
+    fs_avail = 0;
 #elif defined (ST_SIMULATE_DISK_INSUFFICIENT)
     cond_disk = true;
-    conds.disk_avail = ST_MIN_DISK_AVAIL - 1;
+    fs_avail = ST_MIN_FS_AVAIL - 1;
 #endif
 
     if (!cond_disk) {
         _ST_ERROR("%s failed to calculate available disk space! tests requiring"
         " COND_DISK will be skipped", _ST_ERR_PREFIX);
-    } else if (conds.disk_avail < ST_MIN_DISK_AVAIL) {
+    } else if (fs_avail < ST_MIN_FS_AVAIL) {
         _ST_WARNING("%s available disk space (%"PRIu64" bytes) is less than the"
-            " required %"PRIu64"; tests requring COND_DISK will be skipped",
-            _ST_WARN_PREFIX, conds.disk_avail, (uint64_t)ST_MIN_DISK_AVAIL);
+            " required %"PRIu64"; tests requiring COND_DISK will be skipped",
+            _ST_WARN_PREFIX, fs_avail, (uint64_t)ST_MIN_FS_AVAIL);
+    }
+
+    bool cond_inet = st_have_inet_connection();
+
+#if defined(ST_SIMULATE_INET_ERROR)
+    cond_inet = false;
+#endif
+
+    if (!cond_inet) {
+        _ST_WARNING("%s no internet connection detected; tests requiring COND_INET"
+            " will be skipped", _ST_WARN_PREFIX);
     }
 
     for (size_t n = 0; n < num_tests; n++) {
         if (tests[n].conds != 0) {
+            bool skip = false;
+            _ST_DEBUG("test '%s' has conditions %08x", tests[n].name, tests[n].conds);
+            if (!cond_disk && (tests[n].conds & COND_DISK) == COND_DISK) {
+                _ST_WARNING("%s test '%s' will be skipped due to COND_DISK",
+                    _ST_WARN_PREFIX, tests[n].name);
+                skip = true;
+            }
+            if (!cond_inet && (tests[n].conds & COND_INET) == COND_INET) {
+                _ST_WARNING("%s test '%s' will be skipped due to COND_INET",
+                    _ST_WARN_PREFIX, tests[n].name);
+                skip = true;
+            }
+            tests[n].res.skip = skip;
         }
     }
 
@@ -526,9 +554,9 @@ char* st_format_error_msg(int code, char message[ST_MAX_ERROR])
 
 void st_sleep_msec(uint32_t msec)
 {
-    if (0U == msec)
+    if (0U == msec) {
         return;
-
+    }
 #if !defined(__WIN__)
     struct timespec ts = { msec / 1000, (msec % 1000) * 1000000 };
     (void)nanosleep(&ts, NULL);
@@ -550,31 +578,35 @@ char* st_getcwd(void)
 #endif
 }
 
-bool st_disk_get_avail_bytes(const char* restrict path, uint64_t* bytes)
+bool st_get_avail_fs_bytes(const char* restrict path, uint64_t* bytes)
 {
     if (bytes) {
         *bytes = 0;
     }
     if (!bytes || !path || !*path) {
-        ST_REPORT_ERROR(ST_E_INVALID);
+        _ST_REPORT_ERROR(ST_E_INVALID);
         return false;
     }
+    _ST_DEBUG("getting available fs space (path: '%s')...", path);
 #if !defined(__WIN__)
     struct statvfs stvfs = {0};
     if (-1 == statvfs(path, &stvfs)) {
-        ST_REPORT_ERROR(errno);
+        _ST_REPORT_ERROR(errno);
         return false;
     }
     *bytes = (uint64_t)(stvfs.f_bavail * (stvfs.f_frsize ? stvfs.f_frsize : stvfs.f_bsize));
-    return true;
 #else
     ULARGE_INTEGER free_bytes = {0};
     if (!GetDiskFreeSpaceExA(NULL, &free_bytes, NULL, NULL)) {
-        ST_REPORT_ERROR(GetLastError());
+        _ST_REPORT_ERROR(GetLastError());
         return false;
     }
     *bytes = free_bytes.QuadPart;
+#endif
+    _ST_DEBUG("available fs space: %"PRIu64" bytes (%.02f GiB)", *bytes,
+        ((double)(*bytes) / 1024.0 / 1024.0));
     return true;
+}
 
 bool st_have_inet_connection(void)
 {
