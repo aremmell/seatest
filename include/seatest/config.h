@@ -31,6 +31,15 @@
 
 /** The minimum amount, in bytes, of available disk space for COND_DISK. Default
  * value: 500 MiB. */
-# define ST_MIN_DISK_AVAIL (500 * 1024 * 1024)
+# define ST_MIN_FS_AVAIL (500 * 1024 * 1024)
+
+/** The TLD to use as the target when testing for an Internet connection. */
+# define ST_INET_TARGET_HOST "example.com"
+
+/** The service name/port number to use when testing for an Internet connection. */
+# define ST_INET_TARGET_SRV "http"
+
+/** The number of seconds to wait for a TCP connection before it times out. */
+# define ST_INET_TIMEOUT 5
 
 #endif /* !_SEATEST_CONFIG_H_INCLUDED */
