@@ -46,6 +46,8 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
         return EXIT_FAILURE;
     }
 
+    _ST_DEBUG("clock resolution: ~%ldns", st_timer_getres());
+
     size_t to_run = cl_cfg.only ? cl_cfg.to_run : num_tests;
     size_t passed = 0;
 
@@ -63,6 +65,9 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
 
         if (!tests[n].res.skip) {
             tests[n].res = tests[n].fn();
+        } else {
+            // TODO: warning-color message listing condition(s) which caused
+            // the test to be skipped.
         }
 
         tests[n].msec = st_timer_elapsed(&timer) - started_at;
@@ -147,6 +152,9 @@ bool st_process_conditions(st_test* tests, size_t num_tests)
                 skip = true;
             }
             tests[n].res.skip = skip;
+            if (!skip) {
+                _ST_DEBUG("test '%s' will not be skipped; all conditions met", tests[n].name);
+            }
         }
     }
 
@@ -178,12 +186,12 @@ void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,
     elapsed = (elapsed / 1e3);
     if (passed == to_run) {
         (void)printf("\n" WHITEB("done: ")
-            FG_COLOR(1, 40, "%s%zu " ULINE("%s") " %s " EMPH("passed") " in %.03fsec!") "\n\n",
+            FG_COLOR(1, 40, "%s%zu " ULINE("%s") " %s " EMPH("passed") " in %.03fs!") "\n\n",
                 to_run > 1 ? "all " : "", to_run, _state.app_name, ST_PLURAL("test", to_run),
                 elapsed);
     } else {
         (void)printf("\n" WHITEB("done: ")
-            FG_COLOR(1, 196, "%zu of %zu " ULINE("%s") " %s " EMPH("failed") " in %.03fsec") "\n\n",
+            FG_COLOR(1, 196, "%zu of %zu " ULINE("%s") " %s " EMPH("failed") " in %.03fs") "\n\n",
                 to_run - passed, to_run, _state.app_name, ST_PLURAL("test", to_run), elapsed);
     }
 

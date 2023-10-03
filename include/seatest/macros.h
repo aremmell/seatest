@@ -130,7 +130,7 @@
 /** Declares an individual test function. `name` must only contain characters
  * allowed in C function names. */
 # define ST_DECLARE_TEST(name) \
-    st_testres st_test_##name(void)
+    st_testres st_test_##name(void);
 
 /** Begins the definition (implementation) of an individual test function. */
 # define ST_BEGIN_TEST_IMPL(name) \
@@ -143,7 +143,7 @@
         _retval.fatal = false;
 
 /** Ends the definition (implementation) of an individual test function. */
-# define ST_END_TEST_IMPL(...) \
+# define ST_END_TEST_IMPL() \
         return _retval; \
     }
 
@@ -188,7 +188,7 @@
         {ST_CL_LIST_FLAG, "", ST_CL_LIST_DESC}, \
         {ST_CL_VERS_FLAG, "", ST_CL_VERS_DESC}, \
         {ST_CL_HELP_FLAG, "", ST_CL_HELP_DESC} \
-    }
+    };
 
 # define _ST_SEATEST                  "seatest"
 # define _ST_ERR_PREFIX   _ST_SEATEST " error:"

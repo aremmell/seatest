@@ -25,12 +25,14 @@
  */
 #include "seatest.h"
 
-ST_DECLARE_CL_ARGS();
+ST_DECLARE_CL_ARGS()
 
-ST_DECLARE_TEST(test_tests);
+ST_DECLARE_TEST(test_tests)
+ST_DECLARE_TEST(requires_inet)
 
 ST_BEGIN_DECLARE_TEST_LIST()
     ST_DECLARE_TEST_LIST_ENTRY(testing-the-tests, test_tests)
+    ST_DECLARE_TEST_LIST_ENTRY_COND(requires-inet, requires_inet, COND_INET)
 ST_END_DECLARE_TEST_LIST()
 
 int main(int argc, char** argv)
@@ -180,5 +182,11 @@ ST_BEGIN_TEST_IMPL(test_tests)
 
     // should pass (different counts)
     ST_ARRAY_NOT_EQUAL(arr2, arr4);
+}
+ST_END_TEST_IMPL()
+
+ST_BEGIN_TEST_IMPL(requires_inet)
+{
+    ST_MESSAGE0("doing something that requires an internet connection...");
 }
 ST_END_TEST_IMPL()
