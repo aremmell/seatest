@@ -52,11 +52,11 @@ project(
 # preprocessor defines
 add_compile_definitions(
     # simulate failure to determine available disk space
-    #ST_SIMULATE_DISK_ERROR
-    # simulate low disk space (mutually exclusive w/ ST_SIMULATE_DISK_ERROR)
-    #ST_SIMULATE_DISK_INSUFFICIENT
+    #ST_SIMULATE_FS_ERROR
+    # simulate low filesystem space (mutually exclusive w/ ST_SIMULATE_FS_ERROR)
+    #ST_SIMULATE_FS_INSUFFICIENT
     # simulate failure to detect internet connection
-    ST_SIMULATE_INET_ERROR
+    #ST_SIMULATE_INET_ERROR
     # verbose debug messages
     ST_DEBUG_MESSAGES
     $<$<CONFIG:Debug>:DEBUG>

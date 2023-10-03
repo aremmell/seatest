@@ -124,10 +124,10 @@ bool st_prepare_tests(st_test* tests, size_t num_tests)
     bool cond_disk = st_get_avail_fs_bytes(cwd, &fs_avail);
     _st_safefree(&cwd);
 
-#if defined(ST_SIMULATE_DISK_ERROR)
+#if defined(ST_SIMULATE_FS_ERROR)
     cond_disk = false;
     fs_avail = 0;
-#elif defined (ST_SIMULATE_DISK_INSUFFICIENT)
+#elif defined (ST_SIMULATE_FS_INSUFFICIENT)
     cond_disk = true;
     fs_avail = ST_MIN_FS_AVAIL - 1;
 #endif
