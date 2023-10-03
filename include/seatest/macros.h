@@ -232,7 +232,8 @@
         if (!(expr)) { \
             _retval.pass = false; \
             _retval.fatal = true; \
-            ST_ERROR("in " name " (line %"PRIu32"): '" #expr "' evaluated to false", _ST_TESTLINE()); \
+            (void)printf(FG_COLOR(0, 196, name " (line %"PRIu32"):") \
+                DGRAY(" expression") WHITE(" '" #expr "'") DGRAY(" is false\n"), _ST_TESTLINE()); \
         } \
     } while (false)
 
@@ -240,7 +241,8 @@
     do { \
         if (!(expr)) { \
             _retval.pass = false; \
-            ST_WARNING("in ST_EXPECT (line %"PRIu32"): '" #expr "' evaluated to false", _ST_TESTLINE()); \
+            (void)printf(FG_COLOR(0, 208, "ST_EXPECT (line %"PRIu32"):") \
+                DGRAY(" expression") WHITE(" '" #expr "'") DGRAY(" is false\n"), _ST_TESTLINE()); \
         } \
     } while (false)
 
