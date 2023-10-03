@@ -89,32 +89,16 @@ typedef struct {
 # endif
 } st_timer;
 
-/** Function comparing two strings for equality. */
 # if !defined(__WIN__)
-#  define st_strncmp strncmp
+#  define st_strncmp strncmp      /** Compares two strings for equality. */
+#  define st_strnicmp strncasecmp /** Compares two strings for equality, ignoring case. */
+#  define st_strstr strstr        /** Searches a string for a sub-string. */
+#  define st_stristr strcasestr   /** Searches a string for a sub-string, ignoring case. */
 # else
-#  define st_strncmp StrCmpNA
-# endif
-
-/** Function comparing two strings for equality, ignoring case. */
-# if !defined(__WIN__)
-#  define st_strnicmp strncasecmp
-# else
-#  define st_strnicmp StrCmpNIA
-# endif
-
-/** Function searching a string for a sub-string. */
-# if !defined(__WIN__)
-#  define st_strstr strstr
-# else
-#  define st_strstr StrStrA
-# endif
-
-/** Function searching a string for a sub-string, ignoring case. */
-# if !defined(__WIN__)
-#  define st_stristr strcasestr
-# else
-#  define st_stristr StrStrIA
+#  define st_strncmp StrCmpNA     /** Compares two strings for equality. */
+#  define st_strnicmp StrCmpNIA   /** Compares two strings for equality, ignoring case. */
+#  define st_strstr StrStrA       /** Searches a string for a sub-string. */
+#  define st_stristr StrStrIA     /** Searches a string for a sub-string, ignoring case. */
 # endif
 
 #endif /* !_SEATEST_TYPES_H_INCLUDED */
