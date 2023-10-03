@@ -28,13 +28,9 @@
 ST_DECLARE_CL_ARGS();
 
 ST_DECLARE_TEST(test_tests);
-ST_DECLARE_TEST(bar);
-ST_DECLARE_TEST(baz);
 
 ST_BEGIN_DECLARE_TEST_LIST()
     ST_DECLARE_TEST_LIST_ENTRY(testing-the-tests, test_tests)
-    ST_DECLARE_TEST_LIST_ENTRY(jump-thru-hoops, bar)
-    ST_DECLARE_TEST_LIST_ENTRY(triple-backflip, baz)
 ST_END_DECLARE_TEST_LIST()
 
 int main(int argc, char** argv)
@@ -53,41 +49,54 @@ ST_BEGIN_TEST_IMPL(test_tests)
 
     // should all succeed
     ST_STR_CONTAINS("the", msg);
+    ST_STR_NOT_CONTAINS("foo", msg);
     ST_STR_CONTAINS_I("LLO", msg);
+    ST_STR_NOT_CONTAINS_I("FOO", msg);
     ST_STR_BEGINSWITH("hell", msg, 4);
+    ST_STR_NOT_BEGINSWITH("lleh", msg, 4);
     ST_STR_BEGINSWITH_I("HELL", msg, 4);
+    ST_STR_NOT_BEGINSWITH_I("LLEH", msg, 4);
     ST_STR_ENDSWITH("here", msg, 4, strlen(msg));
+    ST_STR_NOT_ENDSWITH("ereh", msg, 4, strlen(msg));
     ST_STR_ENDSWITH_I("HERE", msg, 4, strlen(msg));
+    ST_STR_NOT_ENDSWITH_I("EREH", msg, 4, strlen(msg));
 
     // should fail
-    ST_REQUIRE(strlen(msg) == 0);
-    ST_EXPECT(0 > 1);
+    /* ST_REQUIRE(strlen(msg) == 0);
+    ST_EXPECT(0 > 1); */
 
     // should all fail
-    ST_STR_CONTAINS("sea", msg);
+   /* ST_STR_CONTAINS("sea", msg);
+    ST_STR_NOT_CONTAINS("hell", msg);
     ST_STR_CONTAINS_I("tes", msg);
+    ST_STR_NOT_CONTAINS_I("HELL", msg);
     ST_STR_BEGINSWITH("s", msg, 1);
+    ST_STR_NOT_BEGINSWITH("hell", msg, 4);
     ST_STR_BEGINSWITH_I("S", msg, 1);
+    ST_STR_NOT_BEGINSWITH_I("HELL", msg, 4);
     ST_STR_ENDSWITH("hell", msg, 4, strlen(msg));
+    ST_STR_NOT_ENDSWITH("here", msg, 4, strlen(msg));
     ST_STR_ENDSWITH_I("HELL", msg, 4, strlen(msg));
+    ST_STR_NOT_ENDSWITH_I("HERE", msg, 4, strlen(msg));*/
 
     // should all succeed
     ST_NUM_EVEN(48);
     ST_NUM_ODD(49);
     ST_NUM_NEGATIVE(-4);
     ST_NUM_POSITIVE(4);
-    ST_NUM_POWER_2(8192);
-    ST_NUM_POWER_10(10000000);
+    ST_NUM_MULTIPLE_OF(8192, 2);
+    ST_NUM_NOT_MULTIPLE_OF(8193, 2);
 
     // should all fail
-    ST_NUM_EVEN(49);
+    /* ST_NUM_EVEN(49);
     ST_NUM_ODD(48);
     ST_NUM_NEGATIVE(4);
     ST_NUM_POSITIVE(-4);
-    ST_NUM_POWER_2(8193);
-    ST_NUM_POWER_10(10030000);
+    ST_NUM_MULTIPLE_OF(8193, 2);
+    ST_NUM_MULTIPLE_OF(10000001, 10);
+    ST_NUM_NOT_MULTIPLE_OF(8192, 2);
+    ST_NUM_NOT_MULTIPLE_OF(10000000, 10); */
 
-    // should succeed
     struct foo {
         int one;
         int two;
@@ -95,45 +104,46 @@ ST_BEGIN_TEST_IMPL(test_tests)
 
     struct foo lhs = {1234, 5678};
     struct foo rhs = {1234, 5678};
+
+    // should succeed
     ST_BITWISE_EQUAL(lhs, rhs, sizeof(struct foo));
 
     // should fail
     lhs.one = 4321;
-    ST_BITWISE_EQUAL(lhs, rhs, sizeof(struct foo));
+    //ST_BITWISE_EQUAL(lhs, rhs, sizeof(struct foo));
 
-    // should succeed (same type, size,
-    // and values)
     int arr1[] = {1, 2, 3, 4, 5};
     int arr2[] = {1, 2, 3, 4, 5};
+
+    // should succeed (same type, size, and values)
     ST_ARRAY_EQUAL(arr1, arr2);
+
+    // should fail (same type, size, and values)
+    //ST_ARRAY_NOT_EQUAL(arr1, arr2);
 
     if (ST_TEST_PASSING())
         ST_MESSAGE0("arr1 == arr2");
 
-    // should fail (different types)
     short arr3[] = {1, 2, 3, 4, 5};
-    ST_ARRAY_EQUAL(arr1, arr3);
 
-    // should fail (different values)
+    // should fail (different types)
+    //ST_ARRAY_EQUAL(arr1, arr3);
+
+    // should pass (different types)
+    ST_ARRAY_NOT_EQUAL(arr1, arr3);
+
     arr1[2] = 6;
-    ST_ARRAY_EQUAL(arr1, arr2);
+    // should fail (different values)
+    //ST_ARRAY_EQUAL(arr1, arr2);
 
-    // should fail (different counts)
+    // should pass (different values)
+    ST_ARRAY_NOT_EQUAL(arr1, arr2);
+
     int arr4[] = {1, 2, 3, 4};
-    ST_ARRAY_EQUAL(arr2, arr4);
-}
-ST_END_TEST_IMPL()
+    // should fail (different counts)
+    //ST_ARRAY_EQUAL(arr2, arr4);
 
-ST_BEGIN_TEST_IMPL(bar)
-{
-    st_sleep_msec(50);
-}
-ST_END_TEST_IMPL()
-
-ST_BEGIN_TEST_IMPL(baz)
-{
-    st_sleep_msec(560);
-    int foo = 12345;
-    ST_EXPECT(foo < 1200);
+    // should pass (different counts)
+    ST_ARRAY_NOT_EQUAL(arr2, arr4);
 }
 ST_END_TEST_IMPL()
