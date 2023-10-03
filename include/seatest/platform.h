@@ -155,7 +155,14 @@
 # elif defined(__BASE_FILE__)
 #  define __file__ __BASE_FILE__
 # else
-#  define __file__ __FILE__
+#  if defined(__WIN__)
+#   define ST_PATH_SEP_CHAR '\\'
+#   define ST_PATH_SEP_STR "\\"
+#  else
+#   define ST_PATH_SEP_CHAR '/'
+#   define ST_PATH_SEP_STR "/"
+#  endif
+#  define __file__ (strrchr(ST_PATH_SEP_STR __FILE__, ST_PATH_SEP_CHAR) + 1)
 # endif
 
 #endif /* !_SEATEST_PLATFORM_H_INCLUDED */
