@@ -26,21 +26,11 @@
 #ifndef _SEATEST_MACROS_H_INCLUDED
 # define _SEATEST_MACROS_H_INCLUDED
 
-/** Blots out a variable, avoiding compiler warnings/errors in the event that it is unreferenced. */
-# define ST_UNUSED(var) (void)(var)
-
-/** Returns the number of entries in an array. */
-# define ST_COUNTOF(arr) (sizeof(arr) / sizeof(arr[0]))
-
-/** Returns the plural or singular form of a word based on the count supplied.
- * Only works for words whose plural form is just an 's'. */
-# define ST_PLURAL(word, count) ((!(count) || (count) > 1) ? word "s" : word)
-
 /** The only code needed in main()/the entry point. `app_name` is a name to associate with your
  * test suite, such as the product or company name.. */
 # define ST_MAIN_IMPL(app_name) \
-    st_main(argc, argv, app_name, st_cl_args, ST_COUNTOF(st_cl_args), \
-        st_tests, ST_COUNTOF(st_tests))
+    st_main(argc, argv, app_name, st_cl_args,_ST_COUNTOF(st_cl_args), \
+        st_tests,_ST_COUNTOF(st_tests))
 
 /** Declares static variables required by seatest. Place this above your entry point routine. */
 # define ST_DECLARE_STATIC_VARS() \
@@ -355,7 +345,7 @@
             break; \
         } \
         bool val_found = false; \
-        for (size_t n = 0; n < ST_COUNTOF(arr); n++) { \
+        for (size_t n = 0; n <_ST_COUNTOF(arr); n++) { \
             if (arr[n] == val) { \
                 val_found = true; \
                 break; \
@@ -371,7 +361,7 @@
         if (elem_size != val_size) { \
             break; \
         } \
-        for (size_t n = 0; n < ST_COUNTOF(arr); n++) { \
+        for (size_t n = 0; n <_ST_COUNTOF(arr); n++) { \
             if (arr[n] == val) { \
                 _ST_EVALUATE_EXPR(arr[n] != val, "ST_ARRAY_NOT_CONTAINS"); \
                 break; \

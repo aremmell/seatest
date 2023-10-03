@@ -58,6 +58,16 @@ int _st_last_sockerr(void)
 
 # define _ST_STRIFY(val) #val
 
+/** Blots out a variable, avoiding compiler warnings/errors in the event that it is unreferenced. */
+# define _ST_UNUSED(var) (void)(var)
+
+/** Returns the number of entries in an array. */
+# define _ST_COUNTOF(arr) (sizeof(arr) / sizeof(arr[0]))
+
+/** Returns the plural or singular form of a word based on the count supplied.
+ * Only works for words whose plural form is just an 's'. */
+# define _ST_PLURAL(word, count) ((!(count) || (count) > 1) ? word "s" : word)
+
 # define _ST_DECLARE_CL_ARGS() \
     static const st_cl_arg st_cl_args[] = { \
         ST_CL_CONFIG() \

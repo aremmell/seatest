@@ -172,7 +172,7 @@ bool st_prepare_tests(st_test* tests, size_t num_tests)
 void st_print_intro(size_t to_run)
 {
     (void)printf("\n" WHITEB("running %zu " ULINE("%s") " %s " DGRAY("(")),
-        to_run, _state.app_name, ST_PLURAL("test", to_run));
+        to_run, _state.app_name,_ST_PLURAL("test", to_run));
     st_print_seatest_ansi(true);
     (void)printf(DGRAY(" %s)...") "\n", st_get_version_string());
 }
@@ -208,12 +208,12 @@ void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,
     if (passed == to_run) {
         (void)printf("\n" WHITEB("done: ")
             FG_COLOR(1, 40, "%s%zu " ULINE("%s") " %s " EMPH("passed") " in %.03fs!") "\n\n",
-                to_run > 1 ? "all " : "", to_run, _state.app_name, ST_PLURAL("test", to_run),
+                to_run > 1 ? "all " : "", to_run, _state.app_name,_ST_PLURAL("test", to_run),
                 elapsed);
     } else {
         (void)printf("\n" WHITEB("done: ")
             FG_COLOR(1, 196, "%zu of %zu " ULINE("%s") " %s " EMPH("failed") " in %.03fs") "\n\n",
-                to_run - passed, to_run, _state.app_name, ST_PLURAL("test", to_run), elapsed);
+                to_run - passed, to_run, _state.app_name,_ST_PLURAL("test", to_run), elapsed);
     }
 
     if (passed != to_run) {
@@ -229,7 +229,7 @@ void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,
 
 void st_print_failed_test_intro(size_t passed, size_t to_run)
 {
-    _ST_ERROR("Failed %s:\n", ST_PLURAL("test", to_run - passed));
+    _ST_ERROR("Failed %s:\n",_ST_PLURAL("test", to_run - passed));
 }
 
 void st_print_failed_test(const char* const name)
@@ -330,7 +330,7 @@ void st_print_seatest_ansi(bool bold)
         { 83, 225, 233, 't'},
     };
 
-    for (size_t n = 0; n < ST_COUNTOF(elements); n++) {
+    for (size_t n = 0; n <_ST_COUNTOF(elements); n++) {
         (void)printf("\x1b[%d;38;2;%03d;%03d;%03d;49;2m%c\x1b[0m", bold ? 1 : 0,
             elements[n].r, elements[n].g, elements[n].b, elements[n].c);
     }
@@ -425,7 +425,7 @@ void st_wait_for_keypress(void)
 {
     (void)printf(WHITEB("Press any key to continue...\n"));
     bool get = st_getchar(NULL);
-    ST_UNUSED(get);
+   _ST_UNUSED(get);
 }
 
 void st_timer_begin(st_timer* timer)
@@ -474,7 +474,7 @@ bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf)
             return false;
         }
 #elif defined(ST_MSEC_WIN32)
-        ST_UNUSED(clock);
+       _ST_UNUSED(clock);
         static const ULONGLONG uepoch = (ULONGLONG)116444736e9;
 
         FILETIME ftutc = {0};
@@ -497,7 +497,7 @@ bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf)
             return false;
         }
 #else
-        ST_UNUSED(clock);
+       _ST_UNUSED(clock);
         time(tbuf);
         if (msecbuf)
             *msecbuf = 0L;
@@ -564,7 +564,7 @@ char* st_format_error_msg(int code, char message[ST_MAX_ERROR])
 # if defined(__HAVE_XSI_STRERROR_R__) || defined(__HAVE_STRERROR_S__)
     assert(0 == finderr);
 # else
-    ST_UNUSED(finderr);
+   _ST_UNUSED(finderr);
 # endif
 #else /* __WIN__ */
     DWORD flags = FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS |
