@@ -184,6 +184,14 @@ ST_BEGIN_TEST_IMPL(test_tests)
     // should fail (same type, size, and values)
     //ST_ARRAY_NOT_EQUAL(arr1, arr2);
 
+    // should succeed (all unique values)
+    ST_ARRAY_UNIQUE(arr1);
+
+    // should fail (duplicate value)
+    //arr1[3] = 1;
+    //ST_ARRAY_UNIQUE(arr1);
+    //arr1[3] = 4;
+
     short arr3[] = {1, 2, 3, 4, 5};
 
     // should succeed (?)
@@ -202,14 +210,14 @@ ST_BEGIN_TEST_IMPL(test_tests)
     // should fail (different values)
     //ST_ARRAY_EQUAL(arr1, arr2);
 
-    // should pass (different values)
+    // should succeed (different values)
     ST_ARRAY_NOT_EQUAL(arr1, arr2);
 
     int arr4[] = {1, 2, 3, 4};
     // should fail (different counts)
     //ST_ARRAY_EQUAL(arr2, arr4);
 
-    // should pass (different counts)
+    // should succeed (different counts)
     ST_ARRAY_NOT_EQUAL(arr2, arr4);
 }
 ST_END_TEST_IMPL()

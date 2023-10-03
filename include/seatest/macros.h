@@ -369,4 +369,21 @@
         } \
     } while (false)
 
+# define ST_ARRAY_UNIQUE(arr) \
+    do { \
+        for (size_t n = 0; n < _ST_COUNTOF(arr); n++) { \
+            bool match = false; \
+            for (size_t j = 0; j < _ST_COUNTOF(arr); j++) { \
+                if (j != n && arr[j] == arr[n]) { \
+                    _ST_EVALUATE_EXPR(arr[j] != arr[n], "ST_ARRAY_UNIQUE"); \
+                    match = true; \
+                    break; \
+                } \
+            } \
+            if (match) { \
+                break; \
+            } \
+        } \
+    } while (false)
+
 #endif /* !_SEATEST_MACROS_H_INCLUDED */
