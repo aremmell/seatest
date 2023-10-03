@@ -330,7 +330,7 @@ void st_print_seatest_ansi(bool bold)
     };
 
     for (size_t n = 0; n < ST_COUNTOF(elements); n++) {
-        (void)printf("\x1b[%d;38;2;%03d;%03d;%03d;49;2m%c", bold ? 1 : 0,
+        (void)printf("\x1b[%d;38;2;%03d;%03d;%03d;49;2m%c\x1b[0m", bold ? 1 : 0,
             elements[n].r, elements[n].g, elements[n].b, elements[n].c);
     }
 }
