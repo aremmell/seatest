@@ -113,6 +113,7 @@ typedef int st_optlen;
 
 # include <math.h>
 # include <time.h>
+# include <ctype.h>
 # include <stdio.h>
 # include <stdarg.h>
 # include <stdbool.h>

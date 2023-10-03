@@ -109,6 +109,12 @@
 # define ST_GREATER_THAN_OR_EQUAL(lhs, rhs) \
     _ST_EVALUATE_EXPR((lhs) >= (rhs), "ST_GREATER_THAN_OR_EQUAL")
 
+# define ST_NULL(ptr) \
+    _ST_EVALUATE_EXPR((ptr) == NULL, "ST_NULL")
+
+# define ST_NOT_NULL(ptr) \
+    _ST_EVALUATE_EXPR((ptr) != NULL, "ST_NOT_NULL")
+
 /**
  * Bitwise
  */
@@ -212,6 +218,51 @@
         0 != st_strnicmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
         "ST_STR_NOT_ENDSWITH_I" \
     )
+
+# define ST_STR_ALPHA(str) \
+    do { \
+        if (!(str) || !*(str)) { \
+            _ST_EVALUATE_EXPR((str) && *(str) != '\0', "ST_STR_ALPHA"); \
+            break; \
+        } \
+        const char* const p = (const char* const)(str); \
+        for (size_t n = 0; n < strlen(str); n++) { \
+            if (!isalpha(p[n])) { \
+                _ST_EVALUATE_EXPR(isalpha(p[n]), "ST_STR_ALPHA"); \
+                break; \
+            } \
+        } \
+    } while (false)
+
+# define ST_STR_NUMERIC(str) \
+    do { \
+        if (!(str) || !*(str)) { \
+            _ST_EVALUATE_EXPR((str) && *(str) != '\0', "ST_STR_NUMERIC"); \
+            break; \
+        } \
+        const char* const p = (const char* const)(str); \
+        for (size_t n = 0; n < strlen(str); n++) { \
+            if (!isdigit(p[n])) { \
+                _ST_EVALUATE_EXPR(isdigit(p[n]), "ST_STR_NUMERIC"); \
+                break; \
+            } \
+        } \
+    } while (false)
+
+# define ST_STR_ALPHANUMERIC(str) \
+    do { \
+        if (!(str) || !*(str)) { \
+            _ST_EVALUATE_EXPR((str) && *(str) != '\0', "ST_STR_ALPHANUMERIC"); \
+            break; \
+        } \
+        const char* const p = (const char* const)(str); \
+        for (size_t n = 0; n < strlen(str); n++) { \
+            if (!isalnum(p[n])) { \
+                _ST_EVALUATE_EXPR(isalnum(p[n]), "ST_STR_ALPHANUMERIC"); \
+                break; \
+            } \
+        } \
+    } while (false)
 
 /**
  * Numeric

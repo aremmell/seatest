@@ -44,10 +44,28 @@ ST_BEGIN_TEST_IMPL(test_tests)
 {
     st_sleep_msec(200);
 
-    // should succeed
+    // should all succeed
     const char* msg = "hello there";
     ST_REQUIRE(strlen(msg) > 10);
     ST_EXPECT(msg != NULL);
+    ST_EQUAL(1, 1);
+    ST_NOT_EQUAL(1, 2);
+    ST_LESS_THAN(1, 2);
+    ST_LESS_THAN_OR_EQUAL(2, 2);
+    ST_GREATER_THAN(2, 1);
+    ST_GREATER_THAN_OR_EQUAL(2, 2);
+    ST_NULL(NULL);
+    ST_NOT_NULL(msg);
+
+    // should all fail
+    /*ST_EQUAL(0, 1);
+    ST_NOT_EQUAL(1, 1);
+    ST_LESS_THAN(2, 2);
+    ST_LESS_THAN_OR_EQUAL(3, 2);
+    ST_GREATER_THAN(1, 2);
+    ST_GREATER_THAN_OR_EQUAL(2, 3);
+    ST_NULL(msg);
+    ST_NOT_NULL(NULL);*/
 
     // should all succeed
     ST_STR_CONTAINS("the", msg);
@@ -62,13 +80,17 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_STR_NOT_ENDSWITH("ereh", msg, 4, strlen(msg));
     ST_STR_ENDSWITH_I("HERE", msg, 4, strlen(msg));
     ST_STR_NOT_ENDSWITH_I("EREH", msg, 4, strlen(msg));
+    ST_STR_ALPHA("loremipsum");
+    ST_STR_NUMERIC("123456");
+    ST_STR_ALPHANUMERIC("lorem123ipsum456");
 
     // should fail
     /* ST_REQUIRE(strlen(msg) == 0);
     ST_EXPECT(0 > 1); */
 
     // should all fail
-   /* ST_STR_CONTAINS("sea", msg);
+    /*const char* null_msg = NULL;
+    ST_STR_CONTAINS("sea", msg);
     ST_STR_NOT_CONTAINS("hell", msg);
     ST_STR_CONTAINS_I("tes", msg);
     ST_STR_NOT_CONTAINS_I("HELL", msg);
@@ -79,7 +101,14 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_STR_ENDSWITH("hell", msg, 4, strlen(msg));
     ST_STR_NOT_ENDSWITH("here", msg, 4, strlen(msg));
     ST_STR_ENDSWITH_I("HELL", msg, 4, strlen(msg));
-    ST_STR_NOT_ENDSWITH_I("HERE", msg, 4, strlen(msg));*/
+    ST_STR_NOT_ENDSWITH_I("HERE", msg, 4, strlen(msg));
+    ST_STR_ALPHA("not-alpha");
+    ST_STR_NUMERIC("not-numeric");
+    ST_STR_ALPHANUMERIC("not-alphanumeric");
+    ST_STR_ALPHA(null_msg);
+    ST_STR_NUMERIC(null_msg);
+    ST_STR_ALPHANUMERIC(null_msg);*/
+
 
     // should all succeed
     ST_NUM_EVEN(48);
