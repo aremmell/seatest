@@ -93,6 +93,9 @@ void st_sleep_msec(uint32_t msec);
 char* st_getcwd(void);
 
 /** Retrieves the number of available bytes on the filesystem associated with `path`. */
-bool st_disk_get_avail_bytes(const char* restrict path, uint64_t* bytes);
+bool st_get_avail_fs_bytes(const char* restrict path, uint64_t* bytes);
+
+/** Determines if an Internet connection is available. */
+bool st_have_inet_connection(void);
 
 #endif /* !_SEATEST_H_INCLUDED */

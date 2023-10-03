@@ -575,5 +575,73 @@ bool st_disk_get_avail_bytes(const char* restrict path, uint64_t* bytes)
     }
     *bytes = free_bytes.QuadPart;
     return true;
+
+bool st_have_inet_connection(void)
+{
+#if defined(__WIN__)
+    WSADATA wsad = {0};
+    (void)WSAStartup(MAKEWORD(2, 2), &wsad);
 #endif
+    struct addrinfo hints = {
+        .ai_flags = 0,
+        .ai_family = AF_INET,
+        .ai_socktype = SOCK_STREAM
+    };
+    struct addrinfo* result = NULL;
+    int get = getaddrinfo(ST_INET_TARGET_HOST, ST_INET_TARGET_SRV,
+        (const struct addrinfo*)&hints, &result);
+    if (0 != get) {
+        __ST_REPORT_ERROR(get, gai_strerror(get));
+#if defined(__WIN__)
+        (void)WSACleanup();
+#endif
+        return false;
+    }
+
+    _ST_DEBUG("getaddrinfo for %s[%s] OK; creating a suitable socket...",
+        ST_INET_TARGET_HOST, ST_INET_TARGET_SRV);
+
+    bool connected = false;
+    struct addrinfo* cur = result;
+    while (cur != NULL) {
+        st_descriptor sock = socket(AF_INET, cur->ai_socktype, cur->ai_protocol);
+        if (sock == ST_BAD_DESCRIPTOR) {
+            _ST_DEBUG("socket failed (%d)", _st_last_sockerr());
+            cur = cur->ai_next;
+            continue;
+        }
+
+        _ST_DEBUG("got socket descriptor %d; connecting to %s[%s]...", (int)sock,
+            ST_INET_TARGET_HOST, ST_INET_TARGET_SRV);
+
+        const struct timeval timeout = {
+            .tv_sec = ST_INET_TIMEOUT,
+            .tv_usec = 0
+        };
+
+        (void)setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (const void*)&timeout, sizeof(timeout));
+        (void)setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const void*)&timeout, sizeof(timeout));
+
+        int conn = connect(sock, (const struct sockaddr*)cur->ai_addr, (st_optlen)cur->ai_addrlen);
+        if (conn == 0) {
+            _ST_DEBUG("connected to %s!", ST_INET_TARGET_HOST);
+            connected = true;
+        } else {
+            _ST_DEBUG("connect failed (%d)", _st_last_sockerr());
+        }
+#if !defined(__WIN__)
+        close(sock);
+#else
+        closesocket(sock);
+#endif
+        if (connected) {
+            break;
+        }
+        cur = cur->ai_next;
+    }
+    freeaddrinfo(result);
+#if defined(__WIN__)
+    (void)WSACleanup();
+#endif
+    return connected;
 }
