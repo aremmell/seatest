@@ -97,7 +97,7 @@ bool st_process_conditions(st_test* tests, size_t num_tests)
      * remains unknown will automatically be skipped. */
     st_cond_state conds = {0};
     char* cwd = st_getcwd();
-    bool cond_disk = st_disk_get_avail_bytes(cwd, NULL/* &conds.disk_avail */);
+    bool cond_disk = st_disk_get_avail_bytes(cwd, &conds.disk_avail);
     _st_safefree(&cwd);
 
 #if defined(ST_SIMULATE_DISK_ERROR)
