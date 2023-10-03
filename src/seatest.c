@@ -515,8 +515,8 @@ char* st_format_error_msg(int code, char message[ST_MAX_ERROR])
     DWORD fmt = FormatMessageA(flags, NULL, (DWORD)code, 0UL, message, ST_MAX_ERROR, NULL);
     assert(0UL != fmt);
     if (fmt > 0UL) {
-        if (msg[fmt - 1] == '\n' || msg[fmt - 1] == ' ') {
-            msg[fmt - 1] = '\0';
+        if (message[fmt - 1] == '\n' || message[fmt - 1] == ' ') {
+            message[fmt - 1] = '\0';
         }
     }
 #endif

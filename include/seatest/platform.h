@@ -81,6 +81,7 @@
 #  define __WANT_STDC_SECURE_LIB__ 1
 #  include <Windows.h>
 #  include <Shlwapi.h>
+#  include <direct.h>
 #  include <conio.h>
 
 #  if defined(_MSC_VER) && _MSC_VER >= 1933
