@@ -556,7 +556,7 @@ bool st_disk_get_avail_bytes(const char* restrict path, uint64_t* bytes)
         *bytes = 0;
     }
     if (!bytes || !path || !*path) {
-        ST_REPORT_ERROR(EINVAL);
+        ST_REPORT_ERROR(ST_E_INVALID);
         return false;
     }
 #if !defined(__WIN__)

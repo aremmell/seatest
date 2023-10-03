@@ -74,6 +74,8 @@
 #   define __HAVE_STDATOMICS__
 #  endif
 
+#  define ST_E_INVALID EINVAL
+
 # else /* _WIN32 */
 #  define __WIN__
 #  define WIN32_LEAN_AND_MEAN
@@ -91,6 +93,8 @@
 
 #  define ST_MSEC_TIMER
 #  define ST_MSEC_WIN32
+
+#  define ST_E_INVALID ERROR_INVALID_PARAMETER
 
 # endif /* !_WIN32 */
 
