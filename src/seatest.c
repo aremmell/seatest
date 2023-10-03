@@ -35,14 +35,15 @@ static st_state _state = {0};
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_test* tests, size_t num_tests)
 {
-    if (!st_validate_config(app_name, tests, num_tests) || !st_prepare_tests(tests, num_tests)) {
+    if (!st_validate_config(app_name, tests, num_tests)) {
         return EXIT_FAILURE;
     }
 
     _state.app_name = app_name;
 
     st_cl_config cl_cfg = {0};
-    if (!st_parse_cmd_line(argc, argv, args, num_args, tests, num_tests, &cl_cfg)) {
+    if (!st_parse_cmd_line(argc, argv, args, num_args, tests, num_tests, &cl_cfg) ||
+        !st_prepare_tests(tests, num_tests)) {
         return EXIT_FAILURE;
     }
 
@@ -170,10 +171,10 @@ bool st_prepare_tests(st_test* tests, size_t num_tests)
 
 void st_print_intro(size_t to_run)
 {
-    (void)printf("\n" WHITEB("running %zu " ULINE("%s") " %s ("),
+    (void)printf("\n" WHITEB("running %zu " ULINE("%s") " %s " DGRAY("(")),
         to_run, _state.app_name, ST_PLURAL("test", to_run));
     st_print_seatest_ansi(true);
-    (void)printf(WHITEB(" %s)...") "\n", st_get_version_string());
+    (void)printf(DGRAY(" %s)...") "\n", st_get_version_string());
 }
 
 void st_print_test_intro(size_t num, size_t to_run, const char* name)
