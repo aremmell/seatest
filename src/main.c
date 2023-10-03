@@ -118,18 +118,38 @@ ST_BEGIN_TEST_IMPL(test_tests)
     // should succeed (same type, size, and values)
     ST_ARRAY_EQUAL(arr1, arr2);
 
+    // should succeed
+    ST_ARRAY_CONTAINS(arr1, 1);
+    ST_ARRAY_CONTAINS(arr1, 3);
+    ST_ARRAY_CONTAINS(arr1, 5);
+
+    // should fail (value not present)
+    //ST_ARRAY_CONTAINS(arr1, 6);
+
+    // should succeed (different types)
+    ST_ARRAY_NOT_CONTAINS(arr1, (char)1);
+
+    // should succeed (value not present)
+    ST_ARRAY_NOT_CONTAINS(arr1, 6);
+
+    // should fail (value present)
+    //ST_ARRAY_NOT_CONTAINS(arr1, 1);
+
     // should fail (same type, size, and values)
     //ST_ARRAY_NOT_EQUAL(arr1, arr2);
 
-    if (ST_TEST_PASSING())
-        ST_MESSAGE0("arr1 == arr2");
-
     short arr3[] = {1, 2, 3, 4, 5};
+
+    // should succeed (?)
+    ST_ARRAY_CONTAINS(arr3, (short)3);
+
+    // should fail (different types, val = int)
+    //ST_ARRAY_CONTAINS(arr3, 3);
 
     // should fail (different types)
     //ST_ARRAY_EQUAL(arr1, arr3);
 
-    // should pass (different types)
+    // should succeed (different types)
     ST_ARRAY_NOT_EQUAL(arr1, arr3);
 
     arr1[2] = 6;

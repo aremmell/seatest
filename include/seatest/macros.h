@@ -430,4 +430,37 @@
         _ST_EVALUATE_EXPR(!all_elems_equal, "ST_ARRAY_NOT_EQUAL"); \
     } while (false)
 
+# define ST_ARRAY_CONTAINS(arr, val) \
+    do { \
+        size_t elem_size = sizeof(arr[0]); \
+        size_t val_size = sizeof(val); \
+        if (elem_size != val_size) { \
+            _ST_EVALUATE_EXPR(elem_size == val_size, "ST_ARRAY_CONTAINS"); \
+            break; \
+        } \
+        bool val_found = false; \
+        for (size_t n = 0; n < ST_COUNTOF(arr); n++) { \
+            if (arr[n] == val) { \
+                val_found = true; \
+                break; \
+            } \
+        } \
+        _ST_EVALUATE_EXPR(val_found, "ST_ARRAY_CONTAINS"); \
+    } while (false)
+
+# define ST_ARRAY_NOT_CONTAINS(arr, val) \
+    do { \
+        size_t elem_size = sizeof(arr[0]); \
+        size_t val_size = sizeof(val); \
+        if (elem_size != val_size) { \
+            break; \
+        } \
+        for (size_t n = 0; n < ST_COUNTOF(arr); n++) { \
+            if (arr[n] == val) { \
+                _ST_EVALUATE_EXPR(arr[n] != val, "ST_ARRAY_NOT_CONTAINS"); \
+                break; \
+            } \
+        } \
+    } while (false)
+
 #endif /* !_SEATEST_MACROS_H_INCLUDED */
