@@ -35,7 +35,7 @@ static st_state _state = {0};
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_test* tests, size_t num_tests)
 {
-    if (!st_sanity_check(tests, num_tests) || !st_process_conditions(tests, num_tests)) {
+    if (!st_validate_config(app_name, tests, num_tests) || !st_prepare_tests(tests, num_tests)) {
         return EXIT_FAILURE;
     }
 
@@ -45,8 +45,6 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     if (!st_parse_cmd_line(argc, argv, args, num_args, tests, num_tests, &cl_cfg)) {
         return EXIT_FAILURE;
     }
-
-    _ST_DEBUG("clock resolution: ~%ldns", st_timer_getres());
 
     size_t to_run = cl_cfg.only ? cl_cfg.to_run : num_tests;
     size_t passed = 0;
@@ -86,24 +84,39 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     return passed == to_run ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-bool st_sanity_check(const st_test* tests, size_t num_tests)
+bool st_validate_config(const char* app_name, st_test* tests, size_t num_tests)
 {
+    /* before doing any other work, ensure that the test configuration is sane. */
     bool all_valid = true;
+
+    /* any debug information related to the configuration/system. */
+    _ST_DEBUG("clock resolution: ~%ldns", st_timer_getres());
+
+    /* app name. */
+    if (!app_name || !*app_name) {
+        _ST_ERROR("%s the app_name parameter to ST_MAIN_IMPL is invalid (may not be null"
+            " or an empty string)", _ST_ERR_PREFIX);
+        all_valid = false;
+    }
+
     for (size_t n = 0; n < num_tests; n++) {
+        /* test names. */
         if (st_strstr(tests[n].name, " ")) {
-            _ST_ERROR("%s test name '%s' is invalid (test names may"
-                " not contain spaces)", _ST_ERR_PREFIX, tests[n].name);
+            _ST_ERROR("%s test #%zu (name: '%s') is invalid (names may not contain spaces)",
+                _ST_ERR_PREFIX, n + 1, tests[n].name);
             all_valid = false;
         }
     }
+
+    if (!all_valid) {
+        _ST_ERROR("%s please rectify the above error(s) and recompile", _ST_ERR_PREFIX);
+    }
+
     return all_valid;
 }
 
-bool st_process_conditions(st_test* tests, size_t num_tests)
+bool st_prepare_tests(st_test* tests, size_t num_tests)
 {
-    if (!tests || !num_tests)
-        return false;
-
     uint64_t fs_avail = 0;
     char* cwd = st_getcwd();
     bool cond_disk = st_get_avail_fs_bytes(cwd, &fs_avail);
@@ -138,22 +151,15 @@ bool st_process_conditions(st_test* tests, size_t num_tests)
     }
 
     for (size_t n = 0; n < num_tests; n++) {
+        _ST_DEBUG("test #%zu (name: '%s') has conds %08x", n + 1, tests[n].name, tests[n].conds);
         if (tests[n].conds != 0) {
             bool skip = false;
-            _ST_DEBUG("test '%s' has conditions %08x", tests[n].name, tests[n].conds);
-            if (!cond_disk && (tests[n].conds & COND_DISK) == COND_DISK) {
-                _ST_WARNING("%s test '%s' will be skipped due to COND_DISK",
-                    _ST_WARN_PREFIX, tests[n].name);
-                skip = true;
-            }
-            if (!cond_inet && (tests[n].conds & COND_INET) == COND_INET) {
-                _ST_WARNING("%s test '%s' will be skipped due to COND_INET",
-                    _ST_WARN_PREFIX, tests[n].name);
-                skip = true;
-            }
+            _ST_PROCESS_TEST_CONDITION(cond_disk, COND_DISK);
+            _ST_PROCESS_TEST_CONDITION(cond_inet, COND_INET);
             tests[n].res.skip = skip;
             if (!skip) {
-                _ST_DEBUG("test '%s' will not be skipped; all conditions met", tests[n].name);
+                _ST_DEBUG("test #%zu (name: '%s') will not be skipped; all conditions met",
+                    n + 1, tests[n].name);
             }
         }
     }
@@ -233,7 +239,7 @@ void st_print_test_list(const st_test* tests, size_t num_tests)
 
     size_t longest = 0;
     for (size_t n = 0; n < num_tests; n++) {
-        size_t len = strnlen(tests[n].name, ST_CL_MAX_TEST);
+        size_t len = strnlen(tests[n].name, ST_MAX_TEST_NAME);
         if (len > longest)
             longest = len;
     }
@@ -243,7 +249,7 @@ void st_print_test_list(const st_test* tests, size_t num_tests)
     for (size_t n = 0; n < num_tests; n++) {
         (void)printf("\t%s", tests[n].name);
 
-        size_t len = strnlen(tests[n].name, ST_CL_MAX_TEST);
+        size_t len = strnlen(tests[n].name, ST_MAX_TEST_NAME);
         if (len < longest + tab_size) {
             for (size_t j = len; j < longest + tab_size; j++)
                 (void)printf(" ");

@@ -29,6 +29,13 @@
 /** The maximum size, in characters, of an error message produced by the system. */
 # define ST_MAX_ERROR 256
 
+/** The maximum size, in characters, of a test's human-readable name. */
+# define ST_MAX_TEST_NAME 32
+
+/** The maximum size, in characters, of buffers containing condition bitmasks
+ * in string format. */
+# define ST_MAX_COND_STR 256
+
 /** The minimum amount, in bytes, of available disk space for COND_DISK. Default
  * value: 500 MiB. */
 # define ST_MIN_FS_AVAIL (500 * 1024 * 1024)
@@ -41,5 +48,47 @@
 
 /** The number of seconds to wait for a TCP connection before it times out. */
 # define ST_INET_TIMEOUT 5
+
+/**
+ * Command line argument thresholds
+ */
+
+# define ST_CL_MAX_FLAG  32
+# define ST_CL_MAX_USAGE 96
+
+/**
+ * Command line argument flags
+ */
+
+# define ST_CL_WAIT_FLAG "--wait"
+# define ST_CL_ONLY_FLAG "--only"
+# define ST_CL_LIST_FLAG "--list"
+# define ST_CL_VERS_FLAG "--version"
+# define ST_CL_HELP_FLAG "--help"
+
+/**
+ * Command line argument usage messages
+ */
+
+# define ST_CL_ONLY_USAGE ULINE("name") " [, " ULINE("name") ", ...]"
+
+/**
+ * Command line argument descriptions
+ */
+
+# define ST_CL_WAIT_DESC "After running all test(s), wait for a keypress before exiting"
+# define ST_CL_ONLY_DESC "Run only the test(s) specified"
+# define ST_CL_LIST_DESC "Print a list of all available tests"
+# define ST_CL_VERS_DESC "Displays version information"
+# define ST_CL_HELP_DESC "Displays this message"
+
+/** Command line configuration (flag, usage, description). If entries are changed,
+ * st_parse_cmd_line and st_print_usage_info must be modified as well. */
+# define ST_CL_CONFIG() \
+    {ST_CL_WAIT_FLAG, "",               ST_CL_WAIT_DESC}, \
+    {ST_CL_ONLY_FLAG, ST_CL_ONLY_USAGE, ST_CL_ONLY_DESC}, \
+    {ST_CL_LIST_FLAG, "",               ST_CL_LIST_DESC}, \
+    {ST_CL_VERS_FLAG, "",               ST_CL_VERS_DESC}, \
+    {ST_CL_HELP_FLAG, "",               ST_CL_HELP_DESC}
 
 #endif /* !_SEATEST_CONFIG_H_INCLUDED */

@@ -25,7 +25,7 @@
  */
 #include "seatest.h"
 
-ST_DECLARE_CL_ARGS()
+ST_DECLARE_STATIC_VARS()
 
 ST_DECLARE_TEST(test_tests)
 ST_DECLARE_TEST(requires_inet)

@@ -28,6 +28,7 @@
 
 # include "seatest/types.h"
 
+/** Frees and sets pointer to NULL. */
 static inline
 void __st_safefree(void** pp)
 {
@@ -37,12 +38,55 @@ void __st_safefree(void** pp)
     }
 }
 
+/** Wraps __st_safefree in order to accept any pointer type. */
 # define _st_safefree(pp) __st_safefree((void**)pp);
 
-# if !defined(__WIN__)
-#  define _st_last_sockerr() errno
-# else
-#  define _st_last_sockerr() WSAGetLastError()
-# endif
+/** Returns the last socket-related error code. */
+static inline
+int _st_last_sockerr(void)
+{
+#if !defined(__WIN__)
+    return errno;
+#else
+    return WSAGetLastError();
+#endif
+}
+
+/** Converts a bitmask of conditions into a string. */
+static inline
+void _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
+{
+    (void)conds;
+    str[0] = '\0';
+}
+
+/**
+ * Internal helper macros
+ */
+
+# define _ST_DECLARE_CL_ARGS() \
+    static const st_cl_arg st_cl_args[] = { \
+        ST_CL_CONFIG() \
+    }
+
+# define _ST_PROCESS_TEST_CONDITION(condition, check_cond) \
+    do { \
+        if (!condition && (tests[n].conds & check_cond) == check_cond) { \
+            _ST_WARNING("%s test #%zu (name: '%s') will be skipped due to " #check_cond, \
+                _ST_WARN_PREFIX, n + 1, tests[n].name); \
+            tests[n].res.skip_conds |= check_cond; \
+            skip = true; \
+        } \
+    } while (false)
+
+# define _ST_EVALUATE_EXPR(expr, name) \
+    do { \
+        if (!(expr)) { \
+            _retval.pass = false; \
+            _retval.fatal = true; \
+            (void)printf(FG_COLOR(0, 196, name " (line %"PRIu32"):") \
+                DGRAY(" expression") WHITE(" '" #expr "'") DGRAY(" is false\n"), __LINE__); \
+        } \
+    } while (false)
 
 #endif /* !_SEATEST_HELPERS_H_INCLUDED */
