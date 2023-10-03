@@ -39,4 +39,10 @@ void __st_safefree(void** pp)
 
 # define _st_safefree(pp) __st_safefree((void**)pp);
 
+# if !defined(__WIN__)
+#  define _st_last_sockerr() errno
+# else
+#  define _st_last_sockerr() WSAGetLastError()
+# endif
+
 #endif /* !_SEATEST_HELPERS_H_INCLUDED */
