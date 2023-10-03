@@ -102,6 +102,21 @@ ST_BEGIN_TEST_IMPL(test_tests)
         int two;
     };
 
+    struct foo zeroed = {0};
+    struct foo not_zeroed = {0, 1};
+
+    // should succeed (all bytes zero)
+    ST_BITWISE_ZEROED(&zeroed, sizeof(zeroed));
+
+    // should fail (some bytes not zero)
+    //ST_BITWISE_ZEROED(&not_zeroed, sizeof(not_zeroed));
+
+    // should succeed (any byte not zero)
+    ST_BITWISE_NOT_ZEROED(&not_zeroed, sizeof(not_zeroed));
+
+    // should fail (all bytes zero)
+    //ST_BITWISE_NOT_ZEROED(&zeroed, sizeof(zeroed));
+
     struct foo lhs = {1234, 5678};
     struct foo rhs = {1234, 5678};
 

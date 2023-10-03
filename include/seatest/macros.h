@@ -284,6 +284,30 @@
 # define ST_BITWISE_NOT_EQUAL(lhs, rhs, size) \
     _ST_EVALUATE_EXPR(0 != memcmp(&(lhs), &(rhs), (size)), "ST_BITWISE_NOT_EQUAL")
 
+# define ST_BITWISE_ZEROED(ptr, size) \
+    do { \
+        const unsigned char* const p = (const unsigned char* const)ptr; \
+        for (size_t n = 0; n < size; n++) { \
+            if (p[n] != 0) { \
+                _ST_EVALUATE_EXPR(p[n] == 0, "ST_BITWISE_ZEROED"); \
+                break; \
+            } \
+        } \
+    } while (false)
+
+# define ST_BITWISE_NOT_ZEROED(ptr, size) \
+    do { \
+        const unsigned char* const p = (const unsigned char* const)ptr; \
+        bool all_zero_bytes = true; \
+        for (size_t n = 0; n < size; n++) { \
+            if (p[n] != 0) { \
+                all_zero_bytes = false; \
+                break; \
+            } \
+        } \
+        _ST_EVALUATE_EXPR(!all_zero_bytes, "ST_BITWISE_NOT_ZEROED"); \
+    } while (false)
+
 /**
  * String
  */
@@ -383,7 +407,7 @@
     } while (false)
 
 /**
- * Array-specific
+ * Array
  */
 
 # define ST_ARRAY_EQUAL(arr1, arr2) \
