@@ -44,13 +44,23 @@ typedef struct {
 /** Function type for seatest tests. */
 typedef st_testres (*st_test_fn)(void);
 
-/** Enumeration of conditions which must be met in order for a given test to run
- * successfully; if the conditions are not met, the test is skipped. */
-typedef enum {
-    INET = 1 << 1, /**< An Internet connection is available. */
-    DISK = 1 << 2, /**< At least n GiB of space is available on the drive. */
-    CPUS = 1 << 3, /**< At least n logical CPUs exist on the system. */
-} st_conds; // TODO: Think of more conditions
+/**
+ * Enumeration of conditions which must be met in order for a given test to run
+ * successfully; if the specified conditions are not met, the test is skipped.
+ * See config.h for thresholds.
+ */
+enum {
+    COND_INET = 1 << 1, /**< An Internet connection is available. */
+    COND_DISK = 1 << 2, /**< At least n GiB of space is available. */
+    COND_CPUS = 1 << 3, /**< At least n logical CPUs are available. */
+}; // TODO: Think of more conditions
+
+/** Type representing the current state of potentially required conditions. */
+typedef struct {
+    bool have_inet;      /**< Whether or not an Internet connection is available. */
+    uint64_t disk_avail; /**< Available disk space, in bytes. */
+    int ncpu;            /**< Number of logical CPUs. */
+} st_cond_state;
 
 /** An entry in the list of available tests. */
 typedef struct {

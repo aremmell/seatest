@@ -61,6 +61,7 @@
 
 #  define __STDC_WANT_LIB_EXT1__ 1
 
+#  include <sys/statvfs.h>
 #  include <sys/types.h>
 #  include <sys/time.h>
 #  include <termios.h>

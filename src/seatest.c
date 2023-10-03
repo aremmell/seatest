@@ -27,6 +27,7 @@
 
 #if defined(__WIN__)
 # pragma comment(lib, "Shlwapi.lib")
+# pragma comment(lib, "Ws2_32.lib")
 #endif
 
 static st_state _state = {0};
@@ -34,7 +35,7 @@ static st_state _state = {0};
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_test* tests, size_t num_tests)
 {
-    if (!st_sanity_check(tests, num_tests)) {
+    if (!st_sanity_check(tests, num_tests) || !st_process_conditions(tests, num_tests)) {
         return EXIT_FAILURE;
     }
 
@@ -82,12 +83,46 @@ bool st_sanity_check(const st_test* tests, size_t num_tests)
     bool all_valid = true;
     for (size_t n = 0; n < num_tests; n++) {
         if (st_strstr(tests[n].name, " ")) {
-            _ST_ERROR("seatest error: test name '%s' is invalid (test names may"
-                " not contain spaces)", tests[n].name);
+            _ST_ERROR("%s test name '%s' is invalid (test names may"
+                " not contain spaces)", _ST_ERR_PREFIX, tests[n].name);
             all_valid = false;
         }
     }
     return all_valid;
+}
+
+bool st_process_conditions(st_test* tests, size_t num_tests)
+{
+    /* determine current conditions. any tests relying on a condition whose state
+     * remains unknown will automatically be skipped. */
+    st_cond_state conds = {0};
+    char* cwd = st_getcwd();
+    bool cond_disk = st_disk_get_avail_bytes(cwd, NULL/* &conds.disk_avail */);
+    _st_safefree(&cwd);
+
+#if defined(ST_SIMULATE_DISK_ERROR)
+    cond_disk = false;
+    conds.disk_avail = 0;
+#elif defined (ST_SIMULATE_DISK_INSUFFICIENT)
+    cond_disk = true;
+    conds.disk_avail = ST_MIN_DISK_AVAIL - 1;
+#endif
+
+    if (!cond_disk) {
+        _ST_ERROR("%s failed to calculate available disk space! tests requiring"
+        " COND_DISK will be skipped", _ST_ERR_PREFIX);
+    } else if (conds.disk_avail < ST_MIN_DISK_AVAIL) {
+        _ST_WARNING("%s available disk space (%"PRIu64" bytes) is less than the"
+            " required %"PRIu64"; tests requring COND_DISK will be skipped",
+            _ST_WARN_PREFIX, conds.disk_avail, (uint64_t)ST_MIN_DISK_AVAIL);
+    }
+
+    for (size_t n = 0; n < num_tests; n++) {
+        if (tests[n].conds != 0) {
+        }
+    }
+
+    return true;
 }
 
 void st_print_intro(size_t to_run)
@@ -228,7 +263,7 @@ void st_print_seatest_ansi(bool bold)
         unsigned char g;
         unsigned char b;
         char c;
-    } colors[] = {
+    } elements[] = {
         { 65, 105, 238, 's'},
         { 63, 125, 238, 'e'},
         { 71, 145, 237, 'a'},
@@ -238,9 +273,9 @@ void st_print_seatest_ansi(bool bold)
         { 83, 225, 233, 't'},
     };
 
-    for (size_t n = 0; n < ST_COUNTOF(colors); n++) {
-        (void)printf("\x1b[%d;38;2;%03d;%03d;%03d;49;2m%c",
-            bold ? 1 : 0, colors[n].r, colors[n].g, colors[n].b, colors[n].c);
+    for (size_t n = 0; n < ST_COUNTOF(elements); n++) {
+        (void)printf("\x1b[%d;38;2;%03d;%03d;%03d;49;2m%c", bold ? 1 : 0,
+            elements[n].r, elements[n].g, elements[n].b, elements[n].c);
     }
 }
 
@@ -446,7 +481,51 @@ double st_msec_since(const st_timer* when, st_timer* out)
 #endif
 }
 
-void st_sleep_msec(uint32_t msec) {
+char* st_format_error_msg(int code, char message[ST_MAX_ERROR])
+{
+    message[0] = '\0';
+
+#if !defined(__WIN__)
+    int finderr = -1;
+# if defined(__HAVE_XSI_STRERROR_R__)
+    finderr = strerror_r(code, message, ST_MAX_ERROR);
+#  if defined(__HAVE_XSI_STRERROR_R_ERRNO__)
+    if (finderr == -1) {
+        finderr = errno;
+    }
+#  endif
+# elif defined(__HAVE_GNU_STRERROR_R__)
+    const char* tmp = strerror_r(code, message, ST_MAX_ERROR);
+    if (tmp != message)
+        (void)strncpy(message, tmp, strnlen(tmp, ST_MAX_ERROR));
+# elif defined(__HAVE_STRERROR_S__)
+    finderr = (int)strerror_s(msg, ST_MAX_ERROR, code);
+# else
+    const char* tmp = strerror(code);
+    (void)strncpy(message, tmp, strnlen(tmp, ST_MAX_ERROR));
+# endif
+# if defined(__HAVE_XSI_STRERROR_R__) || defined(__HAVE_STRERROR_S__)
+    assert(0 == finderr);
+# else
+    ST_UNUSED(finderr);
+# endif
+#else /* __WIN__ */
+    DWORD flags = FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS |
+                  FORMAT_MESSAGE_MAX_WIDTH_MASK;
+    DWORD fmt = FormatMessageA(flags, NULL, (DWORD)code, 0UL, message, ST_MAX_ERROR, NULL);
+    assert(0UL != fmt);
+    if (fmt > 0UL) {
+        if (msg[fmt - 1] == '\n' || msg[fmt - 1] == ' ') {
+            msg[fmt - 1] = '\0';
+        }
+    }
+#endif
+
+    return &message[0];
+}
+
+void st_sleep_msec(uint32_t msec)
+{
     if (0U == msec)
         return;
 
@@ -455,5 +534,46 @@ void st_sleep_msec(uint32_t msec) {
     (void)nanosleep(&ts, NULL);
 #else /* __WIN__ */
     (void)SleepEx((DWORD)msec, TRUE);
+#endif
+}
+
+char* st_getcwd(void)
+{
+#if !defined(__WIN__)
+# if defined(__linux__) && defined(_GNU_SOURCE)
+    return get_current_dir_name();
+# else
+    return getcwd(NULL, 0);
+# endif
+#else /* __WIN__ */
+    return _getcwd(NULL, 0);
+#endif
+}
+
+bool st_disk_get_avail_bytes(const char* restrict path, uint64_t* bytes)
+{
+    if (bytes) {
+        *bytes = 0;
+    }
+    if (!bytes || !path || !*path) {
+        ST_REPORT_ERROR(EINVAL);
+        return false;
+    }
+#if !defined(__WIN__)
+    struct statvfs stvfs = {0};
+    if (-1 == statvfs(path, &stvfs)) {
+        ST_REPORT_ERROR(errno);
+        return false;
+    }
+    *bytes = (uint64_t)(stvfs.f_bavail * (stvfs.f_frsize ? stvfs.f_frsize : stvfs.f_bsize));
+    return true;
+#else
+    ULARGE_INTEGER free_bytes = {0};
+    if (!GetDiskFreeSpaceExA(NULL, &free_bytes, NULL, NULL)) {
+        ST_REPORT_ERROR(GetLastError());
+        return false;
+    }
+    *bytes = free_bytes.QuadPart;
+    return true;
 #endif
 }

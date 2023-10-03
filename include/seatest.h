@@ -26,14 +26,17 @@
 #ifndef _SEATEST_H_INCLUDED
 # define _SEATEST_H_INCLUDED
 
+# include "seatest/config.h"
 # include "seatest/types.h"
 # include "seatest/macros.h"
+# include "seatest/helpers.h"
 # include "seatest/version.h"
 
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_test* tests, size_t num_tests);
 
 bool st_sanity_check(const st_test* tests, size_t num_tests);
+bool st_process_conditions(st_test* tests, size_t num_tests);
 
 void st_print_intro(size_t to_run);
 void st_print_test_intro(size_t num, size_t to_run, const char* name);
@@ -80,7 +83,16 @@ long st_timer_getres(void);
 bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf);
 double st_msec_since(const st_timer* when, st_timer* out);
 
+/** Retrieves a formatted error message for the specified code. */
+char* st_format_error_msg(int code, char message[ST_MAX_ERROR]);
+
 /** Puts the current thread to sleep for `msec` milliseconds. */
 void st_sleep_msec(uint32_t msec);
+
+/** Returns the current working directory. */
+char* st_getcwd(void);
+
+/** Retrieves the number of available bytes on the filesystem associated with `path`. */
+bool st_disk_get_avail_bytes(const char* restrict path, uint64_t* bytes);
 
 #endif /* !_SEATEST_H_INCLUDED */

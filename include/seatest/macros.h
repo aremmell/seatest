@@ -190,6 +190,9 @@
         {ST_CL_HELP_FLAG, "", ST_CL_HELP_DESC} \
     }
 
+# define _ST_SEATEST "seatest"
+# define _ST_ERR_PREFIX _ST_SEATEST " error:"
+# define _ST_WARN_PREFIX _ST_SEATEST " warning:"
 # define _ST_INDENT "  "
 # define __ST_MESSAGE(...) (void)printf(__VA_ARGS__)
 
@@ -220,6 +223,13 @@
     : test->res.pass ? FG_COLOR(1, 40, "PASS") \
     : test->res.fatal ? FG_COLOR(1, 196, "FAIL") \
     : FG_COLOR(1, 208, "WARN"))
+
+# define ST_REPORT_ERROR(code) \
+    do { \
+        char message[ST_MAX_ERROR] = {0}; \
+        _ST_ERROR("%s in %s (%s:%d): %d (%s)", _ST_ERR_PREFIX, __func__, __file__, \
+            __LINE__, code, st_format_error_msg(code, message)); \
+    } while (false)
 
 # if defined(ST_RELATIVE_LINE_NUMBERS)
 #  define _ST_TESTLINE() (__LINE__ - _retval.line_start)
