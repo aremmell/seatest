@@ -104,21 +104,24 @@ char* _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
 
     bool first = true;
     if ((conds & COND_DISK) == COND_DISK) {
-        (void)strncat(str, _ST_STRIFY(COND_DISK), ST_MAX_COND_STR);
+        const char* cat = _ST_STRIFY(COND_DISK);
+        (void)strncat(str, cat, strlen(cat));
         first = false;
     }
     if ((conds & COND_INET) == COND_INET) {
         if (!first) {
-            (void)strncat(str, ", ", ST_MAX_COND_STR);
+            (void)strncat(str, ", ", 2);
         }
-        (void)strncat(str, _ST_STRIFY(COND_INET), ST_MAX_COND_STR);
+        const char* cat = _ST_STRIFY(COND_INET);
+        (void)strncat(str, cat, strlen(cat));
         first = false;
     }
     if ((conds & COND_CPUS) == COND_CPUS) {
         if (!first) {
-            (void)strncat(str, ", ", ST_MAX_COND_STR);
+            (void)strncat(str, ", ", 2);
         }
-        (void)strncat(str, _ST_STRIFY(COND_CPUS), ST_MAX_COND_STR);
+        const char* cat = _ST_STRIFY(COND_CPUS);
+        (void)strncat(str, cat, strlen(cat));
         first = false;
     }
 
