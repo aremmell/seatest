@@ -138,7 +138,7 @@
     { \
         st_testres _retval; \
         _retval.line_start = __LINE__; \
-        _retval.skipped = false; \
+        _retval.skip = false; \
         _retval.pass = true; \
         _retval.fatal = false;
 
@@ -190,10 +190,13 @@
         {ST_CL_HELP_FLAG, "", ST_CL_HELP_DESC} \
     }
 
-# define _ST_SEATEST "seatest"
-# define _ST_ERR_PREFIX _ST_SEATEST " error:"
-# define _ST_WARN_PREFIX _ST_SEATEST " warning:"
-# define _ST_INDENT "  "
+# define _ST_SEATEST                  "seatest"
+# define _ST_ERR_PREFIX   _ST_SEATEST " error:"
+# define _ST_WARN_PREFIX  _ST_SEATEST " warning:"
+# define _ST_DEBUG_PREFIX _ST_SEATEST " debug:"
+# define _ST_INDENT                   "  "
+
+/** The base macro for all stdout macros. */
 # define __ST_MESSAGE(...) (void)printf(__VA_ARGS__)
 
 /** Outputs a diagnostic or informative test message. */
@@ -210,25 +213,36 @@
 
 /** Outputs a test message in red. */
 # define ST_ERROR(msg, ...) __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
-# define ST_ERROR0(msg)      __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n")
+# define ST_ERROR0(msg)     __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n")
 
 # define _ST_MESSAGE(msg, ...) __ST_MESSAGE(WHITE(msg) "\n", __VA_ARGS__)
 # define _ST_SUCCESS(msg, ...) __ST_MESSAGE(FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
 # define _ST_SKIPPED(msg, ...) __ST_MESSSAGE(FG_COLOR(0, 178, msg) "\n", __VA_ARGS__)
 # define _ST_WARNING(msg, ...) __ST_MESSAGE(FG_COLOR(0, 208, msg) "\n", __VA_ARGS__)
-# define _ST_ERROR(msg, ...) __ST_MESSAGE(FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
+# define _ST_ERROR(msg, ...)   __ST_MESSAGE(FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
+
+# if defined(ST_DEBUG_MESSAGES)
+#  define _ST_DEBUG(msg, ...) \
+    __ST_MESSAGE("%s %s (%s:%d): " msg "\n", _ST_DEBUG_PREFIX, __func__, __file__, \
+        __LINE__, __VA_ARGS__)
+# else
+#  define _ST_DEBUG(...)
+# endif
 
 # define ST_PASSFAILWARN(test) \
-    (test->res.skipped ? FG_COLOR(1, 178, "SKIP") \
+    (test->res.skip ? FG_COLOR(1, 178, "SKIP") \
     : test->res.pass ? FG_COLOR(1, 40, "PASS") \
     : test->res.fatal ? FG_COLOR(1, 196, "FAIL") \
     : FG_COLOR(1, 208, "WARN"))
 
-# define ST_REPORT_ERROR(code) \
+# define __ST_REPORT_ERROR(code, message) \
+    _ST_ERROR("%s in %s (%s:%d): %d (%s)", _ST_ERR_PREFIX, __func__, __file__, \
+            __LINE__, code, message)
+
+# define _ST_REPORT_ERROR(code) \
     do { \
         char message[ST_MAX_ERROR] = {0}; \
-        _ST_ERROR("%s in %s (%s:%d): %d (%s)", _ST_ERR_PREFIX, __func__, __file__, \
-            __LINE__, code, st_format_error_msg(code, message)); \
+        __ST_REPORT_ERROR(code, st_format_error_msg(code, message)); \
     } while (false)
 
 # if defined(ST_RELATIVE_LINE_NUMBERS)
@@ -258,7 +272,7 @@
 
 # define ST_TEST_PASSING() (_retval.pass)
 # define ST_TEST_FAILED_FATALLY() (_retval.fatal)
-# define ST_TEST_SKIPPED() (_retval.skipped)
+# define ST_TEST_SKIPPED() (_retval.skip)
 
 # define ST_REQUIRE(expr) _ST_EVALUATE_EXPR(expr, "ST_REQUIRE")
 

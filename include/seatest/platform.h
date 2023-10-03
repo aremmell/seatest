@@ -64,6 +64,9 @@
 #  include <sys/statvfs.h>
 #  include <sys/types.h>
 #  include <sys/time.h>
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <netdb.h>
 #  include <termios.h>
 #  include <unistd.h>
 #  include <errno.h>
@@ -75,6 +78,10 @@
 #  endif
 
 #  define ST_E_INVALID EINVAL
+#  define ST_BAD_DESCRIPTOR -1
+
+typedef int st_descriptor;
+typedef socklen_t st_optlen;
 
 # else /* _WIN32 */
 #  define __WIN__
@@ -83,6 +90,8 @@
 #  define __WANT_STDC_SECURE_LIB__ 1
 #  include <Windows.h>
 #  include <Shlwapi.h>
+#  include <winsock2.h>
+#  include <ws2tcpip.h>
 #  include <direct.h>
 #  include <conio.h>
 
@@ -95,6 +104,10 @@
 #  define ST_MSEC_WIN32
 
 #  define ST_E_INVALID ERROR_INVALID_PARAMETER
+#  define ST_BAD_DESCRIPTOR INVALID_SOCKET
+
+typedef SOCKET st_descriptor;
+typedef int st_optlen;
 
 # endif /* !_WIN32 */
 
