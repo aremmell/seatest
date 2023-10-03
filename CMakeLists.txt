@@ -56,9 +56,9 @@ add_compile_definitions(
     # simulate low disk space (mutually exclusive w/ ST_SIMULATE_DISK_ERROR)
     #ST_SIMULATE_DISK_INSUFFICIENT
     # simulate failure to detect internet connection
-    #ST_SIMULATE_INET_ERROR
+    ST_SIMULATE_INET_ERROR
     # verbose debug messages
-    #ST_DEBUG_MESSAGES
+    ST_DEBUG_MESSAGES
     $<$<CONFIG:Debug>:DEBUG>
     $<$<CONFIG:Release>:NDEBUG>
 )
