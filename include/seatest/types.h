@@ -46,7 +46,7 @@ typedef st_testres (*st_test_fn)(void);
 
 /** Enumeration of conditions which must be met in order for a given test to run
  * successfully; if the conditions are not met, the test is skipped. */
-enum {
+typedef enum {
     INET = 1 << 1, /**< An Internet connection is available. */
     DISK = 1 << 2, /**< At least n GiB of space is available on the drive. */
     CPUS = 1 << 3, /**< At least n logical CPUs exist on the system. */
