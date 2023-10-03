@@ -102,10 +102,18 @@ bool st_validate_config(const char* app_name, const st_test* tests, size_t num_t
     }
 
     for (size_t n = 0; n < num_tests; n++) {
-        /* test names. */
+        /* spaces in test names. */
         if (st_strstr(tests[n].name, " ")) {
             _ST_ERROR("%s test #%zu (name: '%s') is invalid (names may not contain spaces)",
                 _ST_ERR_PREFIX, n + 1, tests[n].name);
+            all_valid = false;
+        }
+        /* length of test names. */
+        size_t name_len = strlen(tests[n].name);
+        if (name_len > (size_t)ST_MAX_TEST_NAME) {
+            _ST_ERROR("%s test #%zu (name: '%s') is invalid (names may only be %d characters"
+                " in length; counted %zu)", _ST_ERR_PREFIX, n + 1, tests[n].name,
+                ST_MAX_TEST_NAME, name_len);
             all_valid = false;
         }
     }
