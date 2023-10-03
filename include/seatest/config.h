@@ -49,6 +49,9 @@
 /** The number of seconds to wait for a TCP connection before it times out. */
 # define ST_INET_TIMEOUT 5
 
+/** The string to use in place of "0.0" if an elapsed time is too fast to measure. */
+# define ST_MSEC_ZERO "<1"
+
 /**
  * Command line argument thresholds
  */

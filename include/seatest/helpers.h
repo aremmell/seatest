@@ -52,17 +52,11 @@ int _st_last_sockerr(void)
 #endif
 }
 
-/** Converts a bitmask of conditions into a string. */
-static inline
-void _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
-{
-    (void)conds;
-    str[0] = '\0';
-}
-
 /**
  * Internal helper macros
  */
+
+# define _ST_STRIFY(val) #val
 
 # define _ST_DECLARE_CL_ARGS() \
     static const st_cl_arg st_cl_args[] = { \
@@ -91,5 +85,34 @@ void _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
             skip = true; \
         } \
     } while (false)
+
+/** Converts a bitmask of conditions into a string. */
+static inline
+char* _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
+{
+    str[0] = '\0';
+
+    bool first = true;
+    if ((conds & COND_DISK) == COND_DISK) {
+        (void)strncat(str, _ST_STRIFY(COND_DISK), ST_MAX_COND_STR);
+        first = false;
+    }
+    if ((conds & COND_INET) == COND_INET) {
+        if (!first) {
+            (void)strncat(str, ", ", ST_MAX_COND_STR);
+        }
+        (void)strncat(str, _ST_STRIFY(COND_INET), ST_MAX_COND_STR);
+        first = false;
+    }
+    if ((conds & COND_CPUS) == COND_CPUS) {
+        if (!first) {
+            (void)strncat(str, ", ", ST_MAX_COND_STR);
+        }
+        (void)strncat(str, _ST_STRIFY(COND_CPUS), ST_MAX_COND_STR);
+        first = false;
+    }
+
+    return &str[0];
+}
 
 #endif /* !_SEATEST_HELPERS_H_INCLUDED */

@@ -64,8 +64,9 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
         if (!tests[n].res.skip) {
             tests[n].res = tests[n].fn();
         } else {
-            // TODO: warning-color message listing condition(s) which caused
-            // the test to be skipped.
+            char conds[ST_MAX_COND_STR] = {0};
+            _ST_SKIPPED(_ST_INDENT "skipped due to unmet condition(s): %s",
+                _st_conds_to_string(tests[n].res.skip_conds, conds));
         }
 
         tests[n].msec = st_timer_elapsed(&timer) - started_at;
@@ -182,8 +183,21 @@ void st_print_test_intro(size_t num, size_t to_run, const char* name)
 
 void st_print_test_outro(size_t num, size_t to_run, const char* name, const st_test* test)
 {
-    (void)printf("\n" WHITEB("(%zu/%zu) '%s' finished (") WHITE("%.fms") WHITEB("): ")
-        "%s\n", num, to_run, name, test->msec, ST_PASSFAILWARN(test));
+    char* msec_str = NULL;
+    if (test->msec > 0.0) {
+        int len = snprintf(NULL, 0, "%.f", test->msec);
+        if (len > 0) {
+            msec_str = calloc(len + 1, sizeof(char));
+            if (msec_str) {
+                (void)snprintf(msec_str, len + 1, "%.f", test->msec);
+            }
+        }
+    }
+
+    (void)printf("\n" WHITEB("(%zu/%zu) '%s' finished (") WHITE("%sms") WHITEB("): ")
+        "%s\n", num, to_run, name, (msec_str ? msec_str : ST_MSEC_ZERO), ST_PASSFAILWARN(test));
+
+    _st_safefree(&msec_str);
 }
 
 void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,

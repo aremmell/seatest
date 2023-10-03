@@ -216,6 +216,6 @@ ST_END_TEST_IMPL()
 
 ST_BEGIN_TEST_IMPL(requires_inet)
 {
-    ST_MESSAGE0("doing something that requires an internet connection...");
+    ST_MESSAGE0("you won't see this, because the test will be skipped");
 }
 ST_END_TEST_IMPL()

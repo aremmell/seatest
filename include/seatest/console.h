@@ -135,7 +135,7 @@
 
 # define _ST_MESSAGE(msg, ...) __ST_MESSAGE(WHITE(msg) "\n", __VA_ARGS__)
 # define _ST_SUCCESS(msg, ...) __ST_MESSAGE(FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
-# define _ST_SKIPPED(msg, ...) __ST_MESSSAGE(FG_COLOR(0, 178, msg) "\n", __VA_ARGS__)
+# define _ST_SKIPPED(msg, ...) __ST_MESSAGE(FG_COLOR(1, 178, EMPH(msg)) "\n", __VA_ARGS__)
 # define _ST_WARNING(msg, ...) __ST_MESSAGE(FG_COLOR(0, 208, msg) "\n", __VA_ARGS__)
 # define _ST_ERROR(msg, ...)   __ST_MESSAGE(FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
 
