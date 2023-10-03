@@ -69,6 +69,19 @@ void _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
         ST_CL_CONFIG() \
     }
 
+# define _ST_EVALUATE_EXPR_RAW(expr, name, color, is_fatal) \
+    do { \
+        if (!(expr)) { \
+            _retval.pass = false; \
+            _retval.fatal = is_fatal; \
+            (void)printf(FG_COLOR(0, color, name " (line %"PRIu32"):") \
+                DGRAY(" expression") WHITE(" '" #expr "'") DGRAY(" is false\n"), __LINE__); \
+        } \
+    } while (false)
+
+# define _ST_EVALUATE_EXPR(expr, name) \
+    _ST_EVALUATE_EXPR_RAW(expr, name, 196, true)
+
 # define _ST_PROCESS_TEST_CONDITION(condition, check_cond) \
     do { \
         if (!condition && (tests[n].conds & check_cond) == check_cond) { \
@@ -76,16 +89,6 @@ void _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
                 _ST_WARN_PREFIX, n + 1, tests[n].name); \
             tests[n].res.skip_conds |= check_cond; \
             skip = true; \
-        } \
-    } while (false)
-
-# define _ST_EVALUATE_EXPR(expr, name) \
-    do { \
-        if (!(expr)) { \
-            _retval.pass = false; \
-            _retval.fatal = true; \
-            (void)printf(FG_COLOR(0, 196, name " (line %"PRIu32"):") \
-                DGRAY(" expression") WHITE(" '" #expr "'") DGRAY(" is false\n"), __LINE__); \
         } \
     } while (false)
 

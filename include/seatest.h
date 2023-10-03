@@ -29,8 +29,8 @@
 # include "seatest/console.h"
 # include "seatest/config.h"
 # include "seatest/types.h"
-# include "seatest/macros.h"
 # include "seatest/helpers.h"
+# include "seatest/macros.h"
 # include "seatest/version.h"
 
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,

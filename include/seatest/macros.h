@@ -26,9 +26,6 @@
 #ifndef _SEATEST_MACROS_H_INCLUDED
 # define _SEATEST_MACROS_H_INCLUDED
 
-# include "seatest/config.h"
-# include "seatest/console.h"
-
 /** Blots out a variable, avoiding compiler warnings/errors in the event that it is unreferenced. */
 # define ST_UNUSED(var) (void)(var)
 
@@ -90,13 +87,7 @@
 # define ST_TEST_SKIPPED() (_retval.skip)
 
 # define ST_EXPECT(expr) \
-    do { \
-        if (!(expr)) { \
-            _retval.pass = false; \
-            (void)printf(FG_COLOR(0, 208, "ST_EXPECT (line %"PRIu32"):") \
-                DGRAY(" expression") WHITE(" '" #expr "'") DGRAY(" is false\n"), __LINE__); \
-        } \
-    } while (false)
+    _ST_EVALUATE_EXPR_RAW(expr, "ST_EXPECT", 208, false)
 
 # define ST_REQUIRE(expr) _ST_EVALUATE_EXPR(expr, "ST_REQUIRE")
 
