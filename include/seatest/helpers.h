@@ -39,7 +39,7 @@ void __st_safefree(void** pp)
 }
 
 /** Wraps __st_safefree in order to accept any pointer type. */
-# define _st_safefree(pp) __st_safefree((void**)pp);
+# define _st_safefree(pp) __st_safefree((void**)pp)
 
 /** Returns the last socket-related error code. */
 static inline

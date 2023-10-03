@@ -36,7 +36,7 @@
 int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     size_t num_args, st_test* tests, size_t num_tests);
 
-bool st_validate_config(const char* app_name, st_test* tests, size_t num_tests);
+bool st_validate_config(const char* app_name, const st_test* tests, size_t num_tests);
 bool st_prepare_tests(st_test* tests, size_t num_tests);
 
 void st_print_intro(size_t to_run);

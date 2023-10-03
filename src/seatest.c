@@ -86,7 +86,7 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
     return passed == to_run ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-bool st_validate_config(const char* app_name, st_test* tests, size_t num_tests)
+bool st_validate_config(const char* app_name, const st_test* tests, size_t num_tests)
 {
     /* before doing any other work, ensure that the test configuration is sane. */
     bool all_valid = true;
@@ -623,7 +623,7 @@ bool st_get_avail_fs_bytes(const char* restrict path, uint64_t* bytes)
         _ST_REPORT_ERROR(errno);
         return false;
     }
-    *bytes = (uint64_t)(stvfs.f_bavail * (stvfs.f_frsize ? stvfs.f_frsize : stvfs.f_bsize));
+    *bytes = (stvfs.f_bavail * (stvfs.f_frsize ? stvfs.f_frsize : stvfs.f_bsize));
 #else
     ULARGE_INTEGER free_bytes = {0};
     if (!GetDiskFreeSpaceExA(NULL, &free_bytes, NULL, NULL)) {
