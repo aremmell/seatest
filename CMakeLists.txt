@@ -49,12 +49,21 @@ project(
     DESCRIPTION "seatest: a test framework for c."
 )
 
-# debug/release preprocessor
+# preprocessor defines
 add_compile_definitions(
+    # simulate failure to determine available disk space
+    #ST_SIMULATE_DISK_ERROR
+    # simulate low disk space (mutually exclusive w/ ST_SIMULATE_DISK_ERROR)
+    #ST_SIMULATE_DISK_INSUFFICIENT
+    # simulate failure to detect internet connection
+    #ST_SIMULATE_INET_ERROR
+    # verbose debug messages
+    #ST_DEBUG_MESSAGES
     $<$<CONFIG:Debug>:DEBUG>
     $<$<CONFIG:Release>:NDEBUG>
 )
 
+# compiler options
 if (MSVC)
     add_compile_options(
         /W4 /MP /GS /experimental:c11atomics /wd4267
