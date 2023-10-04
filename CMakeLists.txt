@@ -1,13 +1,15 @@
+################################################################################
+# seatest CMake script
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2023 Ryan M. Lederman
 
-cmake_minimum_required(
-    VERSION 3.12.0
-)
+cmake_minimum_required(VERSION 3.12.0)
 
 # variables
 set(PROJECT_NAME seatest)
-set(MAIN_EXECUTABLE_NAME seatest)
+set(SANDBOX_EXECUTABLE_NAME seatest_sandbox)
+set(EXAMPLE_EXECUTABLE_NAME seatest_example)
 set(STATIC_LIBRARY_NAME seatest_static)
 set(SHARED_LIBRARY_NAME seatest_shared)
 
@@ -46,7 +48,7 @@ project(
     ${PROJECT_NAME}
     VERSION 0.1.0
     LANGUAGES C
-    DESCRIPTION "seatest: a test framework for c."
+    DESCRIPTION ${PROJECT_NAME}
 )
 
 # preprocessor defines
@@ -104,8 +106,13 @@ configure_file(
 )
 
 add_executable(
-    ${MAIN_EXECUTABLE_NAME}
-    src/main.c
+    ${SANDBOX_EXECUTABLE_NAME}
+    src/sandbox.c
+)
+
+add_executable(
+    ${EXAMPLE_EXECUTABLE_NAME}
+    example/main.c
 )
 
 add_library(
@@ -134,7 +141,14 @@ if(!WIN32)
 endif()
 
 target_include_directories(
-    ${MAIN_EXECUTABLE_NAME}
+    ${SANDBOX_EXECUTABLE_NAME}
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_BINARY_DIR}/include
+)
+
+target_include_directories(
+    ${EXAMPLE_EXECUTABLE_NAME}
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}/include
@@ -155,12 +169,23 @@ target_include_directories(
 )
 
 target_link_libraries(
-    ${MAIN_EXECUTABLE_NAME}
+    ${SANDBOX_EXECUTABLE_NAME}
+    ${STATIC_LIBRARY_NAME}
+)
+
+target_link_libraries(
+    ${EXAMPLE_EXECUTABLE_NAME}
     ${STATIC_LIBRARY_NAME}
 )
 
 target_compile_features(
-    ${MAIN_EXECUTABLE_NAME}
+    ${SANDBOX_EXECUTABLE_NAME}
+    PUBLIC
+    ${C_STANDARD}
+)
+
+target_compile_features(
+    ${EXAMPLE_EXECUTABLE_NAME}
     PUBLIC
     ${C_STANDARD}
 )

@@ -1,5 +1,5 @@
 /*
- * main.c
+ * sandbox.c
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2023
@@ -37,7 +37,7 @@ ST_END_DECLARE_TEST_LIST()
 
 int main(int argc, char** argv)
 {
-    return ST_MAIN_IMPL("Acme Inc.");
+    return ST_MAIN_IMPL("selftest");
 }
 
 ST_BEGIN_TEST_IMPL(test_tests)
