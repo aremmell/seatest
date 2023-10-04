@@ -112,7 +112,7 @@ add_executable(
 
 add_executable(
     ${EXAMPLE_EXECUTABLE_NAME}
-    example/main.c
+    example/example.c
 )
 
 add_library(

@@ -1,5 +1,5 @@
 /*
- * main.c
+ * example.h
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2023
@@ -23,18 +23,11 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "main.h"
+#ifndef _SEATEST_EXAMPLE_H_INCLUDED
+# define _SEATEST_EXAMPLE_H_INCLUDED
 
-ST_DECLARE_STATIC_VARS()
+#include <seatest.h>
 
-ST_BEGIN_DECLARE_TEST_LIST()
-    ST_DECLARE_TEST_LIST_ENTRY(test-widgets, test_widgets)
-ST_END_DECLARE_TEST_LIST()
+ST_DECLARE_TEST(test_widgets)
 
-int main(int argc, char** argv)
-{
-    return ST_MAIN_IMPL("Acme Inc.");
-}
-
-ST_BEGIN_TEST_IMPL(test_widgets)
-ST_END_TEST_IMPL()
+#endif /* !_SEATEST_EXAMPLE_H_INCLUDED */
