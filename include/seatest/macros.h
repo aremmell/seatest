@@ -186,13 +186,13 @@
 
 # define ST_STR_BEGINSWITH_WSPACE(str) \
     do { \
-        const char* const p = (const char*)str; \
+        const char* const p = (const char* const)str; \
         _ST_EVALUATE_EXPR(isspace(p[0]), "ST_STR_BEGINSWITH_WSPACE"); \
     } while (false)
 
 # define ST_STR_NOT_BEGINSWITH_WSPACE(str) \
     do { \
-        const char* const p = (const char*)str; \
+        const char* const p = (const char* const)str; \
         _ST_EVALUATE_EXPR(!isspace(p[0]), "ST_STR_NOT_BEGINSWITH_WSPACE"); \
     } while (false)
 
@@ -222,13 +222,13 @@
 
 # define ST_STR_ENDSWITH_WSPACE(str) \
     do { \
-        const char* const p = (const char*)str; \
+        const char* const p = (const char* const)str; \
         _ST_EVALUATE_EXPR(isspace(p[strlen(p) - 1]), "ST_STR_ENDSWITH_WSPACE"); \
     } while (false)
 
 # define ST_STR_NOT_ENDSWITH_WSPACE(str) \
     do { \
-        const char* const p = (const char*)str; \
+        const char* const p = (const char* const)str; \
         _ST_EVALUATE_EXPR(!isspace(p[strlen(p) - 1]), "ST_STR_NOT_ENDSWITH_WSPACE"); \
     } while (false)
 

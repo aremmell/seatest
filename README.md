@@ -21,4 +21,4 @@ seatest is a work-in-progress, as it is essentially brand new. Luckily I have mo
 A minimalist, no-nonsense portable C17 framework for quickly creating your own custom test suites based on boilerplate code. Full support for conditional evaluation, warnings, fatal errors, command-line control, and even special requirements for tests (*if requirements are not met, the test is skipped and a warning is emitted*).
 
 ## Why
-I designed a simplistic version of what is now `seatest` for [libsir](https://github.com/aremmell/libsir), because I didn't want *any* dependencies, even if it was just a test framework. Later on, I found myself porting that test rig multiple times, and on the third time, I decided the right thing to do is to create something reusable that others can utilize as well.
+I designed a simplistic version of what is now seatest for [libsir](https://github.com/aremmell/libsir), because I didn't want *any* dependencies, even if it was just a test framework. Later on, I found myself porting that test rig multiple times, and on the third time, I decided the right thing to do is to create something reusable that others can utilize as well.

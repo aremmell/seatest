@@ -26,10 +26,7 @@
 #ifndef _SEATEST_H_INCLUDED
 # define _SEATEST_H_INCLUDED
 
-# include "seatest/console.h"
-# include "seatest/config.h"
-# include "seatest/types.h"
-# include "seatest/helpers.h"
+# include "seatest/internal.h"
 # include "seatest/macros.h"
 # include "seatest/version.h"
 
@@ -98,5 +95,16 @@ bool st_get_avail_fs_bytes(const char* restrict path, uint64_t* bytes);
 
 /** Determines if an Internet connection is available. */
 bool st_have_inet_connection(void);
+
+/** Returns the last socket-related error code. */
+static inline
+int st_last_sockerr(void)
+{
+#if !defined(__WIN__)
+    return errno;
+#else
+    return WSAGetLastError();
+#endif
+}
 
 #endif /* !_SEATEST_H_INCLUDED */

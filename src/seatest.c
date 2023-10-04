@@ -676,7 +676,7 @@ bool st_have_inet_connection(void)
     while (cur != NULL) {
         st_descriptor sock = socket(AF_INET, cur->ai_socktype, cur->ai_protocol);
         if (sock == ST_BAD_DESCRIPTOR) {
-            _ST_DEBUG("socket failed (%d)", _st_last_sockerr());
+            _ST_DEBUG("socket failed (%d)", st_last_sockerr());
             cur = cur->ai_next;
             continue;
         }
@@ -697,7 +697,7 @@ bool st_have_inet_connection(void)
             _ST_DEBUG("connected to %s!", ST_INET_TARGET_HOST);
             connected = true;
         } else {
-            _ST_DEBUG("connect failed (%d)", _st_last_sockerr());
+            _ST_DEBUG("connect failed (%d)", st_last_sockerr());
         }
 #if !defined(__WIN__)
         close(sock);
