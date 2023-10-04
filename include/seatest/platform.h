@@ -131,8 +131,8 @@ typedef int st_optlen;
 # endif
 
 # if defined(__MACOS__) || defined(__BSD__) || \
-     (defined(_GNU_SOURCE) && defined(__GLIBC__) && __GLIBC__ >= 2 && \
-      __GLIBC_MINOR__ >= 38)
+     (defined(_GNU_SOURCE) && defined(__GLIBC__) && \
+     __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 38)
 #  define __HAVE_STRLCPY__
 #  define __HAVE_STRLCAT__
 # elif defined(__WIN__) && defined(__HAVE_STDC_SECURE_OR_EXT1__)
