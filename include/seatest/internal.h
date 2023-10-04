@@ -303,6 +303,19 @@ void __st_safefree(void** pp)
 /** Wraps __st_safefree in order to accept any pointer type. */
 # define _st_safefree(pp) __st_safefree((void**)pp)
 
+/** Wrapper for 'safe' string copy functions, depending on what's available. */
+static inline
+void _st_strncpy(char* restrict dst, size_t dstsz, const char* restrict src, size_t count)
+{
+#if defined(__HAVE_STRLCPY__)
+#elif defined(__HAVE_STRNCPY_S__)
+    errno_t ret = strncpy_s(dst, dstsz, src, count);
+    assert(STRUNCATE != ret);
+    _ST_UNUSED(ret);
+#else
+#endif
+}
+
 /** Converts a bitmask of conditions into a string. */
 static inline
 char* _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])

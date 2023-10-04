@@ -70,7 +70,6 @@
 #  include <termios.h>
 #  include <unistd.h>
 #  include <errno.h>
-#  include <string.h>
 
 #  if !defined(__STDC_NO_ATOMICS__)
 #   include <stdatomic.h>
@@ -121,6 +120,7 @@ typedef int st_optlen;
 # include <stdlib.h>
 # include <inttypes.h>
 # include <assert.h>
+# include <string.h>
 
 # if defined(__WIN__) && defined(__STDC_SECURE_LIB__)
 #  define __HAVE_STDC_SECURE_OR_EXT1__
