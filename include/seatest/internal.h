@@ -26,8 +26,89 @@
 #ifndef _SEATEST_INTERNAL_H_INCLUDED
 # define _SEATEST_INTERNAL_H_INCLUDED
 
-# include "seatest/types.h"
+# include "seatest/platform.h"
 # include "seatest/config.h"
+
+/**
+ * Types
+ */
+
+/** Global state container. */
+typedef struct {
+    const char* app_name;
+} st_state;
+
+/** Data associated with a test. */
+typedef struct {
+    bool skip;      /**< true if the test is skipped. */
+    int skip_conds; /**< If skipped, the condition(s) that caused skippage. */
+    bool pass;      /**< true if the test encountered error(s) or warning(s). */
+    bool fatal;     /**< true if the test encountered error(s). */
+} st_testres;
+
+/** Function typedef for test routines. */
+typedef st_testres (*st_test_fn)(void);
+
+/**
+ * Enumeration of conditions which must be met in order for a given test to run
+ * successfully; if the specified conditions are not met, the test is skipped.
+ * See config.h for thresholds.
+ */
+enum {
+    COND_INET = 1 << 1, /**< Internet connection available. */
+    COND_DISK = 1 << 2, /**< At least ST_MIN_FS_AVAIL bytes of free space available. */
+    COND_CPUS = 1 << 3, /**< At least n logical CPUs available. */
+}; // TODO: Think of more conditions
+
+/** An entry in the list of available tests. */
+typedef struct {
+    const char* const name;
+    st_test_fn fn;
+    st_testres res;
+    double msec;
+    int conds;
+    bool run;
+} st_test;
+
+/** A command line argument. */
+typedef struct {
+    const char* const flag;  /**< e.g. --whiz-bang. */
+    const char* const usage; /**< e.g. [file, ...]. */
+    const char* const desc;  /**< e.g. 'causes you to levitate'. */
+} st_cl_arg;
+
+/** Command line configuration. */
+typedef struct {
+    bool wait;     /**< true if --wait was passed, false otherwise. */
+    bool only;     /**< true if --only was passed, false otherwise. */
+    size_t to_run; /**< If --only was passed, how many tests to run. */
+} st_cl_config;
+
+/** Millisecond timer. */
+typedef struct {
+# if !defined(__WIN__)
+    time_t sec;
+    long msec;
+# else /* __WIN__ */
+    LARGE_INTEGER counter;
+# endif
+} st_timer;
+
+# if !defined(__WIN__)
+#  define st_strncmp  strncmp     /** Compares two strings for equality. */
+#  define st_strnicmp strncasecmp /** Compares two strings for equality, ignoring case. */
+#  define st_strstr   strstr      /** Searches a string for a sub-string. */
+#  define st_stristr  strcasestr  /** Searches a string for a sub-string, ignoring case. */
+# else
+#  define st_strncmp  StrCmpNA    /** Compares two strings for equality. */
+#  define st_strnicmp StrCmpNIA   /** Compares two strings for equality, ignoring case. */
+#  define st_strstr   StrStrA     /** Searches a string for a sub-string. */
+#  define st_stristr  StrStrIA    /** Searches a string for a sub-string, ignoring case. */
+# endif
+
+/**
+ * Macros
+ */
 
 # define _ESC "\x1b[" /**< Begins an ANSI escape sequence. */
 # define _ESC_M "m"   /**< Marks the end of a sequence. */
@@ -112,29 +193,29 @@
 # define WHITEB(s)    FG_COLOR(1, 15, s) /**< Bold white foreground text. */
 
 # define _ST_SEATEST                  "seatest"
+# define _ST_INDENT                   "  "
 # define _ST_ERR_PREFIX   _ST_SEATEST " error:"
 # define _ST_WARN_PREFIX  _ST_SEATEST " warning:"
 # define _ST_DEBUG_PREFIX _ST_SEATEST " debug:"
-# define _ST_INDENT                   "  "
 
 /** The base macro for all stdout macros. */
 # define __ST_MESSAGE(...) (void)printf(__VA_ARGS__)
 
 /** Outputs a diagnostic or informative test message. */
-# define ST_MESSAGE(msg, ...) __ST_MESSAGE(_ST_INDENT WHITE(msg) "\n", __VA_ARGS__)
-# define ST_MESSAGE0(msg)     __ST_MESSAGE(_ST_INDENT WHITE(msg) "\n")
+# define ST_MESSAGE(msg, ...)  __ST_MESSAGE(_ST_INDENT WHITE(msg) "\n", __VA_ARGS__)
+# define ST_MESSAGE0(msg)      __ST_MESSAGE(_ST_INDENT WHITE(msg) "\n")
 
 /** Outputs a test message in green. */
-# define ST_SUCCESS(msg, ...) __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
-# define ST_SUCCESS0(msg)     __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 40, msg) "\n")
+# define ST_SUCCESS(msg, ...)  __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
+# define ST_SUCCESS0(msg)      __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 40, msg) "\n")
 
 /** Outputs a test message in orange. */
-# define ST_WARNING(msg, ...) __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 208, msg) "\n", __VA_ARGS__)
-# define ST_WARNING0(msg)     __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 208, msg) "\n")
+# define ST_WARNING(msg, ...)  __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 208, msg) "\n", __VA_ARGS__)
+# define ST_WARNING0(msg)      __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 208, msg) "\n")
 
 /** Outputs a test message in red. */
-# define ST_ERROR(msg, ...) __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
-# define ST_ERROR0(msg)     __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n")
+# define ST_ERROR(msg, ...)    __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
+# define ST_ERROR0(msg)        __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n")
 
 # define _ST_MESSAGE(msg, ...) __ST_MESSAGE(WHITE(msg) "\n", __VA_ARGS__)
 # define _ST_SUCCESS(msg, ...) __ST_MESSAGE(FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
@@ -144,17 +225,16 @@
 
 # if defined(ST_DEBUG_MESSAGES)
 #  define _ST_DEBUG(msg, ...) \
-    __ST_MESSAGE("%s %s (%s:%d): " msg "\n", _ST_DEBUG_PREFIX, __func__, __file__, \
-        __LINE__, __VA_ARGS__)
+    __ST_MESSAGE("%s %s (%s:%d): " msg "\n", _ST_DEBUG_PREFIX, \
+        __func__, __file__, __LINE__, __VA_ARGS__)
 # else
 #  define _ST_DEBUG(...)
 # endif
 
-# define ST_PASSFAILWARN(test) \
-    (test->res.skip ? FG_COLOR(1, 178, "SKIP") \
-    : test->res.pass ? FG_COLOR(1, 40, "PASS") \
-    : test->res.fatal ? FG_COLOR(1, 196, "FAIL") \
-    : FG_COLOR(1, 208, "WARN"))
+# define ST_SKIP_PASS_FAIL(test) \
+     (test->res.skip  ? FG_COLOR(1, 178, "SKIP") : test->res.pass \
+                      ? FG_COLOR(1,  40, "PASS") : test->res.fatal \
+                      ? FG_COLOR(1, 196, "FAIL") : FG_COLOR(1, 208, "WARN"))
 
 # define __ST_REPORT_ERROR(code, message) \
     _ST_ERROR("%s in %s (%s:%d): %d (%s)", _ST_ERR_PREFIX, __func__, __file__, \

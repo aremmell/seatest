@@ -204,7 +204,7 @@ void st_print_test_outro(size_t num, size_t to_run, const char* name, const st_t
     }
 
     (void)printf("\n" WHITEB("(%zu/%zu) '%s' finished (") WHITE("%sms") WHITEB("): ")
-        "%s\n", num, to_run, name, (msec_str ? msec_str : ST_MSEC_ZERO), ST_PASSFAILWARN(test));
+        "%s\n", num, to_run, name, (msec_str ? msec_str : ST_MSEC_ZERO), ST_SKIP_PASS_FAIL(test));
 
     _st_safefree(&msec_str);
 }
