@@ -29,8 +29,8 @@
 /** The only code needed in main()/the entry point. `app_name` is a name to associate with the
  * test suite, such as a product or company name. */
 # define ST_MAIN_IMPL(app_name) \
-    st_main(argc, argv, app_name, st_cl_args,_ST_COUNTOF(st_cl_args), \
-        st_tests,_ST_COUNTOF(st_tests))
+    st_main(argc, argv, app_name, st_cl_args, _ST_COUNTOF(st_cl_args), \
+        st_tests, _ST_COUNTOF(st_tests))
 
 /** Declares static variables required by seatest. Place this above your entry point routine. */
 # define ST_DECLARE_STATIC_VARS() \
