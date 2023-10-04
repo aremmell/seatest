@@ -303,16 +303,47 @@ void __st_safefree(void** pp)
 /** Wraps __st_safefree in order to accept any pointer type. */
 # define _st_safefree(pp) __st_safefree((void**)pp)
 
-/** Wrapper for 'safe' string copy functions, depending on what's available. */
+/** Wrapper for 'safe' versions of strcpy, depending on what's available. */
 static inline
-void _st_strncpy(char* restrict dst, size_t dstsz, const char* restrict src, size_t count)
+void _st_strncpy(char* const restrict dst, size_t dstsz,
+    const char* const restrict src, size_t count)
 {
 #if defined(__HAVE_STRLCPY__)
+    size_t ret = strlcpy(dst, src, dstsz);
+    assert(ret < dstsz);
+    _ST_UNUSED(count);
+    _ST_UNUSED(ret);
 #elif defined(__HAVE_STRNCPY_S__)
-    errno_t ret = strncpy_s(dst, dstsz, src, count);
+    errno_t ret = strncpy_s(dst, dstsz, src, _TRUNCATE);
     assert(STRUNCATE != ret);
+    _ST_UNUSED(count);
     _ST_UNUSED(ret);
 #else
+    // TODO: roll your own strlcpy or use the BSD version.
+    (void)strncpy(dst, src, count);
+    _ST_UNUSED(dstsz);
+#endif
+}
+
+/** Wrapper for 'safe' versions of strcat, depending on what's available. */
+static inline
+void _st_strncat(char* const restrict dst, size_t dstsz,
+    const char* const restrict src, size_t count)
+{
+#if defined(__HAVE_STRLCAT__)
+    size_t ret = strlcat(dst, src, dstsz);
+    assert(ret < dstsz);
+    _ST_UNUSED(count);
+    _ST_UNUSED(ret);
+#elif defined(__HAVE_STRNCAT_S__)
+    errno_t ret = strncat_s(dst, dstsz, src, _TRUNCATE);
+    assert(0 == ret);
+    _ST_UNUSED(count);
+    _ST_UNUSED(ret);
+#else
+    // TODO: roll your own strlcat or use the BSD version.
+    (void)strncat(dst, src, count);
+    _ST_UNUSED(dstsz);
 #endif
 }
 
@@ -325,24 +356,23 @@ char* _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
     bool first = true;
     if ((conds & COND_DISK) == COND_DISK) {
         const char* cat = _ST_STRIFY(COND_DISK);
-        (void)strncat(str, cat, strlen(cat));
+        _st_strncat(str, ST_MAX_COND_STR, cat, strlen(cat));
         first = false;
     }
     if ((conds & COND_INET) == COND_INET) {
         if (!first) {
-            (void)strncat(str, ", ", 2);
+            _st_strncat(str, ST_MAX_COND_STR, ", ", 2);
         }
         const char* cat = _ST_STRIFY(COND_INET);
-        (void)strncat(str, cat, strlen(cat));
+        _st_strncat(str, ST_MAX_COND_STR, cat, strlen(cat));
         first = false;
     }
     if ((conds & COND_CPUS) == COND_CPUS) {
         if (!first) {
-            (void)strncat(str, ", ", 2);
+            _st_strncat(str, ST_MAX_COND_STR, ", ", 2);
         }
         const char* cat = _ST_STRIFY(COND_CPUS);
-        (void)strncat(str, cat, strlen(cat));
-        first = false;
+        _st_strncat(str, ST_MAX_COND_STR, cat, strlen(cat));
     }
 
     return &str[0];
