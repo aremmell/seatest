@@ -26,8 +26,8 @@
 #ifndef _SEATEST_MACROS_H_INCLUDED
 # define _SEATEST_MACROS_H_INCLUDED
 
-/** The only code needed in main()/the entry point. `app_name` is a name to associate with your
- * test suite, such as the product or company name.. */
+/** The only code needed in main()/the entry point. `app_name` is a name to associate with the
+ * test suite, such as a product or company name. */
 # define ST_MAIN_IMPL(app_name) \
     st_main(argc, argv, app_name, st_cl_args,_ST_COUNTOF(st_cl_args), \
         st_tests,_ST_COUNTOF(st_tests))
@@ -46,7 +46,6 @@
     st_testres st_test_##name(void) \
     { \
         st_testres _retval; \
-        _retval.line_start = __LINE__; \
         _retval.skip = false; \
         _retval.pass = true; \
         _retval.fatal = false;

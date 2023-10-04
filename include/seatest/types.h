@@ -35,11 +35,10 @@ typedef struct {
 
 /** Data associated with a test. */
 typedef struct {
-    uint32_t line_start; /**< Line number at which the test starts. */
-    bool skip;           /**< true if the test is skipped. */
-    int skip_conds;      /**< If skipped, the condition(s) that caused skippage. */
-    bool pass;           /**< true if the test encountered error(s) or warning(s). */
-    bool fatal;          /**< true if the test encountered error(s). */
+    bool skip;      /**< true if the test is skipped. */
+    int skip_conds; /**< If skipped, the condition(s) that caused skippage. */
+    bool pass;      /**< true if the test encountered error(s) or warning(s). */
+    bool fatal;     /**< true if the test encountered error(s). */
 } st_testres;
 
 /** Function typedef for test routines. */
