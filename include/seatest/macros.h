@@ -184,6 +184,18 @@
 # define ST_STR_NOT_BEGINSWITH_I(needle, haystack, needle_len) \
     _ST_EVALUATE_EXPR(st_strnicmp(needle, haystack, needle_len), "ST_STR_NOT_BEGINSWITH_I")
 
+# define ST_STR_BEGINSWITH_WSPACE(str) \
+    do { \
+        const char* const p = (const char*)str; \
+        _ST_EVALUATE_EXPR(isspace(p[0]), "ST_STR_BEGINSWITH_WSPACE"); \
+    } while (false)
+
+# define ST_STR_NOT_BEGINSWITH_WSPACE(str) \
+    do { \
+        const char* const p = (const char*)str; \
+        _ST_EVALUATE_EXPR(!isspace(p[0]), "ST_STR_NOT_BEGINSWITH_WSPACE"); \
+    } while (false)
+
 # define ST_STR_ENDSWITH(needle, haystack, needle_len, haystack_len) \
     _ST_EVALUATE_EXPR( \
         !st_strncmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
@@ -207,6 +219,18 @@
         st_strnicmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
         "ST_STR_NOT_ENDSWITH_I" \
     )
+
+# define ST_STR_ENDSWITH_WSPACE(str) \
+    do { \
+        const char* const p = (const char*)str; \
+        _ST_EVALUATE_EXPR(isspace(p[strlen(p) - 1]), "ST_STR_ENDSWITH_WSPACE"); \
+    } while (false)
+
+# define ST_STR_NOT_ENDSWITH_WSPACE(str) \
+    do { \
+        const char* const p = (const char*)str; \
+        _ST_EVALUATE_EXPR(!isspace(p[strlen(p) - 1]), "ST_STR_NOT_ENDSWITH_WSPACE"); \
+    } while (false)
 
 # define ST_STR_ALPHA(str) \
     do { \

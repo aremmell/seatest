@@ -78,7 +78,7 @@ int _st_last_sockerr(void)
         if (!(expr)) { \
             _retval.pass = false; \
             _retval.fatal = is_fatal; \
-            (void)printf(FG_COLOR(0, color, name " (line %"PRIu32"):") \
+            (void)printf(_ST_INDENT FG_COLOR(0, color, name " (line %"PRIu32"):") \
                 DGRAY(" expression") WHITE(" '" #expr "'") DGRAY(" is false\n"), __LINE__); \
         } \
     } while (false)
@@ -89,7 +89,7 @@ int _st_last_sockerr(void)
 # define _ST_PROCESS_TEST_CONDITION(condition, check_cond) \
     do { \
         if (!condition && (tests[n].conds & check_cond) == check_cond) { \
-            _ST_WARNING("%s test #%zu (name: '%s') will be skipped due to " #check_cond, \
+            _ST_WARNING(_ST_INDENT "%s test #%zu (name: '%s') will be skipped due to " #check_cond, \
                 _ST_WARN_PREFIX, n + 1, tests[n].name); \
             tests[n].res.skip_conds |= check_cond; \
             skip = true; \

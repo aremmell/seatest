@@ -46,6 +46,7 @@ ST_BEGIN_TEST_IMPL(test_tests)
 
     // should all succeed
     const char* msg = "hello there";
+    const char* msg2 = "\ni'm surrounded!\r\n";
     ST_REQUIRE(strlen(msg) > 10);
     ST_EXPECT(msg != NULL);
     ST_EQUAL(1, 1);
@@ -77,10 +78,14 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_STR_NOT_BEGINSWITH("lleh", msg, 4);
     ST_STR_BEGINSWITH_I("HELL", msg, 4);
     ST_STR_NOT_BEGINSWITH_I("LLEH", msg, 4);
+    ST_STR_BEGINSWITH_WSPACE(msg2);
+    ST_STR_NOT_BEGINSWITH_WSPACE(msg);
     ST_STR_ENDSWITH("here", msg, 4, strlen(msg));
     ST_STR_NOT_ENDSWITH("ereh", msg, 4, strlen(msg));
     ST_STR_ENDSWITH_I("HERE", msg, 4, strlen(msg));
     ST_STR_NOT_ENDSWITH_I("EREH", msg, 4, strlen(msg));
+    ST_STR_ENDSWITH_WSPACE(msg2);
+    ST_STR_NOT_ENDSWITH_WSPACE(msg);
     ST_STR_ALPHA("loremipsum");
     ST_STR_NUMERIC("123456");
     ST_STR_ALPHANUMERIC("lorem123ipsum456");
@@ -93,7 +98,7 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_EXPECT(a == b);
 
     // should all fail
-    ST_MESSAGE0("expecting the next 18 to fail");
+    ST_MESSAGE0("expecting the next 22 to fail");
     const char* null_msg = NULL;
     ST_STR_CONTAINS("sea", msg);
     ST_STR_NOT_CONTAINS("hell", msg);
@@ -103,10 +108,14 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_STR_NOT_BEGINSWITH("hell", msg, 4);
     ST_STR_BEGINSWITH_I("S", msg, 1);
     ST_STR_NOT_BEGINSWITH_I("HELL", msg, 4);
+    ST_STR_BEGINSWITH_WSPACE(msg);
+    ST_STR_NOT_BEGINSWITH_WSPACE(msg2);
     ST_STR_ENDSWITH("hell", msg, 4, strlen(msg));
     ST_STR_NOT_ENDSWITH("here", msg, 4, strlen(msg));
     ST_STR_ENDSWITH_I("HELL", msg, 4, strlen(msg));
     ST_STR_NOT_ENDSWITH_I("HERE", msg, 4, strlen(msg));
+    ST_STR_ENDSWITH_WSPACE(msg);
+    ST_STR_NOT_ENDSWITH_WSPACE(msg2);
     ST_STR_ALPHA("not-alpha");
     ST_STR_NUMERIC("not-numeric");
     ST_STR_ALPHANUMERIC("not-alphanumeric");
