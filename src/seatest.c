@@ -562,12 +562,12 @@ char* st_format_error_msg(int code, char message[ST_MAX_ERROR])
 # elif defined(__HAVE_GNU_STRERROR_R__)
     const char* tmp = strerror_r(code, message, ST_MAX_ERROR);
     if (tmp != message)
-        _st_strncpy(message, ST_MAX_ERROR, tmp, strnlen(tmp, ST_MAX_ERROR));
+        _st_strcpy(message, ST_MAX_ERROR, tmp, strnlen(tmp, ST_MAX_ERROR));
 # elif defined(__HAVE_STRERROR_S__)
     finderr = (int)strerror_s(msg, ST_MAX_ERROR, code);
 # else
     const char* tmp = strerror(code);
-    _st_strncpy(message, ST_MAX_ERROR, tmp, strnlen(tmp, ST_MAX_ERROR));
+    _st_strcpy(message, ST_MAX_ERROR, tmp, strnlen(tmp, ST_MAX_ERROR));
 # endif
 # if defined(__HAVE_XSI_STRERROR_R__) || defined(__HAVE_STRERROR_S__)
     assert(0 == finderr);

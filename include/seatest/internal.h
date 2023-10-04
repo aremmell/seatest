@@ -305,7 +305,7 @@ void __st_safefree(void** pp)
 
 /** Wrapper for 'safe' versions of strcpy, depending on what's available. */
 static inline
-void _st_strncpy(char* const restrict dst, size_t dstsz,
+void _st_strcpy(char* const restrict dst, size_t dstsz,
     const char* const restrict src, size_t count)
 {
 #if defined(__HAVE_STRLCPY__)
@@ -319,15 +319,16 @@ void _st_strncpy(char* const restrict dst, size_t dstsz,
     _ST_UNUSED(count);
     _ST_UNUSED(ret);
 #else
-    // TODO: roll your own strlcpy or use the BSD version.
-    (void)strncpy(dst, src, count);
-    _ST_UNUSED(dstsz);
+    size_t ret = __strlcpy(dst, src, dstsz);
+    assert(ret < dstsz);
+    _ST_UNUSED(count);
+    _ST_UNUSED(ret);
 #endif
 }
 
 /** Wrapper for 'safe' versions of strcat, depending on what's available. */
 static inline
-void _st_strncat(char* const restrict dst, size_t dstsz,
+void _st_strcat(char* const restrict dst, size_t dstsz,
     const char* const restrict src, size_t count)
 {
 #if defined(__HAVE_STRLCAT__)
@@ -341,9 +342,10 @@ void _st_strncat(char* const restrict dst, size_t dstsz,
     _ST_UNUSED(count);
     _ST_UNUSED(ret);
 #else
-    // TODO: roll your own strlcat or use the BSD version.
-    (void)strncat(dst, src, count);
-    _ST_UNUSED(dstsz);
+    size_t ret = __strlcat(dst, src, dstsz);
+    assert(ret < dstsz);
+    _ST_UNUSED(count);
+    _ST_UNUSED(ret);
 #endif
 }
 
@@ -356,23 +358,23 @@ char* _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
     bool first = true;
     if ((conds & COND_DISK) == COND_DISK) {
         const char* cat = _ST_STRIFY(COND_DISK);
-        _st_strncat(str, ST_MAX_COND_STR, cat, strlen(cat));
+        _st_strcat(str, ST_MAX_COND_STR, cat, strlen(cat));
         first = false;
     }
     if ((conds & COND_INET) == COND_INET) {
         if (!first) {
-            _st_strncat(str, ST_MAX_COND_STR, ", ", 2);
+            _st_strcat(str, ST_MAX_COND_STR, ", ", 2);
         }
         const char* cat = _ST_STRIFY(COND_INET);
-        _st_strncat(str, ST_MAX_COND_STR, cat, strlen(cat));
+        _st_strcat(str, ST_MAX_COND_STR, cat, strlen(cat));
         first = false;
     }
     if ((conds & COND_CPUS) == COND_CPUS) {
         if (!first) {
-            _st_strncat(str, ST_MAX_COND_STR, ", ", 2);
+            _st_strcat(str, ST_MAX_COND_STR, ", ", 2);
         }
         const char* cat = _ST_STRIFY(COND_CPUS);
-        _st_strncat(str, ST_MAX_COND_STR, cat, strlen(cat));
+        _st_strcat(str, ST_MAX_COND_STR, cat, strlen(cat));
     }
 
     return &str[0];
