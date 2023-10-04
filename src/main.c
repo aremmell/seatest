@@ -58,14 +58,15 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_NOT_NULL(msg);
 
     // should all fail
-    /*ST_EQUAL(0, 1);
+    ST_MESSAGE0("expecting the next 8 to fail");
+    ST_EQUAL(0, 1);
     ST_NOT_EQUAL(1, 1);
     ST_LESS_THAN(2, 2);
     ST_LESS_THAN_OR_EQUAL(3, 2);
     ST_GREATER_THAN(1, 2);
     ST_GREATER_THAN_OR_EQUAL(2, 3);
     ST_NULL(msg);
-    ST_NOT_NULL(NULL);*/
+    ST_NOT_NULL(NULL);
 
     // should all succeed
     ST_STR_CONTAINS("the", msg);
@@ -85,11 +86,15 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_STR_ALPHANUMERIC("lorem123ipsum456");
 
     // should fail
-    /* ST_REQUIRE(strlen(msg) == 0);
-    ST_EXPECT(0 > 1); */
+    ST_MESSAGE0("expecting the next 2 to fail");
+    int a = 1;
+    int b = 2;
+    ST_REQUIRE(strlen(msg) < 10);
+    ST_EXPECT(a == b);
 
     // should all fail
-    /*const char* null_msg = NULL;
+    ST_MESSAGE0("expecting the next 18 to fail");
+    const char* null_msg = NULL;
     ST_STR_CONTAINS("sea", msg);
     ST_STR_NOT_CONTAINS("hell", msg);
     ST_STR_CONTAINS_I("tes", msg);
@@ -107,7 +112,7 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_STR_ALPHANUMERIC("not-alphanumeric");
     ST_STR_ALPHA(null_msg);
     ST_STR_NUMERIC(null_msg);
-    ST_STR_ALPHANUMERIC(null_msg);*/
+    ST_STR_ALPHANUMERIC(null_msg);
 
 
     // should all succeed
@@ -119,14 +124,15 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_NUM_NOT_MULTIPLE_OF(8193, 2);
 
     // should all fail
-    /* ST_NUM_EVEN(49);
+    ST_MESSAGE0("expecting the next 8 to fail");
+    ST_NUM_EVEN(49);
     ST_NUM_ODD(48);
     ST_NUM_NEGATIVE(4);
     ST_NUM_POSITIVE(-4);
     ST_NUM_MULTIPLE_OF(8193, 2);
     ST_NUM_MULTIPLE_OF(10000001, 10);
     ST_NUM_NOT_MULTIPLE_OF(8192, 2);
-    ST_NUM_NOT_MULTIPLE_OF(10000000, 10); */
+    ST_NUM_NOT_MULTIPLE_OF(10000000, 10);
 
     struct foo {
         int one;
@@ -140,13 +146,15 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_BITWISE_ZEROED(&zeroed, sizeof(zeroed));
 
     // should fail (some bytes not zero)
-    //ST_BITWISE_ZEROED(&not_zeroed, sizeof(not_zeroed));
+    ST_MESSAGE0("expecting the next 1 to fail");
+    ST_BITWISE_ZEROED(&not_zeroed, sizeof(not_zeroed));
 
     // should succeed (any byte not zero)
     ST_BITWISE_NOT_ZEROED(&not_zeroed, sizeof(not_zeroed));
 
     // should fail (all bytes zero)
-    //ST_BITWISE_NOT_ZEROED(&zeroed, sizeof(zeroed));
+    ST_MESSAGE0("expecting the next 1 to fail");
+    ST_BITWISE_NOT_ZEROED(&zeroed, sizeof(zeroed));
 
     struct foo lhs = {1234, 5678};
     struct foo rhs = {1234, 5678};
@@ -155,8 +163,9 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_BITWISE_EQUAL(lhs, rhs, sizeof(struct foo));
 
     // should fail
+    ST_MESSAGE0("expecting the next 1 to fail");
     lhs.one = 4321;
-    //ST_BITWISE_EQUAL(lhs, rhs, sizeof(struct foo));
+    ST_BITWISE_EQUAL(lhs, rhs, sizeof(struct foo));
 
     int arr1[] = {1, 2, 3, 4, 5};
     int arr2[] = {1, 2, 3, 4, 5};
@@ -170,7 +179,8 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_ARRAY_CONTAINS(arr1, 5);
 
     // should fail (value not present)
-    //ST_ARRAY_CONTAINS(arr1, 6);
+    ST_MESSAGE0("expecting the next 1 to fail");
+    ST_ARRAY_CONTAINS(arr1, 6);
 
     // should succeed (different types)
     ST_ARRAY_NOT_CONTAINS(arr1, (char)1);
@@ -179,18 +189,20 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_ARRAY_NOT_CONTAINS(arr1, 6);
 
     // should fail (value present)
-    //ST_ARRAY_NOT_CONTAINS(arr1, 1);
+    ST_MESSAGE0("expecting the next 2 to fail");
+    ST_ARRAY_NOT_CONTAINS(arr1, 1);
 
     // should fail (same type, size, and values)
-    //ST_ARRAY_NOT_EQUAL(arr1, arr2);
+    ST_ARRAY_NOT_EQUAL(arr1, arr2);
 
     // should succeed (all unique values)
     ST_ARRAY_UNIQUE(arr1);
 
     // should fail (duplicate value)
-    //arr1[3] = 1;
-    //ST_ARRAY_UNIQUE(arr1);
-    //arr1[3] = 4;
+    ST_MESSAGE0("expecting the next 1 to fail");
+    arr1[3] = 1;
+    ST_ARRAY_UNIQUE(arr1);
+    arr1[3] = 4;
 
     short arr3[] = {1, 2, 3, 4, 5};
 
@@ -198,24 +210,27 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_ARRAY_CONTAINS(arr3, (short)3);
 
     // should fail (different types, val = int)
-    //ST_ARRAY_CONTAINS(arr3, 3);
+    ST_MESSAGE0("expecting the next 2 to fail");
+    ST_ARRAY_CONTAINS(arr3, 3);
 
     // should fail (different types)
-    //ST_ARRAY_EQUAL(arr1, arr3);
+    ST_ARRAY_EQUAL(arr1, arr3);
 
     // should succeed (different types)
     ST_ARRAY_NOT_EQUAL(arr1, arr3);
 
     arr1[2] = 6;
     // should fail (different values)
-    //ST_ARRAY_EQUAL(arr1, arr2);
+    ST_MESSAGE0("expecting the next 1 to fail");
+    ST_ARRAY_EQUAL(arr1, arr2);
 
     // should succeed (different values)
     ST_ARRAY_NOT_EQUAL(arr1, arr2);
 
     int arr4[] = {1, 2, 3, 4};
     // should fail (different counts)
-    //ST_ARRAY_EQUAL(arr2, arr4);
+    ST_MESSAGE0("expecting the next 1 to fail");
+    ST_ARRAY_EQUAL(arr2, arr4);
 
     // should succeed (different counts)
     ST_ARRAY_NOT_EQUAL(arr2, arr4);
