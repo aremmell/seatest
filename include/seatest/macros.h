@@ -71,9 +71,18 @@
 # define ST_END_DECLARE_TEST_LIST() \
     };
 
-# define ST_TEST_PASSING() (_retval.pass)
-# define ST_TEST_FAILED_FATALLY() (_retval.fatal)
-# define ST_TEST_SKIPPED() (_retval.skip)
+# define ST_TEST_IS_PASSING() (!_retval.fatal)
+# define ST_TEST_HAS_WARNINGS() (!_retval.pass)
+# define ST_TEST_IS_FAILED() (_retval.fatal)
+# define ST_TEST_IS_SKIPPED() (_retval.skip)
+
+# define ST_TEST_EXIT_IF_FAILED() \
+    do { \
+        if (ST_TEST_IS_FAILED()) { \
+            ST_WARNING0("returning due to previous error(s)"); \
+            return _retval; \
+        } \
+    } while (false)
 
 # define ST_EXPECT(expr) \
     _ST_EVALUATE_EXPR_RAW(expr, "ST_EXPECT", 208, false)
