@@ -571,6 +571,7 @@ char* st_format_error_msg(int code, char message[ST_MAX_ERROR])
 # endif
 # if defined(__HAVE_XSI_STRERROR_R__) || defined(__HAVE_STRERROR_S__)
     assert(0 == finderr);
+    _ST_UNUSED(finderr);
 # else
    _ST_UNUSED(finderr);
 # endif
