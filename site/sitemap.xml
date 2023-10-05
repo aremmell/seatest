@@ -2,22 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://seatest.rml.dev/</loc>
-         <lastmod>2023-10-02</lastmod>
+         <lastmod>2023-10-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://seatest.rml.dev/installation/</loc>
-         <lastmod>2023-10-02</lastmod>
+         <loc>https://seatest.rml.dev/development/</loc>
+         <lastmod>2023-10-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://seatest.rml.dev/troubleshooting/</loc>
-         <lastmod>2023-10-02</lastmod>
+         <loc>https://seatest.rml.dev/evaluators/</loc>
+         <lastmod>2023-10-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://seatest.rml.dev/helpers/</loc>
+         <lastmod>2023-10-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://seatest.rml.dev/sample/</loc>
+         <lastmod>2023-10-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://seatest.rml.dev/usage/</loc>
-         <lastmod>2023-10-02</lastmod>
+         <lastmod>2023-10-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://seatest.rml.dev/writing-a-test-rig/</loc>
+         <lastmod>2023-10-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

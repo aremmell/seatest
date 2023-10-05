@@ -1,5 +1,5 @@
 site_name: seatest
-site_description: "seatest: a featherweight cross-platform C17 test framework for C applications."
+site_description: "seatest: a featherweight cross-platform C17 test framework for C libraries and applications."
 site_author: Ryan M. Lederman
 site_url: https://seatest.rml.dev
 repo_url: https://github.com/aremmell/seatest
@@ -12,11 +12,13 @@ theme:
   features:
       - navigation.instant
       - navigation.tracking
-      - navigation.tabs
       - navigation.sections
       - navigation.expand
       - navigation.indexes
+      - navigation.top
       - content.code.copy
+      - toc.follow
+      - toc.integrate
   palette:
     scheme: slate
     primary: black
@@ -25,10 +27,15 @@ theme:
     code: Source Code Pro
 nav:
   - Home: index.md
-  - Installation: installation.md
-  - Usage: usage.md
-  - Troubleshooting: troubleshooting.md
+  - Getting Started:
+    - Building and Linking: development.md
+    - Writing a Test Rig: writing-a-test-rig.md
+  - Documentation:
+    - Evaluators: evaluators.md
+    - Helpers: helpers.md
+    - Command-line: command-line.md
 markdown_extensions:
+  - toc
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span

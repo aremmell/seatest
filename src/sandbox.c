@@ -243,11 +243,14 @@ ST_BEGIN_TEST_IMPL(test_tests)
 
     // should succeed (different counts)
     ST_ARRAY_NOT_EQUAL(arr2, arr4);
+
+    // should emit a warning and return
+    ST_TEST_EXIT_IF_FAILED();
 }
 ST_END_TEST_IMPL()
 
 ST_BEGIN_TEST_IMPL(requires_inet)
 {
-    ST_MESSAGE0("you won't see this, because the test will be skipped");
+    ST_MESSAGE0("lorem ipsum");
 }
 ST_END_TEST_IMPL()

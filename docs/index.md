@@ -1,7 +1,7 @@
 ---
 title: Testing changing the title with frontmatter.
 description: The frontmatter description of this page.
-icon: octicons/beaker-24
+icon: material/home
 ---
 
 # seatest
