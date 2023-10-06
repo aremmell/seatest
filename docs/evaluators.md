@@ -4,7 +4,7 @@ seatest evaluators make writing tests less painful. They provide a straightforwa
 
 Each evaluator ultimately boils down to a truthy statement about the expression and data passed into it. At each step of your test, its state can be positively confirmed to either be correct or incorrect.
 
-Any evaluator that results in a false expression will cause the active test to fail (*but not stop&mdash;it is on my TODO list to make that behavior configurable*). Finally, [additional helpers](./helpers.md) are provided to check the state of your test at any time, and optionally exit immediately. 
+Any evaluator that results in a false expression will cause the active test to fail (*but not stop&mdash;it is on my TODO list to make that behavior configurable*). Finally, [additional helpers](./helpers.md) are provided to check the state of your test at any time, and optionally exit immediately.
 
 ## General Purpose
 
@@ -70,6 +70,7 @@ Any evaluator that results in a false expression will cause the active test to f
 |                   ST_NUM_ODD | num % 2 != 0                                                 |
 |           ST_NUM_MULTIPLE_OF | num % exp == 0                                               |
 |       ST_NUM_NOT_MULTIPLE_OF | num % exp != 0                                               |
+|       ST_NUM_IN_RANGE        | num >= low && num <= high                                    |
 
 ## Array
 

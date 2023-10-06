@@ -320,6 +320,9 @@
         _ST_EVALUATE_EXPR(dt.rem != 0, "ST_NUM_NOT_MULTIPLE_OF"); \
     } while (false)
 
+# define ST_NUM_IN_RANGE(num, low, high) \
+    _ST_EVALUATE_EXPR((num) >= (low) && (num) <= (high), "ST_NUM_IN_RANGE")
+
 /**
  * Array
  */
