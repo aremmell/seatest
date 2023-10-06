@@ -72,10 +72,10 @@ ST_BEGIN_TEST_IMPL(widget_sanity)
 
     /** Emits an orange message, and adds a warning to the test. ST_REQUIRE()'s
      * little brother. */
-    ST_EXPECT(widget.class != 109);
+    ST_EXPECT(widget.class == 109);
 
     /** All of the following emit red messages and cause the test to fail if the
-     * expression passed to them evaluates to false. */
+     * expression they represent evaluates to false. */
     ST_REQUIRE(created);
     ST_NUM_POSITIVE(widget.color);
     ST_GREATER_THAN_OR_EQUAL(widget.class, 100);
@@ -93,5 +93,6 @@ ST_END_TEST_IMPL()
 /** Implementation of the rest-client-get test. */
 ST_BEGIN_TEST_IMPL(rest_client_get)
 {
+    // TODO
 }
 ST_END_TEST_IMPL()
