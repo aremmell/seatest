@@ -1,5 +1,7 @@
 /*
- * example.h
+ * pseudocode.h
+ *
+ * Phony types and functions for demonstration purposes.
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2023
@@ -23,11 +25,33 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _SEATEST_EXAMPLE_H_INCLUDED
-# define _SEATEST_EXAMPLE_H_INCLUDED
+#ifndef _SEATEST_PSEUDOCODE_H_INCLUDED
+# define _SEATEST_PSEUDOCODE_H_INCLUDED
 
-#include <seatest.h>
+# include <stdbool.h>
+# include <stdint.h>
 
-ST_DECLARE_TEST(test_widgets)
+/**
+ * Widget-related.
+ */
 
-#endif /* !_SEATEST_EXAMPLE_H_INCLUDED */
+typedef struct {
+    int32_t color;
+    int32_t class;
+    uint32_t flags;
+} acme_widget;
+
+static inline
+bool acme_create_widget_purple(acme_widget* out) {
+    if (!out) {
+        return false;
+    }
+
+    out->color = 1;
+    out->class = 102;
+    out->flags = 1 | 2 | 4;
+
+    return true;
+}
+
+#endif /* ! _SEATEST_PSEUDOCODE_H_INCLUDED */
