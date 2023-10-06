@@ -57,6 +57,7 @@ int main(int argc, char** argv)
 
 /** Implementation of the widget-sanity test. */
 ST_BEGIN_TEST_IMPL(widget_sanity)
+{
     /** An informative message, to show that something is happening. */
     ST_MESSAGE("creating a %s widget...", "purple");
 
@@ -86,9 +87,11 @@ ST_BEGIN_TEST_IMPL(widget_sanity)
     ST_TEST_EXIT_IF_FAILED();
 
     /** ... the rest of the test. */
-
+}
 ST_END_TEST_IMPL()
 
 /** Implementation of the rest-client-get test. */
 ST_BEGIN_TEST_IMPL(rest_client_get)
+{
+}
 ST_END_TEST_IMPL()
