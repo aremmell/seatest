@@ -4,7 +4,7 @@ seatest evaluators make writing tests less painful. They provide a straightforwa
 
 Each evaluator ultimately boils down to a truthy statement about the expression and data passed into it. At each step of your test, its state can be positively confirmed to either be correct or incorrect.
 
-Any evaluator[^1] that results in a false expression will cause the active test to fail (*but not stop&mdash;it is on the TODO list to make that behavior configurable*). Finally, [additional helpers](./helpers.md) are provided to check the state of a test at any time, and optionally exit immediately.
+Any evaluator that results in a false expression will cause the active test to fail[^1] (*but not stop&mdash;it is on the TODO list to make that behavior configurable*). Finally, [additional helpers](./helpers.md) are provided to check the state of a test at any time, and optionally exit immediately.
 
 [^1]: All evaluators but `ST_EXPECT`.
 
