@@ -157,6 +157,12 @@
  * String
  */
 
+# define ST_STR_EMPTY(str) \
+    _ST_EVALUATE_EXPR((str) == NULL || *(str) == '\0', "ST_STR_EMPTY")
+
+# define ST_STR_NOT_EMPTY(str) \
+    _ST_EVALUATE_EXPR((str) != NULL && *(str) != '\0', "ST_STR_NOT_EMPTY")
+
 # define ST_STR_EQUAL(str1, str2, len) \
     _ST_EVALUATE_EXPR(!st_strncmp(str1, str2, len), "ST_STR_EQUAL")
 

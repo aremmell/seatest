@@ -27,29 +27,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <seatest.h>
-#include "pseudocode.h"
+#include "phony.h"
 
-/** Declares static variables required by seatest. Must appear before the
- * entry point. */
+/** Declares necessary static variables. Must appear before the entry point. */
 ST_DECLARE_STATIC_VARS()
 
-/** Individual test declarations. */
+/** Test routine declarations. */
 ST_DECLARE_TEST(widget_sanity)
 ST_DECLARE_TEST(rest_client_get)
 
-/** The global list of tests available. For each entry, a corresponding
- * ST_DECLARE_TEST() must appear in an included header, or above this statement
- * in the same file. */
+/** The global list of available tests (and associated metadata). For each entry,
+ * a corresponding ST_DECLARE_TEST() must appear in an included header or above
+ * this statement in the same file. */
 ST_BEGIN_DECLARE_TEST_LIST()
+
     /** Ensures that widgets are functioning properly. */
     ST_DECLARE_TEST_LIST_ENTRY(widget-sanity, widget_sanity)
+
     /** Checks a REST client's get request functionality (requires an Internet
      * connection); if not connected to the Internet, the test will be skipped. */
     ST_DECLARE_TEST_LIST_ENTRY_COND(rest-client-get, rest_client_get, COND_INET)
+
 ST_END_DECLARE_TEST_LIST()
 
-/** Implementing the entry point couldn't really be any easier! All data required
- * for the test rig to function is captured automatically. */
+/** The entry point is simple as can be: all data required by the test rig is
+ * captured automatically (must have argc and argv parameters and return int). */
 int main(int argc, char** argv)
 {
     return ST_MAIN_IMPL("Acme Inc.");
@@ -70,29 +72,46 @@ ST_BEGIN_TEST_IMPL(widget_sanity)
         ST_SUCCESS0("successfully created widget");
     }
 
-    /** Emits an orange message, and adds a warning to the test. ST_REQUIRE()'s
-     * little brother. */
-    ST_EXPECT(widget.class == 109);
-
-    /** All of the following emit red messages and cause the test to fail if the
-     * expression they represent evaluates to false. */
+    /** The following emit red messages and cause the test to fail if the
+     * expression they represent evaluates to false. For a complete list of
+     * available Evaluators, see the documentation. */
     ST_REQUIRE(created);
     ST_NUM_POSITIVE(widget.color);
-    ST_GREATER_THAN_OR_EQUAL(widget.class, 100);
-    ST_BITS_HIGH(widget.flags, 4);
+    ST_EQUAL(widget.class, WIDGET_CLASS_STANDARD);
+    ST_BITS_HIGH(widget.flags, WIDGET_FLAGS_STANDARD);
 
-    /** If it does not make sense to continue the test upon the failure of any
-     * of these conditions, the following causes the test to stop and return
-     * an error. */
+    /** If it doesn't make sense to continue the test after the failure of any
+     * of the above, causes the test to exit immediately with an error. */
     ST_TEST_EXIT_IF_FAILED();
 
     /** ... the rest of the test. */
 }
 ST_END_TEST_IMPL()
 
-/** Implementation of the rest-client-get test. */
+/** Implementation of the rest-client-get test. To see how the test rig behaves
+ * when no Internet connection is available (this test depends on it), uncomment
+ * the line in CMakeLists.txt that says ST_SIMULATE_INET_ERROR. */
 ST_BEGIN_TEST_IMPL(rest_client_get)
 {
-    // TODO
+    /** Perform an HTTP GET request, retrieving a list of available widgets.  */
+    ST_MESSAGE0("retrieving list of widgets from server...");
+
+    http_response response;
+    bool result = acme_rest_get_widget_list(&response);
+
+    /** As in the widget-sanity test, the following emit a red message and cause
+     * the test to fail if the expression they represent evaluates to false. */
+    ST_REQUIRE(result);
+    ST_REQUIRE(response.code == HTTP_OK);
+    ST_STR_NOT_EMPTY(response.body);
+    ST_STR_BEGINSWITH("{\"widgets\":", response.body, 11);
+
+    /** If any of the Evaluators above have failed, exit the test now. */
+    ST_TEST_EXIT_IF_FAILED();
+
+    /** Visual confirmation that the network request succeeded. */
+    ST_SUCCESS("got HTTP_OK; response len: %zu bytes", strlen(response.body));
+
+    /** ... the rest of the test. */
 }
 ST_END_TEST_IMPL()

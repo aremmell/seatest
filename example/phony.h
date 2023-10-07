@@ -1,5 +1,5 @@
 /*
- * pseudocode.h
+ * phony.h
  *
  * Phony types and functions for demonstration purposes.
  *
@@ -25,15 +25,19 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _SEATEST_PSEUDOCODE_H_INCLUDED
-# define _SEATEST_PSEUDOCODE_H_INCLUDED
+#ifndef _SEATEST_EXAMPLE_PHONY_H_INCLUDED
+# define _SEATEST_EXAMPLE_PHONY_H_INCLUDED
 
 # include <stdbool.h>
 # include <stdint.h>
 
 /**
- * Widget-related.
+ * Widgets.
  */
+
+#define WIDGET_COLOR_PURPLE     1
+#define WIDGET_CLASS_STANDARD 102
+#define WIDGET_FLAGS_STANDARD (0x1 | 0x2 | 0x4)
 
 typedef struct {
     int32_t color;
@@ -47,11 +51,34 @@ bool acme_create_widget_purple(acme_widget* out) {
         return false;
     }
 
-    out->color = 1;
-    out->class = 102;
-    out->flags = 1 | 2 | 4;
+    out->color = WIDGET_COLOR_PURPLE;
+    out->class = WIDGET_CLASS_STANDARD;
+    out->flags = WIDGET_FLAGS_STANDARD;
 
     return true;
 }
 
-#endif /* ! _SEATEST_PSEUDOCODE_H_INCLUDED */
+/**
+ * REST client.
+ */
+
+#define HTTP_OK 200
+
+typedef struct {
+    int code;
+    const char* body;
+} http_response;
+
+static inline
+bool acme_rest_get_widget_list(http_response* out) {
+    if (!out) {
+        return false;
+    }
+
+    out->code = HTTP_OK;
+    out->body = "{\"widgets\": [{\"color\": 1, \"class\": 102, \"flags\": 7}]}";
+
+    return true;
+}
+
+#endif /* ! _SEATEST_EXAMPLE_PHONY_H_INCLUDED */
