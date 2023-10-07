@@ -45,10 +45,7 @@
 # define ST_BEGIN_TEST_IMPL(name) \
     st_testres st_test_##name(void) \
     { \
-        st_testres _retval; \
-        _retval.skip = false; \
-        _retval.pass = true; \
-        _retval.fatal = false;
+        st_testres _retval = {0};
 
 /** Ends the definition (implementation) of an individual test function. */
 # define ST_END_TEST_IMPL() \
