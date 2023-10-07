@@ -84,7 +84,9 @@
 # define ST_EXPECT(expr) \
     _ST_EVALUATE_EXPR_RAW(expr, "ST_EXPECT", 208, false)
 
-# define ST_REQUIRE(expr) _ST_EVALUATE_EXPR(expr, "ST_REQUIRE")
+# define ST_TRUE(expr) _ST_EVALUATE_EXPR(expr, "ST_TRUE")
+
+# define ST_FALSE(expr) _ST_EVALUATE_EXPR(!(expr), "ST_FALSE")
 
 # define ST_EQUAL(lhs, rhs) \
     _ST_EVALUATE_EXPR((lhs) == (rhs), "ST_EQUAL")

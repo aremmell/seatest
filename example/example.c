@@ -75,7 +75,7 @@ ST_BEGIN_TEST_IMPL(widget_sanity)
     /** The following emit red messages and cause the test to fail if the
      * expression they represent evaluates to false. For a complete list of
      * available Evaluators, see the documentation. */
-    ST_REQUIRE(created);
+    ST_TRUE(created);
     ST_NUM_POSITIVE(widget.color);
     ST_EQUAL(widget.class, WIDGET_CLASS_STANDARD);
     ST_BITS_HIGH(widget.flags, WIDGET_FLAGS_STANDARD);
@@ -101,8 +101,8 @@ ST_BEGIN_TEST_IMPL(rest_client_get)
 
     /** As in the widget-sanity test, the following emit a red message and cause
      * the test to fail if the expression they represent evaluates to false. */
-    ST_REQUIRE(result);
-    ST_REQUIRE(response.code == HTTP_OK);
+    ST_TRUE(result);
+    ST_EQUAL(response.code, HTTP_OK);
     ST_STR_NOT_EMPTY(response.body);
     ST_STR_BEGINSWITH("{\"widgets\":", response.body, 11);
 

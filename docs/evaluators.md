@@ -4,15 +4,16 @@ seatest evaluators make writing tests less painful. They provide a straightforwa
 
 Each evaluator ultimately boils down to a truthy statement about the expression and data passed into it. At each step of your test, its state can be positively confirmed to either be correct or incorrect.
 
-Any evaluator that results in a false expression will cause the active test to fail (*but not stop&mdash;it is on my TODO list to make that behavior configurable*). Finally, [additional helpers](./helpers.md) are provided to check the state of your test at any time, and optionally exit immediately.
+Any evaluator that results in a false expression will cause the active test to fail (*but not stop&mdash;it is on the TODO list to make that behavior configurable*). Finally, [additional helpers](./helpers.md) are provided to check the state of a test at any time, and optionally exit immediately.
 
 ## General Purpose
 
 |                    Evaluator | Expression                                                   |
 | :--------------------------- | :----------------------------------------------------------- |
-|        ST_EXPECT             | any truthy expression; if false, a warning is set for the active test (*no failure*) |
-|          ST_REQUIRE          | any truthy expression; if false, an error is set for the active test (*failure*) |
-|           ST_EQUAL           | lhs == rhs                                                   |
+|                    ST_EXPECT | any truthy expression; if false, a warning is set for the active test (*no failure*) |
+|                      ST_TRUE | any truthy expression                                        |
+|                     ST_FALSE | !(any truthy expression)                                     |
+|                     ST_EQUAL | lhs == rhs                                                   |
 |                 ST_NOT_EQUAL | lhs != rhs                                                   |
 |                 ST_LESS_THAN | lhs < rhs                                                    |
 |        ST_LESS_THAN_OR_EQUAL | lhs <= rhs                                                   |
