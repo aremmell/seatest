@@ -167,76 +167,202 @@
     _ST_EVALUATE_EXPR(_ST_NOTNULL(str) && *(str) != '\0', "ST_STR_NOT_EMPTY")
 
 # define ST_STR_EQUAL(str1, str2, len) \
-    _ST_EVALUATE_EXPR(!st_strncmp(str1, str2, len), "ST_STR_EQUAL")
+    do { \
+        if (!(str1) || !(str2)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str1) && _ST_NOTNULL(str2), "ST_STR_EQUAL"); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(!st_strncmp(str1, str2, len), "ST_STR_EQUAL"); \
+    } while (false)
 
 # define ST_STR_NOT_EQUAL(str1, str2, len) \
-    _ST_EVALUATE_EXPR(st_strncmp(str1, str2, len), "ST_STR_NOT_EQUAL")
+    do { \
+        if (!(str1) || !(str2)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str1) && _ST_NOTNULL(str2), "ST_STR_NOT_EQUAL"); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(st_strncmp(str1, str2, len), "ST_STR_NOT_EQUAL"); \
+    } while (false)
 
 # define ST_STR_EQUAL_I(str1, str2, len) \
-    _ST_EVALUATE_EXPR(!st_strnicmp(str1, str2, len), "ST_STR_EQUAL_I")
+    do { \
+        if (!(str1) || !(str2)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str1) && _ST_NOTNULL(str2), "ST_STR_EQUAL_I"); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(!st_strnicmp(str1, str2, len), "ST_STR_EQUAL_I"); \
+    } while (false)
 
 # define ST_STR_NOT_EQUAL_I(str1, str2, len) \
-    _ST_EVALUATE_EXPR(st_strnicmp(str1, str2, len), "ST_STR_NOT_EQUAL_I")
+    do { \
+        if (!(str1) || !(str2)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str1) && _ST_NOTNULL(str2), "ST_STR_NOT_EQUAL_I"); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(st_strnicmp((str1), (str2), (len)), "ST_STR_NOT_EQUAL_I"); \
+    } while (false)
 
 # define ST_STR_CONTAINS(needle, haystack) \
-    _ST_EVALUATE_EXPR(st_strstr(haystack, needle), "ST_STR_CONTAINS")
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_CONTAINS" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(st_strstr(haystack, needle), "ST_STR_CONTAINS"); \
+    } while (false)
 
 # define ST_STR_NOT_CONTAINS(needle, haystack) \
-    _ST_EVALUATE_EXPR(!st_strstr(haystack, needle), "ST_STR_NOT_CONTAINS")
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_NOT_CONTAINS" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(!st_strstr(haystack, needle), "ST_STR_NOT_CONTAINS"); \
+    } while (false)
 
 # define ST_STR_CONTAINS_I(needle, haystack) \
-    _ST_EVALUATE_EXPR(st_stristr(haystack, needle), "ST_STR_CONTAINS_I")
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_CONTAINS_I" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(st_stristr((haystack), (needle)), "ST_STR_CONTAINS_I"); \
+    } while (false)
 
 # define ST_STR_NOT_CONTAINS_I(needle, haystack) \
-    _ST_EVALUATE_EXPR(!st_stristr(haystack, needle), "ST_STR_NOT_CONTAINS_I")
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_NOT_CONTAINS_I" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(!st_stristr((haystack), (needle)), "ST_STR_NOT_CONTAINS_I"); \
+    } while (false)
 
 # define ST_STR_BEGINSWITH(needle, haystack, needle_len) \
-    _ST_EVALUATE_EXPR(!st_strncmp(haystack, needle, needle_len), "ST_STR_BEGINSWITH")
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_BEGINSWITH" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(!st_strncmp((haystack), (needle), (needle_len)), "ST_STR_BEGINSWITH"); \
+    } while (false)
 
 # define ST_STR_NOT_BEGINSWITH(needle, haystack, needle_len) \
-    _ST_EVALUATE_EXPR(st_strncmp(haystack, needle, needle_len), "ST_STR_NOT_BEGINSWITH")
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_NOT_BEGINSWITH" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(st_strncmp((haystack), (needle), (needle_len)), "ST_STR_NOT_BEGINSWITH"); \
+    } while (false)
 
 # define ST_STR_BEGINSWITH_I(needle, haystack, needle_len) \
-    _ST_EVALUATE_EXPR(!st_strnicmp(needle, haystack, needle_len), "ST_STR_BEGINSWITH_I")
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_BEGINSWITH_I" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(!st_strnicmp((needle), (haystack), (needle_len)), "ST_STR_BEGINSWITH_I"); \
+    } while (false)
 
 # define ST_STR_NOT_BEGINSWITH_I(needle, haystack, needle_len) \
-    _ST_EVALUATE_EXPR(st_strnicmp(needle, haystack, needle_len), "ST_STR_NOT_BEGINSWITH_I")
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_NOT_BEGINSWITH_I" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(st_strnicmp((needle), (haystack), (needle_len)), "ST_STR_NOT_BEGINSWITH_I"); \
+    } while (false)
 
 # define ST_STR_BEGINSWITH_WSPACE(str) \
     do { \
-        const char* const p = (const char* const)str; \
-        _ST_EVALUATE_EXPR(isspace(p[0]), "ST_STR_BEGINSWITH_WSPACE"); \
+        if (!(str)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_BEGINSWITH_WSPACE"); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(isspace((str)[0]), "ST_STR_BEGINSWITH_WSPACE"); \
     } while (false)
 
 # define ST_STR_NOT_BEGINSWITH_WSPACE(str) \
     do { \
-        const char* const p = (const char* const)str; \
-        _ST_EVALUATE_EXPR(!isspace(p[0]), "ST_STR_NOT_BEGINSWITH_WSPACE"); \
+        if (!(str)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_NOT_BEGINSWITH_WSPACE"); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR(!isspace((str)[0]), "ST_STR_NOT_BEGINSWITH_WSPACE"); \
     } while (false)
 
 # define ST_STR_ENDSWITH(needle, haystack, needle_len, haystack_len) \
-    _ST_EVALUATE_EXPR( \
-        !st_strncmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
-        "ST_STR_ENDSWITH" \
-    )
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_ENDSWITH" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR( \
+            !st_strncmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
+            "ST_STR_ENDSWITH" \
+        ); \
+    } while (false)
 
 # define ST_STR_NOT_ENDSWITH(needle, haystack, needle_len, haystack_len) \
-    _ST_EVALUATE_EXPR( \
-        st_strncmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
-        "ST_STR_NOT_ENDSWITH" \
-    )
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_NOT_ENDSWITH" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR( \
+            st_strncmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
+            "ST_STR_NOT_ENDSWITH" \
+        ); \
+    } while (false)
 
 # define ST_STR_ENDSWITH_I(needle, haystack, needle_len, haystack_len) \
-    _ST_EVALUATE_EXPR( \
-        !st_strnicmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
-        "ST_STR_ENDSWITH_I" \
-    )
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_ENDSWITH_I" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR( \
+            !st_strnicmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
+            "ST_STR_ENDSWITH_I" \
+        ); \
+    } while (false)
 
 # define ST_STR_NOT_ENDSWITH_I(needle, haystack, needle_len, haystack_len) \
-    _ST_EVALUATE_EXPR( \
-        st_strnicmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
-        "ST_STR_NOT_ENDSWITH_I" \
-    )
+    do { \
+        if (!(needle) || !(haystack)) { \
+            _ST_EVALUATE_EXPR( \
+                _ST_NOTNULL(needle) && _ST_NOTNULL(haystack), "ST_STR_NOT_ENDSWITH_I" \
+            ); \
+            break; \
+        } \
+        _ST_EVALUATE_EXPR( \
+            st_strnicmp((haystack) + ((haystack_len) - (needle_len)), (needle), (needle_len)), \
+            "ST_STR_NOT_ENDSWITH_I" \
+        ); \
+    } while (false)
 
 # define ST_STR_ENDSWITH_WSPACE(str) \
     do { \
