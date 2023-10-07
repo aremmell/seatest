@@ -286,6 +286,8 @@ typedef struct {
         } \
     } while (false)
 
+# define _ST_NOTNULL(p) (p) != 0
+
 /**
  * Utility functions
  */
