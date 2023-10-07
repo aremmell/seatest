@@ -82,14 +82,15 @@
 # define ST_LOC_EXPRESSION    "expression"
 # define ST_LOC_IS_FALSE      "is false"
 # define ST_LOC_SKIPPED_COND  "will be skipped due to"
-# define ST_LOC_SKIPPED_UNMET "skipped due to unmet condition(s)"
-# define ST_LOC_RET_ERRS      "returning due to previous error(s)"
+# define ST_LOC_CONDITION     "condition"
+# define ST_LOC_SKIPPED_UNMET "skipped due to unmet %s"
+# define ST_LOC_RET_ERRS      "returning; encountered %d %s!"
 # define ST_LOC_INVAL_ANAME   "the app_name parameter to ST_MAIN_IMPL is" \
                               " invalid (may not be null or an empty string)"
 # define ST_LOC_NO_SPACES     "is invalid (names may not contain spaces)"
 # define ST_LOC_TOO_LONG      "is invalid (names may only be %d characters" \
                               " in length; counted %zu)"
-# define ST_LOC_RECTIFY       "please rectify the above error(s) and recompile"
+# define ST_LOC_RECTIFY       "please rectify the above %s and recompile"
 # define ST_LOC_CALC_DISK_ERR "failed to calculate available disk space! tests" \
                               " requiring COND_DISK will be skipped"
 # define ST_LOC_DISK_SPACE    "available disk space (%"PRIu64" bytes) is less" \

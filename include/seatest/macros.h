@@ -69,31 +69,60 @@
 # define ST_END_DECLARE_TEST_LIST() \
     };
 
-/** Outputs a diagnostic or informative test message. */
+/** Emits a diagnotic message in gray. Accepts printf-like variable arguments and requires a
+ * minimum of two arguments; use ST_DEBUG0() if just a simple message is required. */
+# define ST_DEBUG(msg, ...)    __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n", __VA_ARGS__)
+
+/** Emits a diagnotic message in gray. Only accepts a single message argument; use ST_DEBUG()
+ * for printf-like behavior. */
+# define ST_DEBUG0(msg)        __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n")
+
+/** Emits an informative message. Accepts printf-like variable arguments and requires a
+ * minimum of two arguments; use ST_MESSAGE0() if just a simple message is required. */
 # define ST_MESSAGE(msg, ...)  __ST_MESSAGE(ST_LOC_INDENT WHITE(msg) "\n", __VA_ARGS__)
+
+/** Emits an informative message. Only accepts a single message argument; use ST_MESSAGE()
+ * for printf-like behavior. */
 # define ST_MESSAGE0(msg)      __ST_MESSAGE(ST_LOC_INDENT WHITE(msg) "\n")
 
-/** Outputs a test message in green. */
+/** Emits a message in green, indicating something positive. Accepts printf-like variable
+ * arguments and requires a minimum of two arguments; use ST_SUCCESS0() if just a simple
+ * message is required. */
 # define ST_SUCCESS(msg, ...)  __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
+
+/** Emits a message in green, indicating something positive. Only accepts a single message
+ * argument; use ST_SUCCESS() for printf-like behavior. */
 # define ST_SUCCESS0(msg)      __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 40, msg) "\n")
 
-/** Outputs a test message in orange. */
+/** Emits a message in orange, indicating a warning condition. Accepts printf-like variable
+ * arguments and requires a minimum of two arguments; use ST_WARNING0() if just a simple
+ * message is required. */
 # define ST_WARNING(msg, ...)  __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 208, msg) "\n", __VA_ARGS__)
+
+/** Emits a message in orange, indicating a warning condition. Only accepts a single message
+ * argument; use ST_WARNING() for printf-like behavior. */
 # define ST_WARNING0(msg)      __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 208, msg) "\n")
 
-/** Outputs a test message in red. */
+/** Emits a message in red, indicating an error condition. Accepts printf-like variable
+ * arguments and requires a minimum of two arguments; use ST_ERROR0() if just a simple
+ * message is required. */
 # define ST_ERROR(msg, ...)    __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
+
+/** Emits a message in red, indicating an error condition. Only accepts a single message
+ * argument; use ST_ERROR() for printf-like behavior. */
 # define ST_ERROR0(msg)        __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 196, msg) "\n")
 
-# define ST_TEST_IS_PASSING()   (!_retval.fatal)
-# define ST_TEST_HAS_WARNINGS() (!_retval.pass)
-# define ST_TEST_IS_FAILED()    (_retval.fatal)
-# define ST_TEST_IS_SKIPPED()   (_retval.skip)
+# define ST_TEST_IS_FAILED()       (_retval.fatal)
+# define ST_TEST_IS_PASSING()      (!_retval.fatal)
+# define ST_TEST_LAST_EVAL_FALSE() (_retval.last_fail)
+# define ST_TEST_ERROR_COUNT()     (_retval.errors)
+# define ST_TEST_WARNING_COUNT()   (_retval.warnings)
 
 # define ST_TEST_EXIT_IF_FAILED() \
     do { \
         if (ST_TEST_IS_FAILED()) { \
-            ST_WARNING0(ST_LOC_RET_ERRS); \
+            ST_WARNING(ST_LOC_RET_ERRS, _retval.errors, _ST_PLURAL(ST_LOC_ERROR, \
+                _retval.errors)); \
             return _retval; \
         } \
     } while (false)

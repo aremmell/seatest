@@ -67,6 +67,7 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
         } else {
             char conds[ST_MAX_COND_STR] = {0};
             _ST_SKIPPED(ST_LOC_INDENT ST_LOC_SKIPPED_UNMET": %s",
+                _ST_PLURAL(ST_LOC_CONDITION, _st_conds_count(tests[n].res.skip_conds)),
                 _st_conds_to_string(tests[n].res.skip_conds, conds));
         }
 
@@ -89,7 +90,7 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
 bool st_validate_config(const char* app_name, const st_test* tests, size_t num_tests)
 {
     /* before doing any other work, ensure that the test configuration is sane. */
-    bool all_valid = true;
+    int errors = 0;
 
     /* any debug information related to the configuration/system. */
     _ST_DEBUG("clock resolution: ~%ldns", st_timer_getres());
@@ -97,7 +98,7 @@ bool st_validate_config(const char* app_name, const st_test* tests, size_t num_t
     /* app name. */
     if (!app_name || !*app_name) {
         _ST_ERROR("%s "ST_LOC_INVAL_ANAME, _ST_ERROR_PREFIX);
-        all_valid = false;
+        errors++;
     }
 
     for (size_t n = 0; n < num_tests; n++) {
@@ -105,22 +106,22 @@ bool st_validate_config(const char* app_name, const st_test* tests, size_t num_t
         if (st_strstr(tests[n].name, " ")) {
             _ST_ERROR("%s "ST_LOC_TEST" #%zu ("ST_LOC_NAME": '%s') "
                 ST_LOC_NO_SPACES, _ST_ERROR_PREFIX, n + 1, tests[n].name);
-            all_valid = false;
+            errors++;
         }
         /* length of test names. */
         size_t name_len = strlen(tests[n].name);
         if (name_len > ST_MAX_TEST_NAME) {
             _ST_ERROR("%s "ST_LOC_TEST" #%zu ("ST_LOC_NAME": '%s') "ST_LOC_TOO_LONG,
                 _ST_ERROR_PREFIX, n + 1, tests[n].name, ST_MAX_TEST_NAME, name_len);
-            all_valid = false;
+            errors++;
         }
     }
 
-    if (!all_valid) {
-        _ST_ERROR("%s "ST_LOC_RECTIFY, _ST_ERROR_PREFIX);
+    if (errors > 0) {
+        _ST_ERROR("%s "ST_LOC_RECTIFY, _ST_ERROR_PREFIX, _ST_PLURAL(ST_LOC_ERROR, errors));
     }
 
-    return all_valid;
+    return errors == 0;
 }
 
 bool st_prepare_tests(st_test* tests, size_t num_tests)

@@ -42,7 +42,10 @@ typedef struct {
 typedef struct {
     bool skip;      /**< true if the test is skipped. */
     int skip_conds; /**< If skipped, the condition(s) that caused skippage. */
-    bool pass;      /**< true if the test encountered error(s) or warning(s). */
+    int errors;     /**< The number of evaulators that resulted in a false expression. */
+    int warnings;   /**< The number of times ST_WARNING() or ST_EXPECT() were called. */
+    bool last_fail; /**< true if the last evaluator executed was false. */
+    bool pass;      /**< false if the test encountered error(s) or warning(s). */
     bool fatal;     /**< true if the test encountered error(s). */
 } st_testres;
 
@@ -218,9 +221,9 @@ typedef struct {
 # define _ST_DEBUG_PREFIX ST_LOC_SEATEST " " ST_LOC_DEBUG ":"
 
 # define _ST_SKIP_PASS_FAIL(test) \
-     (test->res.skip  ? FG_COLOR(1, 178, ST_LOC_SKIP) : test->res.pass \
-                      ? FG_COLOR(1,  40, ST_LOC_PASS) : test->res.fatal \
-                      ? FG_COLOR(1, 196, ST_LOC_FAIL) : FG_COLOR(1, 208, ST_LOC_WARN))
+     (test->res.skip ? FG_COLOR(1, 178, ST_LOC_SKIP) : test->res.pass \
+                     ? FG_COLOR(1,  40, ST_LOC_PASS) : test->res.fatal \
+                     ? FG_COLOR(1, 196, ST_LOC_FAIL) : FG_COLOR(1, 208, ST_LOC_WARN))
 
 # define __ST_REPORT_ERROR(code, message) \
     _ST_ERROR("%s "ST_LOC_IN" %s (%s:%d): %d (%s)", _ST_ERROR_PREFIX, __func__, \
@@ -252,10 +255,18 @@ typedef struct {
     do { \
         if (!(expr)) { \
             _retval.pass = false; \
-            _retval.fatal = is_fatal; \
+            _retval.last_fail = true; \
+            if ((is_fatal)) { \
+                _retval.fatal = true; \
+                _retval.errors++; \
+            } else { \
+                _retval.warnings++; \
+            } \
             (void)printf(ST_LOC_INDENT FG_COLOR(0, color, name " ("ST_LOC_LINE \
                 " %"PRIu32"):") DGRAY(" "ST_LOC_EXPRESSION) WHITE(" '" #expr "'") \
                 DGRAY(" "ST_LOC_IS_FALSE"\n"), __LINE__); \
+        } else { \
+            _retval.last_fail = false; \
         } \
     } while (false)
 
@@ -364,6 +375,20 @@ char* _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
     }
 
     return &str[0];
+}
+
+/** Counts the number of high bits in a condition bitmask. */
+static inline
+int _st_conds_count(int conds) {
+    int retval = 0;
+    int mask = 1;
+    for (size_t b = 0; b < (sizeof(int) * 8); b++) {
+        if ((conds & mask) == mask) {
+            retval++;
+        }
+        mask <<= 1;
+    }
+    return retval;
 }
 
 #endif /* !_SEATEST_INTERNAL_H_INCLUDED */

@@ -263,11 +263,21 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_MESSAGE0("expecting the next 1 to fail");
     ST_ARRAY_EQUAL(arr2, arr4);
 
+    // should be true
+    ST_TRUE(ST_TEST_LAST_EVAL_FALSE());
+
     // should succeed (different counts)
     ST_ARRAY_NOT_EQUAL(arr2, arr4);
 
+    // should be false
+    ST_FALSE(ST_TEST_LAST_EVAL_FALSE());
+
     // emits an error message with a formatted string from the OS.
+    ST_MESSAGE0("testing OS error formatting");
     ST_OS_ERROR(22, "sysfunc123 failed!");
+
+    ST_DEBUG("exiting with %d warning(s) and %d error(s)", ST_TEST_WARNING_COUNT(),
+        ST_TEST_ERROR_COUNT());
 
     // should emit a warning and return
     ST_TEST_EXIT_IF_FAILED();
