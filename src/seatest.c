@@ -66,7 +66,7 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
             tests[n].res = tests[n].fn();
         } else {
             char conds[ST_MAX_COND_STR] = {0};
-            _ST_SKIPPED(_ST_INDENT "skipped due to unmet condition(s): %s",
+            _ST_SKIPPED(ST_LOC_INDENT ST_LOC_SKIPPED_UNMET": %s",
                 _st_conds_to_string(tests[n].res.skip_conds, conds));
         }
 
@@ -96,30 +96,28 @@ bool st_validate_config(const char* app_name, const st_test* tests, size_t num_t
 
     /* app name. */
     if (!app_name || !*app_name) {
-        _ST_ERROR("%s the app_name parameter to ST_MAIN_IMPL is invalid (may not be null"
-            " or an empty string)", _ST_ERR_PREFIX);
+        _ST_ERROR("%s "ST_LOC_INVAL_ANAME, _ST_ERROR_PREFIX);
         all_valid = false;
     }
 
     for (size_t n = 0; n < num_tests; n++) {
         /* spaces in test names. */
         if (st_strstr(tests[n].name, " ")) {
-            _ST_ERROR("%s test #%zu (name: '%s') is invalid (names may not contain spaces)",
-                _ST_ERR_PREFIX, n + 1, tests[n].name);
+            _ST_ERROR("%s "ST_LOC_TEST" #%zu ("ST_LOC_NAME": '%s') "
+                ST_LOC_NO_SPACES, _ST_ERROR_PREFIX, n + 1, tests[n].name);
             all_valid = false;
         }
         /* length of test names. */
         size_t name_len = strlen(tests[n].name);
-        if (name_len > (size_t)ST_MAX_TEST_NAME) {
-            _ST_ERROR("%s test #%zu (name: '%s') is invalid (names may only be %d characters"
-                " in length; counted %zu)", _ST_ERR_PREFIX, n + 1, tests[n].name,
-                ST_MAX_TEST_NAME, name_len);
+        if (name_len > ST_MAX_TEST_NAME) {
+            _ST_ERROR("%s "ST_LOC_TEST" #%zu ("ST_LOC_NAME": '%s') "ST_LOC_TOO_LONG,
+                _ST_ERROR_PREFIX, n + 1, tests[n].name, ST_MAX_TEST_NAME, name_len);
             all_valid = false;
         }
     }
 
     if (!all_valid) {
-        _ST_ERROR("%s please rectify the above error(s) and recompile", _ST_ERR_PREFIX);
+        _ST_ERROR("%s "ST_LOC_RECTIFY, _ST_ERROR_PREFIX);
     }
 
     return all_valid;
@@ -141,11 +139,9 @@ bool st_prepare_tests(st_test* tests, size_t num_tests)
 #endif
 
     if (!cond_disk) {
-        _ST_ERROR("%s failed to calculate available disk space! tests requiring"
-        " COND_DISK will be skipped", _ST_ERR_PREFIX);
+        _ST_ERROR("%s "ST_LOC_CALC_DISK_ERR, _ST_ERROR_PREFIX);
     } else if (fs_avail < ST_MIN_FS_AVAIL) {
-        _ST_WARNING("%s available disk space (%"PRIu64" bytes) is less than the"
-            " required %"PRIu64"; tests requiring COND_DISK will be skipped",
+        _ST_WARNING("%s "ST_LOC_DISK_SPACE,
             _ST_WARN_PREFIX, fs_avail, (uint64_t)ST_MIN_FS_AVAIL);
     }
 
@@ -156,12 +152,12 @@ bool st_prepare_tests(st_test* tests, size_t num_tests)
 #endif
 
     if (!cond_inet) {
-        _ST_WARNING("%s no internet connection detected; tests requiring COND_INET"
-            " will be skipped", _ST_WARN_PREFIX);
+        _ST_WARNING("%s "ST_LOC_NO_INTERNET, _ST_WARN_PREFIX);
     }
 
     for (size_t n = 0; n < num_tests; n++) {
-        _ST_DEBUG("test #%zu (name: '%s') has conds %08x", n + 1, tests[n].name, tests[n].conds);
+        _ST_DEBUG("test #%zu (name: '%s') has conds %08x", n + 1, tests[n].name,
+            tests[n].conds);
         if (tests[n].conds != 0) {
             bool skip = false;
             _ST_PROCESS_TEST_CONDITION(cond_disk, COND_DISK);
@@ -179,8 +175,8 @@ bool st_prepare_tests(st_test* tests, size_t num_tests)
 
 void st_print_intro(size_t to_run)
 {
-    (void)printf("\n" WHITEB("running %zu " ULINE("%s") " %s " DGRAY("(")),
-        to_run, _state.app_name,_ST_PLURAL("test", to_run));
+    (void)printf("\n" WHITEB(ST_LOC_RUNNING " %zu " ULINE("%s") " %s " DGRAY("(")),
+        to_run, _state.app_name, _ST_PLURAL(ST_LOC_TEST, to_run));
     st_print_seatest_ansi(true);
     (void)printf(DGRAY(" %s)...") "\n", st_get_version_string());
 }
@@ -203,8 +199,9 @@ void st_print_test_outro(size_t num, size_t to_run, const char* name, const st_t
         }
     }
 
-    (void)printf("\n" WHITEB("(%zu/%zu) '%s' finished (") WHITE("%sms") WHITEB("): ")
-        "%s\n", num, to_run, name, (msec_str ? msec_str : ST_MSEC_ZERO), ST_SKIP_PASS_FAIL(test));
+    (void)printf("\n" WHITEB("(%zu/%zu) '%s' "ST_LOC_FINISHED" (")
+        WHITE("%s"ST_LOC_MSEC_ABV) WHITEB("): ") "%s\n", num, to_run, name,
+        (msec_str ? msec_str : ST_LOC_MSEC_ZERO), _ST_SKIP_PASS_FAIL(test));
 
     _st_safefree(&msec_str);
 }
@@ -214,14 +211,15 @@ void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,
 {
     elapsed = (elapsed / 1e3);
     if (passed == to_run) {
-        (void)printf("\n" WHITEB("done: ")
-            FG_COLOR(1, 40, "%s%zu " ULINE("%s") " %s " EMPH("passed") " in %.03fs!") "\n\n",
-                to_run > 1 ? "all " : "", to_run, _state.app_name,_ST_PLURAL("test", to_run),
-                elapsed);
+        (void)printf("\n" WHITEB(ST_LOC_DONE": ")
+            FG_COLOR(1, 40, "%s%zu " ULINE("%s") " %s " EMPH(ST_LOC_PASSED) " "ST_LOC_IN
+            " %.03f"ST_LOC_SEC_ABV"!") "\n\n", to_run > 1 ? "all " : "", to_run,
+            _state.app_name, _ST_PLURAL(ST_LOC_TEST, to_run), elapsed);
     } else {
         (void)printf("\n" WHITEB("done: ")
-            FG_COLOR(1, 196, "%zu of %zu " ULINE("%s") " %s " EMPH("failed") " in %.03fs") "\n\n",
-                to_run - passed, to_run, _state.app_name,_ST_PLURAL("test", to_run), elapsed);
+            FG_COLOR(1, 196, "%zu "ST_LOC_OF" %zu " ULINE("%s") " %s " EMPH(ST_LOC_FAILED_L)
+            " "ST_LOC_IN" %.03f"ST_LOC_SEC_ABV) "\n\n", to_run - passed, to_run,
+            _state.app_name, _ST_PLURAL(ST_LOC_TEST, to_run), elapsed);
     }
 
     if (passed != to_run) {
@@ -237,7 +235,7 @@ void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,
 
 void st_print_failed_test_intro(size_t passed, size_t to_run)
 {
-    _ST_ERROR("Failed %s:\n",_ST_PLURAL("test", to_run - passed));
+    _ST_ERROR(ST_LOC_FAILED" %s:\n", _ST_PLURAL(ST_LOC_TEST, to_run - passed));
 }
 
 void st_print_failed_test(const char* const name)
@@ -267,7 +265,7 @@ void st_print_test_list(const st_test* tests, size_t num_tests)
             longest = len;
     }
 
-    (void)printf("\n" WHITE("Available tests:") "\n\n");
+    (void)printf("\n" WHITE(ST_LOC_AVAIL_TESTS":") "\n\n");
 
     for (size_t n = 0; n < num_tests; n++) {
         (void)printf("\t%s", tests[n].name);
@@ -289,17 +287,17 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
 {
     size_t longest = 0;
     for (size_t n = 0; n < num_args; n++) {
-        size_t len = strnlen(args[n].flag, ST_CL_MAX_FLAG);
+        size_t len = strlen(args[n].flag);
         if (len > longest)
             longest = len;
     }
 
-    (void)fprintf(stderr, "\n" WHITE("Usage:") "\n\n");
+    (void)fprintf(stderr, "\n" WHITE(ST_LOC_USAGE":") "\n\n");
 
     for (size_t n = 0; n < num_args; n++) {
         (void)fprintf(stderr, "\t%s ", args[n].flag);
 
-        size_t len = strnlen(args[n].flag, ST_CL_MAX_FLAG);
+        size_t len = strlen(args[n].flag);
         if (len < longest) {
             for (size_t j = len; j < longest; j++) {
                 (void)fprintf(stderr, " ");
@@ -307,7 +305,7 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
         }
 
         (void)fprintf(stderr, "%s%s%s\n", args[n].usage,
-            strnlen(args[n].usage, ST_CL_MAX_USAGE) > 0 ? " " : "", args[n].desc);
+            strlen(args[n].usage) > 0 ? " " : "", args[n].desc);
     }
 
     (void)fprintf(stderr, "\n");
@@ -315,8 +313,8 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
 
 void st_print_version_info(void)
 {
-    (void)printf("\n" ULINE("%s") " test suite " EMPH("(built with") " ",
-        _state.app_name);
+    (void)printf("\n" ULINE("%s") " "ST_LOC_TEST_SUITE" " EMPH("("ST_LOC_BUILT_WITH)
+        " ", _state.app_name);
     st_print_seatest_ansi(false);
     (void)printf(EMPH("%s)")" \n\n", st_get_version_string());
 }
@@ -347,7 +345,7 @@ void st_print_seatest_ansi(bool bold)
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args)
 {
     for (size_t n = 0; n < num_args; n++) {
-        if (0 == strncmp(flag, args[n].flag, ST_CL_MAX_FLAG)) {
+        if (0 == st_strncmp(flag, args[n].flag, strlen(args[n].flag))) {
             return &args[n];
         }
     }
@@ -363,41 +361,43 @@ bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_
     (void)memset(config, 0, sizeof(st_cl_config));
 
     for (int n = 1; n < argc; n++) {
-        const st_cl_arg* this_arg = st_find_cl_arg(argv[n], args, num_args);
-        if (!this_arg) {
-            _ST_ERROR("unknown option '%s'", argv[n]);
+        const st_cl_arg* cur = st_find_cl_arg(argv[n], args, num_args);
+        if (!cur) {
+            _ST_ERROR(ST_LOC_UNK_OPT" '%s'", argv[n]);
             st_print_usage_info(args, num_args);
             return false;
         }
-        if (0 == strncmp(this_arg->flag, ST_CL_WAIT_FLAG, strlen(ST_CL_WAIT_FLAG))) {
+        if (!st_strncmp(cur->flag, ST_LOC_WAIT_FLAG, strlen(ST_LOC_WAIT_FLAG))) {
             config->wait = true;
-        } else if (0 == strncmp(this_arg->flag, ST_CL_ONLY_FLAG, strlen(ST_CL_ONLY_FLAG))) {
+        } else if (!st_strncmp(cur->flag, ST_LOC_ONLY_FLAG,
+            strlen(ST_LOC_ONLY_FLAG))) {
             while (++n < argc) {
                 if (!argv[n] || !*argv[n])
                     continue;
                 if (*argv[n] == '-' || !st_mark_test_to_run(argv[n], tests, num_tests)) {
-                    _ST_ERROR("invalid argument to %s: '%s'", ST_CL_ONLY_FLAG, argv[n]);
+                    _ST_ERROR(ST_LOC_INVAL_ARG" %s: '%s'", ST_LOC_ONLY_FLAG,
+                        argv[n]);
                     st_print_usage_info(args, num_args);
                     return false;
                 }
                 config->to_run++;
             }
             if (0 == config->to_run) {
-                _ST_ERROR("value expected for '%s'", ST_CL_ONLY_FLAG);
+                _ST_ERROR(ST_LOC_VAL_EXPECT" '%s'", ST_LOC_ONLY_FLAG);
                 st_print_usage_info(args, num_args);
                 return false;
             }
-        } else if (0 == strncmp(this_arg->flag, ST_CL_LIST_FLAG, strlen(ST_CL_LIST_FLAG))) {
+        } else if (!st_strncmp(cur->flag, ST_LOC_LIST_FLAG, strlen(ST_LOC_LIST_FLAG))) {
             st_print_test_list(tests, num_tests);
             return false;
-        } else if (0 == strncmp(this_arg->flag, ST_CL_VERS_FLAG, strlen(ST_CL_VERS_FLAG))) {
+        } else if (!st_strncmp(cur->flag, ST_LOC_VERS_FLAG, strlen(ST_LOC_VERS_FLAG))) {
             st_print_version_info();
             return false;
-        } else if (0 == strncmp(this_arg->flag, ST_CL_HELP_FLAG, strlen(ST_CL_HELP_FLAG))) {
+        } else if (!st_strncmp(cur->flag, ST_LOC_HELP_FLAG, strlen(ST_LOC_HELP_FLAG))) {
             st_print_usage_info(args, num_args);
             return false;
         } else {
-            _ST_ERROR("unknown option '%s'", this_arg->flag);
+            _ST_ERROR(ST_LOC_UNK_OPT" '%s'", cur->flag);
             return false;
         }
     }
@@ -431,7 +431,7 @@ bool st_getchar(char* input) {
 
 void st_wait_for_keypress(void)
 {
-    (void)printf(WHITEB("Press any key to continue...\n"));
+    (void)printf(WHITEB(ST_LOC_PRESS_KEY"\n"));
     bool get = st_getchar(NULL);
    _ST_UNUSED(get);
 }
@@ -668,7 +668,7 @@ bool st_have_inet_connection(void)
         return false;
     }
 
-    _ST_DEBUG("getaddrinfo for %s[%s] OK; creating a suitable socket...",
+    _ST_DEBUG("getaddrinfo for %s [%s] OK; creating a suitable socket...",
         ST_INET_TARGET_HOST, ST_INET_TARGET_SRV);
 
     bool connected = false;
@@ -681,7 +681,7 @@ bool st_have_inet_connection(void)
             continue;
         }
 
-        _ST_DEBUG("got socket descriptor %d; connecting to %s[%s]...", (int)sock,
+        _ST_DEBUG("got socket descriptor %d; connecting to %s [%s]...", (int)sock,
             ST_INET_TARGET_HOST, ST_INET_TARGET_SRV);
 
         const struct timeval timeout = {
@@ -689,10 +689,13 @@ bool st_have_inet_connection(void)
             .tv_usec = 0
         };
 
-        (void)setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (const void*)&timeout, sizeof(timeout));
-        (void)setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const void*)&timeout, sizeof(timeout));
+        (void)setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (const void*)&timeout,
+            sizeof(timeout));
+        (void)setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const void*)&timeout,
+            sizeof(timeout));
 
-        int conn = connect(sock, (const struct sockaddr*)cur->ai_addr, (st_optlen)cur->ai_addrlen);
+        int conn = connect(sock, (const struct sockaddr*)cur->ai_addr,
+            (st_optlen)cur->ai_addrlen);
         if (conn == 0) {
             _ST_DEBUG("connected to %s!", ST_INET_TARGET_HOST);
             connected = true;

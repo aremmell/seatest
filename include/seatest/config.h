@@ -49,49 +49,82 @@
 /** The number of seconds to wait for a TCP connection before it times out. */
 # define ST_INET_TIMEOUT 5
 
-/** The string to use in place of "0.0" if an elapsed time is too fast to measure. */
-# define ST_MSEC_ZERO "<1"
-
 /**
- * Command line argument thresholds
+ * i18n
  */
 
-# define ST_CL_MAX_FLAG  32
-# define ST_CL_MAX_USAGE 96
+# define ST_LOC_SEATEST       "seatest"
+# define ST_LOC_ERROR         "error"
+# define ST_LOC_WARNING       "warning"
+# define ST_LOC_DEBUG         "debug"
+# define ST_LOC_IN            "in"
+# define ST_LOC_OF            "of"
+# define ST_LOC_LINE          "line"
+# define ST_LOC_TEST          "test"
+# define ST_LOC_NAME          "name"
+# define ST_LOC_RUNNING       "running"
+# define ST_LOC_FINISHED      "finished"
+# define ST_LOC_TEST_SUITE    "test suite"
+# define ST_LOC_BUILT_WITH    "built with"
+# define ST_LOC_FAILED        "Failed"
+# define ST_LOC_DONE          "done"
+# define ST_LOC_PASSED        "passed"
+# define ST_LOC_FAILED_L      "failed"
+# define ST_LOC_MSEC_ABV      "ms"
+# define ST_LOC_MSEC_ZERO     "<1"
+# define ST_LOC_SEC_ABV       "s"
+# define ST_LOC_USAGE         "Usage"
+# define ST_LOC_AVAIL_TESTS   "Available tests"
+# define ST_LOC_UNK_OPT       "unknown option"
+# define ST_LOC_VAL_EXPECT    "value expected for"
+# define ST_LOC_INVAL_ARG     "invalid argument to"
+# define ST_LOC_PRESS_KEY     "Press any key to continue..."
+# define ST_LOC_EXPRESSION    "expression"
+# define ST_LOC_IS_FALSE      "is false"
+# define ST_LOC_SKIPPED_COND  "will be skipped due to"
+# define ST_LOC_SKIPPED_UNMET "skipped due to unmet condition(s)"
+# define ST_LOC_RET_ERRS      "returning due to previous error(s)"
+# define ST_LOC_INVAL_ANAME   "the app_name parameter to ST_MAIN_IMPL is" \
+                              " invalid (may not be null or an empty string)"
+# define ST_LOC_NO_SPACES     "is invalid (names may not contain spaces)"
+# define ST_LOC_TOO_LONG      "is invalid (names may only be %d characters" \
+                              " in length; counted %zu)"
+# define ST_LOC_RECTIFY       "please rectify the above error(s) and recompile"
+# define ST_LOC_CALC_DISK_ERR "failed to calculate available disk space! tests" \
+                              " requiring COND_DISK will be skipped"
+# define ST_LOC_DISK_SPACE    "available disk space (%"PRIu64" bytes) is less" \
+                              " than the required %"PRIu64"; tests requiring" \
+                              " COND_DISK will be skipped"
+# define ST_LOC_NO_INTERNET   "no internet connection detected; tests requiring" \
+                              " COND_INET will be skipped"
+# define ST_LOC_SKIP          "SKIP"
+# define ST_LOC_PASS          "PASS"
+# define ST_LOC_WARN          "WARN"
+# define ST_LOC_FAIL          "FAIL"
+# define ST_LOC_INDENT        "  "
 
-/**
- * Command line argument flags
- */
+# define ST_LOC_WAIT_FLAG     "--wait"
+# define ST_LOC_ONLY_FLAG     "--only"
+# define ST_LOC_LIST_FLAG     "--list"
+# define ST_LOC_VERS_FLAG     "--version"
+# define ST_LOC_HELP_FLAG     "--help"
 
-# define ST_CL_WAIT_FLAG "--wait"
-# define ST_CL_ONLY_FLAG "--only"
-# define ST_CL_LIST_FLAG "--list"
-# define ST_CL_VERS_FLAG "--version"
-# define ST_CL_HELP_FLAG "--help"
+# define ST_LOC_ONLY_USAGE    ULINE("name") " [, " ULINE("name") ", ...]"
 
-/**
- * Command line argument usage messages
- */
-
-# define ST_CL_ONLY_USAGE ULINE("name") " [, " ULINE("name") ", ...]"
-
-/**
- * Command line argument descriptions
- */
-
-# define ST_CL_WAIT_DESC "After running all test(s), wait for a keypress before exiting"
-# define ST_CL_ONLY_DESC "Run only the test(s) specified"
-# define ST_CL_LIST_DESC "Print a list of all available tests"
-# define ST_CL_VERS_DESC "Displays version information"
-# define ST_CL_HELP_DESC "Displays this message"
+# define ST_LOC_WAIT_DESC     "After running all test(s), wait for a keypress" \
+                              " before exiting"
+# define ST_LOC_ONLY_DESC     "Run only the test(s) specified"
+# define ST_LOC_LIST_DESC     "Print a list of all available tests"
+# define ST_LOC_VERS_DESC     "Displays version information"
+# define ST_LOC_HELP_DESC     "Displays this message"
 
 /** Command line configuration (flag, usage, description). If entries are changed,
  * st_parse_cmd_line and st_print_usage_info must be modified as well. */
 # define ST_CL_CONFIG() \
-    {ST_CL_WAIT_FLAG, "",               ST_CL_WAIT_DESC}, \
-    {ST_CL_ONLY_FLAG, ST_CL_ONLY_USAGE, ST_CL_ONLY_DESC}, \
-    {ST_CL_LIST_FLAG, "",               ST_CL_LIST_DESC}, \
-    {ST_CL_VERS_FLAG, "",               ST_CL_VERS_DESC}, \
-    {ST_CL_HELP_FLAG, "",               ST_CL_HELP_DESC}
+    {ST_LOC_WAIT_FLAG, "",                ST_LOC_WAIT_DESC}, \
+    {ST_LOC_ONLY_FLAG, ST_LOC_ONLY_USAGE, ST_LOC_ONLY_DESC}, \
+    {ST_LOC_LIST_FLAG, "",                ST_LOC_LIST_DESC}, \
+    {ST_LOC_VERS_FLAG, "",                ST_LOC_VERS_DESC}, \
+    {ST_LOC_HELP_FLAG, "",                ST_LOC_HELP_DESC}
 
 #endif /* !_SEATEST_CONFIG_H_INCLUDED */

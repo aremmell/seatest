@@ -192,30 +192,12 @@ typedef struct {
 # define WHITE(s)     FG_COLOR(0, 15, s) /**< White foreground text. */
 # define WHITEB(s)    FG_COLOR(1, 15, s) /**< Bold white foreground text. */
 
-# define _ST_SEATEST                  "seatest"
-# define _ST_INDENT                   "  "
-# define _ST_ERR_PREFIX   _ST_SEATEST " error:"
-# define _ST_WARN_PREFIX  _ST_SEATEST " warning:"
-# define _ST_DEBUG_PREFIX _ST_SEATEST " debug:"
+/** Returns the plural or singular form of a word based on the count supplied.
+ * Only works for words whose plural form is just an 's'. */
+# define _ST_PLURAL(word, count) ((!(count) || (count) > 1) ? word "s" : word)
 
 /** The base macro for all stdout macros. */
 # define __ST_MESSAGE(...) (void)printf(__VA_ARGS__)
-
-/** Outputs a diagnostic or informative test message. */
-# define ST_MESSAGE(msg, ...)  __ST_MESSAGE(_ST_INDENT WHITE(msg) "\n", __VA_ARGS__)
-# define ST_MESSAGE0(msg)      __ST_MESSAGE(_ST_INDENT WHITE(msg) "\n")
-
-/** Outputs a test message in green. */
-# define ST_SUCCESS(msg, ...)  __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
-# define ST_SUCCESS0(msg)      __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 40, msg) "\n")
-
-/** Outputs a test message in orange. */
-# define ST_WARNING(msg, ...)  __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 208, msg) "\n", __VA_ARGS__)
-# define ST_WARNING0(msg)      __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 208, msg) "\n")
-
-/** Outputs a test message in red. */
-# define ST_ERROR(msg, ...)    __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
-# define ST_ERROR0(msg)        __ST_MESSAGE(_ST_INDENT FG_COLOR(0, 196, msg) "\n")
 
 # define _ST_MESSAGE(msg, ...) __ST_MESSAGE(WHITE(msg) "\n", __VA_ARGS__)
 # define _ST_SUCCESS(msg, ...) __ST_MESSAGE(FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
@@ -225,20 +207,24 @@ typedef struct {
 
 # if defined(ST_DEBUG_MESSAGES)
 #  define _ST_DEBUG(msg, ...) \
-    __ST_MESSAGE("%s %s (%s:%d): " msg "\n", _ST_DEBUG_PREFIX, \
-        __func__, __file__, __LINE__, __VA_ARGS__)
+    __ST_MESSAGE("%s %s (%s:%d): " msg "\n", _ST_DEBUG_PREFIX, __func__, __file__, \
+        __LINE__, __VA_ARGS__)
 # else
 #  define _ST_DEBUG(...)
 # endif
 
-# define ST_SKIP_PASS_FAIL(test) \
-     (test->res.skip  ? FG_COLOR(1, 178, "SKIP") : test->res.pass \
-                      ? FG_COLOR(1,  40, "PASS") : test->res.fatal \
-                      ? FG_COLOR(1, 196, "FAIL") : FG_COLOR(1, 208, "WARN"))
+# define _ST_ERROR_PREFIX ST_LOC_SEATEST " " ST_LOC_ERROR ":"
+# define _ST_WARN_PREFIX  ST_LOC_SEATEST " " ST_LOC_WARNING ":"
+# define _ST_DEBUG_PREFIX ST_LOC_SEATEST " " ST_LOC_DEBUG ":"
+
+# define _ST_SKIP_PASS_FAIL(test) \
+     (test->res.skip  ? FG_COLOR(1, 178, ST_LOC_SKIP) : test->res.pass \
+                      ? FG_COLOR(1,  40, ST_LOC_PASS) : test->res.fatal \
+                      ? FG_COLOR(1, 196, ST_LOC_FAIL) : FG_COLOR(1, 208, ST_LOC_WARN))
 
 # define __ST_REPORT_ERROR(code, message) \
-    _ST_ERROR("%s in %s (%s:%d): %d (%s)", _ST_ERR_PREFIX, __func__, __file__, \
-            __LINE__, code, message)
+    _ST_ERROR("%s "ST_LOC_IN" %s (%s:%d): %d (%s)", _ST_ERROR_PREFIX, __func__, \
+        __file__, __LINE__, code, message)
 
 # define _ST_REPORT_ERROR(code) \
     do { \
@@ -254,9 +240,8 @@ typedef struct {
 /** Returns the number of entries in an array. */
 # define _ST_COUNTOF(arr) (sizeof(arr) / sizeof(arr[0]))
 
-/** Returns the plural or singular form of a word based on the count supplied.
- * Only works for words whose plural form is just an 's'. */
-# define _ST_PLURAL(word, count) ((!(count) || (count) > 1) ? word "s" : word)
+/** Self-explanatory. */
+# define _ST_NOTNULL(p) (p) != 0
 
 # define _ST_DECLARE_CL_ARGS() \
     static const st_cl_arg st_cl_args[] = { \
@@ -268,8 +253,9 @@ typedef struct {
         if (!(expr)) { \
             _retval.pass = false; \
             _retval.fatal = is_fatal; \
-            (void)printf(_ST_INDENT FG_COLOR(0, color, name " (line %"PRIu32"):") \
-                DGRAY(" expression") WHITE(" '" #expr "'") DGRAY(" is false\n"), __LINE__); \
+            (void)printf(ST_LOC_INDENT FG_COLOR(0, color, name " ("ST_LOC_LINE \
+                " %"PRIu32"):") DGRAY(" "ST_LOC_EXPRESSION) WHITE(" '" #expr "'") \
+                DGRAY(" "ST_LOC_IS_FALSE"\n"), __LINE__); \
         } \
     } while (false)
 
@@ -279,14 +265,12 @@ typedef struct {
 # define _ST_PROCESS_TEST_CONDITION(condition, check_cond) \
     do { \
         if (!condition && (tests[n].conds & check_cond) == check_cond) { \
-            _ST_WARNING(_ST_INDENT "%s test #%zu (name: '%s') will be skipped due to " #check_cond, \
-                _ST_WARN_PREFIX, n + 1, tests[n].name); \
+            _ST_WARNING("%s "ST_LOC_TEST" #%zu ("ST_LOC_NAME": '%s') " \
+            ST_LOC_SKIPPED_COND" " #check_cond, _ST_WARN_PREFIX, n + 1, tests[n].name); \
             tests[n].res.skip_conds |= check_cond; \
             skip = true; \
         } \
     } while (false)
-
-# define _ST_NOTNULL(p) (p) != 0
 
 /**
  * Utility functions

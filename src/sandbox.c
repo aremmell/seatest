@@ -266,6 +266,9 @@ ST_BEGIN_TEST_IMPL(test_tests)
     // should succeed (different counts)
     ST_ARRAY_NOT_EQUAL(arr2, arr4);
 
+    // emits an error message with a formatted string from the OS.
+    ST_OS_ERROR(22, "sysfunc123 failed!");
+
     // should emit a warning and return
     ST_TEST_EXIT_IF_FAILED();
 }

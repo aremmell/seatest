@@ -32,7 +32,7 @@
     st_main(argc, argv, app_name, st_cl_args, _ST_COUNTOF(st_cl_args), \
         st_tests, _ST_COUNTOF(st_tests))
 
-/** Declares static variables required by seatest. Place this above your entry point routine. */
+/** Declares static variables required by seatest. Place above your entry point routine. */
 # define ST_DECLARE_STATIC_VARS() \
     _ST_DECLARE_CL_ARGS();
 
@@ -45,7 +45,8 @@
 # define ST_BEGIN_TEST_IMPL(name) \
     st_testres st_test_##name(void) \
     { \
-        st_testres _retval = {0};
+        st_testres _retval = {0}; \
+        _retval.pass = true;
 
 /** Ends the definition (implementation) of an individual test function. */
 # define ST_END_TEST_IMPL() \
@@ -68,17 +69,41 @@
 # define ST_END_DECLARE_TEST_LIST() \
     };
 
-# define ST_TEST_IS_PASSING() (!_retval.fatal)
+/** Outputs a diagnostic or informative test message. */
+# define ST_MESSAGE(msg, ...)  __ST_MESSAGE(ST_LOC_INDENT WHITE(msg) "\n", __VA_ARGS__)
+# define ST_MESSAGE0(msg)      __ST_MESSAGE(ST_LOC_INDENT WHITE(msg) "\n")
+
+/** Outputs a test message in green. */
+# define ST_SUCCESS(msg, ...)  __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 40, msg) "\n", __VA_ARGS__)
+# define ST_SUCCESS0(msg)      __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 40, msg) "\n")
+
+/** Outputs a test message in orange. */
+# define ST_WARNING(msg, ...)  __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 208, msg) "\n", __VA_ARGS__)
+# define ST_WARNING0(msg)      __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 208, msg) "\n")
+
+/** Outputs a test message in red. */
+# define ST_ERROR(msg, ...)    __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 196, msg) "\n", __VA_ARGS__)
+# define ST_ERROR0(msg)        __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 196, msg) "\n")
+
+# define ST_TEST_IS_PASSING()   (!_retval.fatal)
 # define ST_TEST_HAS_WARNINGS() (!_retval.pass)
-# define ST_TEST_IS_FAILED() (_retval.fatal)
-# define ST_TEST_IS_SKIPPED() (_retval.skip)
+# define ST_TEST_IS_FAILED()    (_retval.fatal)
+# define ST_TEST_IS_SKIPPED()   (_retval.skip)
 
 # define ST_TEST_EXIT_IF_FAILED() \
     do { \
         if (ST_TEST_IS_FAILED()) { \
-            ST_WARNING0("returning due to previous error(s)"); \
+            ST_WARNING0(ST_LOC_RET_ERRS); \
             return _retval; \
         } \
+    } while (false)
+
+# define ST_OS_ERROR(code, context) \
+    do { \
+        char message[ST_MAX_ERROR] = {0}; \
+        (void)st_format_error_msg(code, message); \
+        ST_ERROR(ST_LOC_ERROR " ("ST_LOC_LINE" %"PRIu32"): %s: %d (%s) ", __LINE__, \
+            context, code, message); \
     } while (false)
 
 # define ST_EXPECT(expr) \
