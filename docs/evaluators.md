@@ -36,25 +36,27 @@ Any evaluator that results in a false expression will cause the active test to f
 
 |                    Evaluator | Expression                                                   |
 | :--------------------------- | :----------------------------------------------------------- |
-|                 ST_STR_EQUAL | strcmp == 0                                                  |
-|             ST_STR_NOT_EQUAL | strcmp != 0                                                  |
-|               ST_STR_EQUAL_I | strcasecmp/StrCmpI == 0                                      |
-|           ST_STR_NOT_EQUAL_I | strcasecmp/StrCmpI != 0                                      |
-|              ST_STR_CONTAINS | strstr/StrStr != NULL                                        |
-|          ST_STR_NOT_CONTAINS | strstr/StrStr == NULL                                        |
-|            ST_STR_CONTAINS_I | strcasestr/StrStrI != NULL                                   |
-|        ST_STR_NOT_CONTAINS_I | strcasestr/StrStrI == NULL                                   |
-|            ST_STR_BEGINSWITH | strncmp/StrCmpN(needle_len) == 0                             |
-|        ST_STR_NOT_BEGINSWITH | strncmp/StrCmpN(needle_len) != 0                             |
-|          ST_STR_BEGINSWITH_I | strncasecmp/StrCmpNI(needle_len) == 0                        |
-|      ST_STR_NOT_BEGINSWITH_I | strncasecmp/StrCmpNI(needle_len) != 0                        |
+|                 ST_STR_EMPTY | str == NULL || *str == '\0'                                  |
+|             ST_STR_NOT_EMPTY | str != NULL && *str != '\0'                                  |
+|                 ST_STR_EQUAL | strcmp(str1, str2) == 0                                      |
+|             ST_STR_NOT_EQUAL | strcmp(str1, str2) != 0                                      |
+|               ST_STR_EQUAL_I | strcasecmp/StrCmpI(str1, str2) == 0                          |
+|           ST_STR_NOT_EQUAL_I | strcasecmp/StrCmpI(str1, str2) != 0                          |
+|              ST_STR_CONTAINS | strstr/StrStr(needle, haystack) != NULL                      |
+|          ST_STR_NOT_CONTAINS | strstr/StrStr(needle, haystack) == NULL                      |
+|            ST_STR_CONTAINS_I | strcasestr/StrStrI(needle, haystack) != NULL                 |
+|        ST_STR_NOT_CONTAINS_I | strcasestr/StrStrI(needle, haystack) == NULL                 |
+|            ST_STR_BEGINSWITH | strncmp/StrCmpN(needle, haystack, needle_len) == 0           |
+|        ST_STR_NOT_BEGINSWITH | strncmp/StrCmpN(needle, haystack, needle_len) != 0           |
+|          ST_STR_BEGINSWITH_I | strncasecmp/StrCmpNI(needle, haystack, needle_len) == 0      |
+|      ST_STR_NOT_BEGINSWITH_I | strncasecmp/StrCmpNI(needle, haystack, needle_len) != 0      |
 |     ST_STR_BEGINSWITH_WSPACE | isspace(str[0])                                              |
 | ST_STR_NOT_BEGINSWITH_WSPACE | !isspace(str[0])                                             |
 |              ST_STR_ENDSWITH | strncmp/StrCmpN(haystack + (haystack_len - needle_len), needle_len) == 0 |
 |          ST_STR_NOT_ENDSWITH | strncmp/StrCmpN(haystack + (haystack_len - needle_len), needle_len) != 0 |
 |            ST_STR_ENDSWITH_I | strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) == 0 |
 |        ST_STR_NOT_ENDSWITH_I | strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) != 0 |
-|       ST_STR_ENDSWITH_WSPACE | isspace(p[strlen(p) - 1])                                   |
+|       ST_STR_ENDSWITH_WSPACE | isspace(p[strlen(p) - 1])                                    |
 |   ST_STR_NOT_ENDSWITH_WSPACE | !isspace(p[strlen(p) - 1])                                   |
 |                 ST_STR_ALPHA | foreach(str) => isalpha                                      |
 |               ST_STR_NUMERIC | foreach(str) => isdigit                                      |
