@@ -370,8 +370,7 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_ENDSWITH_WSPACE"); \
             break; \
         } \
-        const char* const s = (const char* const)str; \
-        _ST_EVALUATE_EXPR(isspace(s[strlen(s) - 1]), "ST_STR_ENDSWITH_WSPACE"); \
+        _ST_EVALUATE_EXPR(isspace((str)[strlen((str)) - 1]), "ST_STR_ENDSWITH_WSPACE"); \
     } while (false)
 
 # define ST_STR_NOT_ENDSWITH_WSPACE(str) \
@@ -380,8 +379,7 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_NOT_ENDSWITH_WSPACE"); \
             break; \
         } \
-        const char* const s = (const char* const)str; \
-        _ST_EVALUATE_EXPR(!isspace(s[strlen(s) - 1]), "ST_STR_NOT_ENDSWITH_WSPACE"); \
+        _ST_EVALUATE_EXPR(!isspace((str)[strlen((str)) - 1]), "ST_STR_NOT_ENDSWITH_WSPACE"); \
     } while (false)
 
 # define ST_STR_ALPHA(str) \
@@ -390,10 +388,9 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_ALPHA"); \
             break; \
         } \
-        const char* const s = (const char* const)(str); \
-        for (size_t n = 0; n < strlen(s); n++) { \
-            if (!isalpha(s[n])) { \
-                _ST_EVALUATE_EXPR(isalpha(s[n]), "ST_STR_ALPHA"); \
+        for (size_t n = 0; n < strlen((str)); n++) { \
+            if (!isalpha((str)[n])) { \
+                _ST_EVALUATE_EXPR(isalpha((str)[n]), "ST_STR_ALPHA"); \
                 break; \
             } \
         } \
@@ -405,10 +402,9 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_NUMERIC"); \
             break; \
         } \
-        const char* const s = (const char* const)(str); \
-        for (size_t n = 0; n < strlen(s); n++) { \
-            if (!isdigit(s[n])) { \
-                _ST_EVALUATE_EXPR(isdigit(s[n]), "ST_STR_NUMERIC"); \
+        for (size_t n = 0; n < strlen((str)); n++) { \
+            if (!isdigit((str)[n])) { \
+                _ST_EVALUATE_EXPR(isdigit((str)[n]), "ST_STR_NUMERIC"); \
                 break; \
             } \
         } \
@@ -420,10 +416,9 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_ALPHANUMERIC"); \
             break; \
         } \
-        const char* const s = (const char* const)(str); \
-        for (size_t n = 0; n < strlen(s); n++) { \
-            if (!isalnum(s[n])) { \
-                _ST_EVALUATE_EXPR(isalnum(s[n]), "ST_STR_ALPHANUMERIC"); \
+        for (size_t n = 0; n < strlen((str)); n++) { \
+            if (!isalnum((str)[n])) { \
+                _ST_EVALUATE_EXPR(isalnum((str)[n]), "ST_STR_ALPHANUMERIC"); \
                 break; \
             } \
         } \
@@ -440,16 +435,16 @@
     _ST_EVALUATE_EXPR((num) < 0, "ST_NUM_NEGATIVE")
 
 # define ST_NUM_EVEN(num) \
-    _ST_EVALUATE_EXPR(div((int)num, 2).rem == 0, "ST_NUM_EVEN"); \
+    _ST_EVALUATE_EXPR(div((int)(num), 2).rem == 0, "ST_NUM_EVEN"); \
 
 # define ST_NUM_ODD(num) \
-    _ST_EVALUATE_EXPR(div((int)num, 2).rem != 0, "ST_NUM_ODD"); \
+    _ST_EVALUATE_EXPR(div((int)(num), 2).rem != 0, "ST_NUM_ODD"); \
 
-# define ST_NUM_MULTIPLE_OF(num, exp) \
-    _ST_EVALUATE_EXPR(div((int)num, (int)exp).rem == 0, "ST_NUM_MULTIPLE_OF"); \
+# define ST_NUM_MULTIPLE_OF(num, mul) \
+    _ST_EVALUATE_EXPR(div((int)(num), (int)(mul)).rem == 0, "ST_NUM_MULTIPLE_OF"); \
 
-# define ST_NUM_NOT_MULTIPLE_OF(num, exp) \
-    _ST_EVALUATE_EXPR(div((int)num, (int)exp).rem != 0, "ST_NUM_NOT_MULTIPLE_OF"); \
+# define ST_NUM_NOT_MULTIPLE_OF(num, mul) \
+    _ST_EVALUATE_EXPR(div((int)(num), (int)(mul)).rem != 0, "ST_NUM_NOT_MULTIPLE_OF"); \
 
 # define ST_NUM_IN_RANGE(num, low, high) \
     _ST_EVALUATE_EXPR((num) >= (low) && (num) <= (high), "ST_NUM_IN_RANGE")
@@ -460,21 +455,21 @@
 
 # define ST_ARRAY_EQUAL(arr1, arr2) \
     do { \
-        size_t elem_size1 = sizeof(arr1[0]); \
-        size_t elem_size2 = sizeof(arr2[0]); \
+        size_t elem_size1 = sizeof((arr1)[0]); \
+        size_t elem_size2 = sizeof((arr2)[0]); \
         if (elem_size1 != elem_size2) { \
             _ST_EVALUATE_EXPR(elem_size1 == elem_size2, "ST_ARRAY_EQUAL"); \
             break; \
         } \
-        size_t count1 = sizeof(arr1) / elem_size1; \
-        size_t count2 = sizeof(arr2) / elem_size2; \
+        size_t count1 = sizeof((arr1)) / elem_size1; \
+        size_t count2 = sizeof((arr2)) / elem_size2; \
         if (count1 != count2) { \
             _ST_EVALUATE_EXPR(count1 == count2, "ST_ARRAY_EQUAL"); \
             break; \
         } \
         for (size_t n = 0; n < count1; n++) { \
-            if (arr1[n] != arr2[n]) { \
-                _ST_EVALUATE_EXPR(arr1[n] == arr2[n], "ST_ARRAY_EQUAL"); \
+            if ((arr1)[n] != (arr2)[n]) { \
+                _ST_EVALUATE_EXPR((arr1)[n] == (arr2)[n], "ST_ARRAY_EQUAL"); \
                 break; \
             } \
         } \
@@ -482,19 +477,19 @@
 
 # define ST_ARRAY_NOT_EQUAL(arr1, arr2) \
     do { \
-        size_t elem_size1 = sizeof(arr1[0]); \
-        size_t elem_size2 = sizeof(arr2[0]); \
+        size_t elem_size1 = sizeof((arr1)[0]); \
+        size_t elem_size2 = sizeof((arr2)[0]); \
         if (elem_size1 != elem_size2) { \
             break; \
         } \
-        size_t count1 = sizeof(arr1) / elem_size1; \
-        size_t count2 = sizeof(arr2) / elem_size2; \
+        size_t count1 = sizeof((arr1)) / elem_size1; \
+        size_t count2 = sizeof((arr2)) / elem_size2; \
         if (count1 != count2) { \
             break; \
         } \
         bool all_elems_equal = true; \
         for (size_t n = 0; n < count1; n++) { \
-            if (arr1[n] != arr2[n]) { \
+            if ((arr1)[n] != (arr2)[n]) { \
                 all_elems_equal = false; \
                 break; \
             } \
@@ -504,32 +499,32 @@
 
 # define ST_ARRAY_CONTAINS(arr, val) \
     do { \
-        size_t elem_size = sizeof(arr[0]); \
-        size_t val_size = sizeof(val); \
+        size_t elem_size = sizeof((arr)[0]); \
+        size_t val_size = sizeof((val)); \
         if (elem_size != val_size) { \
             _ST_EVALUATE_EXPR(elem_size == val_size, "ST_ARRAY_CONTAINS"); \
             break; \
         } \
-        bool val_found = false; \
-        for (size_t n = 0; n <_ST_COUNTOF(arr); n++) { \
-            if (arr[n] == val) { \
-                val_found = true; \
+        bool value_found = false; \
+        for (size_t n = 0; n < _ST_COUNTOF(arr); n++) { \
+            if ((arr)[n] == (val)) { \
+                value_found = true; \
                 break; \
             } \
         } \
-        _ST_EVALUATE_EXPR(val_found, "ST_ARRAY_CONTAINS"); \
+        _ST_EVALUATE_EXPR(value_found, "ST_ARRAY_CONTAINS"); \
     } while (false)
 
 # define ST_ARRAY_NOT_CONTAINS(arr, val) \
     do { \
-        size_t elem_size = sizeof(arr[0]); \
-        size_t val_size = sizeof(val); \
+        size_t elem_size = sizeof((arr)[0]); \
+        size_t val_size = sizeof((val)); \
         if (elem_size != val_size) { \
             break; \
         } \
-        for (size_t n = 0; n <_ST_COUNTOF(arr); n++) { \
-            if (arr[n] == val) { \
-                _ST_EVALUATE_EXPR(arr[n] != val, "ST_ARRAY_NOT_CONTAINS"); \
+        for (size_t n = 0; n < _ST_COUNTOF(arr); n++) { \
+            if ((arr)[n] == (val)) { \
+                _ST_EVALUATE_EXPR((arr)[n] != (val), "ST_ARRAY_NOT_CONTAINS"); \
                 break; \
             } \
         } \
@@ -540,8 +535,8 @@
         for (size_t n = 0; n < _ST_COUNTOF(arr); n++) { \
             bool match = false; \
             for (size_t j = 0; j < _ST_COUNTOF(arr); j++) { \
-                if (j != n && arr[j] == arr[n]) { \
-                    _ST_EVALUATE_EXPR(arr[j] != arr[n], "ST_ARRAY_UNIQUE"); \
+                if (j != n && (arr)[j] == (arr)[n]) { \
+                    _ST_EVALUATE_EXPR((arr)[j] != (arr)[n], "ST_ARRAY_UNIQUE"); \
                     match = true; \
                     break; \
                 } \
