@@ -435,16 +435,16 @@
     _ST_EVALUATE_EXPR((num) < 0, "ST_NUM_NEGATIVE")
 
 # define ST_NUM_EVEN(num) \
-    _ST_EVALUATE_EXPR(div((int)(num), 2).rem == 0, "ST_NUM_EVEN"); \
+    _ST_EVALUATE_EXPR(div((int)(num), 2).rem == 0, "ST_NUM_EVEN")
 
 # define ST_NUM_ODD(num) \
-    _ST_EVALUATE_EXPR(div((int)(num), 2).rem != 0, "ST_NUM_ODD"); \
+    _ST_EVALUATE_EXPR(div((int)(num), 2).rem != 0, "ST_NUM_ODD")
 
 # define ST_NUM_MULTIPLE_OF(num, mul) \
-    _ST_EVALUATE_EXPR(div((int)(num), (int)(mul)).rem == 0, "ST_NUM_MULTIPLE_OF"); \
+    _ST_EVALUATE_EXPR(div((int)(num), (int)(mul)).rem == 0, "ST_NUM_MULTIPLE_OF")
 
 # define ST_NUM_NOT_MULTIPLE_OF(num, mul) \
-    _ST_EVALUATE_EXPR(div((int)(num), (int)(mul)).rem != 0, "ST_NUM_NOT_MULTIPLE_OF"); \
+    _ST_EVALUATE_EXPR(div((int)(num), (int)(mul)).rem != 0, "ST_NUM_NOT_MULTIPLE_OF")
 
 # define ST_NUM_IN_RANGE(num, low, high) \
     _ST_EVALUATE_EXPR((num) >= (low) && (num) <= (high), "ST_NUM_IN_RANGE")
