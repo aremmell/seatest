@@ -98,7 +98,7 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_EXPECT(a == b);
 
     // should all fail
-    ST_MESSAGE0("expecting the next 22 to fail");
+    ST_MESSAGE0("expecting the next 38 to fail");
     const char* null_msg = NULL;
     ST_STR_CONTAINS("sea", msg);
     ST_STR_NOT_CONTAINS("hell", msg);
@@ -119,10 +119,28 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_STR_ALPHA("not-alpha");
     ST_STR_NUMERIC("not-numeric");
     ST_STR_ALPHANUMERIC("not-alphanumeric");
+    ST_STR_CONTAINS(null_msg, msg);
+    ST_STR_NOT_CONTAINS(null_msg, msg);
+    ST_STR_CONTAINS_I(null_msg, msg);
+    ST_STR_NOT_CONTAINS_I(null_msg, msg);
+    ST_STR_BEGINSWITH(null_msg, msg, 1);
+    ST_STR_NOT_BEGINSWITH(null_msg, msg, 4);
+    ST_STR_BEGINSWITH_I(null_msg, msg, 1);
+    ST_STR_NOT_BEGINSWITH_I(null_msg, msg, 4);
+    ST_STR_BEGINSWITH_WSPACE(null_msg);
+    ST_STR_NOT_BEGINSWITH_WSPACE(null_msg);
+    ST_STR_ENDSWITH(null_msg, msg, 4, strlen(msg));
+    ST_STR_NOT_ENDSWITH(null_msg, msg, 4, strlen(msg));
+    ST_STR_ENDSWITH_I(null_msg, msg, 4, strlen(msg));
+    ST_STR_NOT_ENDSWITH_I(null_msg, msg, 4, strlen(msg));
+    ST_STR_ENDSWITH_WSPACE(null_msg);
+    ST_STR_NOT_ENDSWITH_WSPACE(null_msg);
     ST_STR_ALPHA(null_msg);
     ST_STR_NUMERIC(null_msg);
     ST_STR_ALPHANUMERIC(null_msg);
 
+    static const int low = 10;
+    static const int high = 100;
 
     // should all succeed
     ST_NUM_EVEN(48);
@@ -131,9 +149,11 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_NUM_POSITIVE(4);
     ST_NUM_MULTIPLE_OF(8192, 2);
     ST_NUM_NOT_MULTIPLE_OF(8193, 2);
+    ST_NUM_IN_RANGE(50, low, high);
+    ST_NUM_NOT_IN_RANGE(9, low, high);
 
     // should all fail
-    ST_MESSAGE0("expecting the next 8 to fail");
+    ST_MESSAGE0("expecting the next 10 to fail");
     ST_NUM_EVEN(49);
     ST_NUM_ODD(48);
     ST_NUM_NEGATIVE(4);
@@ -142,6 +162,8 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_NUM_MULTIPLE_OF(10000001, 10);
     ST_NUM_NOT_MULTIPLE_OF(8192, 2);
     ST_NUM_NOT_MULTIPLE_OF(10000000, 10);
+    ST_NUM_IN_RANGE(9, low, high);
+    ST_NUM_NOT_IN_RANGE(50, low, high);
 
     struct foo {
         int one;
@@ -152,18 +174,17 @@ ST_BEGIN_TEST_IMPL(test_tests)
     struct foo not_zeroed = {0, 1};
 
     // should succeed (all bytes zero)
-    ST_BITWISE_ZEROED(&zeroed, sizeof(zeroed));
-
-    // should fail (some bytes not zero)
-    ST_MESSAGE0("expecting the next 1 to fail");
-    ST_BITWISE_ZEROED(&not_zeroed, sizeof(not_zeroed));
+    ST_BITWISE_ZEROED(&zeroed, sizeof(struct foo));
 
     // should succeed (any byte not zero)
-    ST_BITWISE_NOT_ZEROED(&not_zeroed, sizeof(not_zeroed));
+    ST_BITWISE_NOT_ZEROED(&not_zeroed, sizeof(struct foo));
 
-    // should fail (all bytes zero)
-    ST_MESSAGE0("expecting the next 1 to fail");
-    ST_BITWISE_NOT_ZEROED(&zeroed, sizeof(zeroed));
+    // should fail (some bytes not zero)
+    ST_MESSAGE0("expecting the next 4 to fail");
+    ST_BITWISE_ZEROED(&not_zeroed, sizeof(struct foo));
+    ST_BITWISE_ZEROED(NULL, sizeof(struct foo));
+    ST_BITWISE_NOT_ZEROED(NULL, sizeof(struct foo));
+    ST_BITWISE_NOT_ZEROED(&zeroed, sizeof(struct foo));
 
     struct foo lhs = {1234, 5678};
     struct foo rhs = {1234, 5678};
