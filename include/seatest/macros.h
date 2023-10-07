@@ -132,10 +132,9 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(ptr), "ST_BITWISE_ZEROED"); \
             break; \
         } \
-        const unsigned char* const p = (const unsigned char* const)ptr; \
         for (size_t n = 0; n < size; n++) { \
-            if (p[n] != 0) { \
-                _ST_EVALUATE_EXPR(p[n] == 0, "ST_BITWISE_ZEROED"); \
+            if (((const unsigned char*)(ptr))[n] != 0) { \
+                _ST_EVALUATE_EXPR(((const unsigned char*)(ptr))[n] == 0, "ST_BITWISE_ZEROED"); \
                 break; \
             } \
         } \
@@ -147,15 +146,14 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(ptr), "ST_BITWISE_NOT_ZEROED"); \
             break; \
         } \
-        const unsigned char* const p = (const unsigned char* const)ptr; \
-        bool all_zero_bytes = true; \
+        bool all_bytes_zero = true; \
         for (size_t n = 0; n < size; n++) { \
-            if (p[n] != 0) { \
-                all_zero_bytes = false; \
+            if (((const unsigned char*)(ptr))[n] != 0) { \
+                all_bytes_zero = false; \
                 break; \
             } \
         } \
-        _ST_EVALUATE_EXPR(!all_zero_bytes, "ST_BITWISE_NOT_ZEROED"); \
+        _ST_EVALUATE_EXPR(!all_bytes_zero, "ST_BITWISE_NOT_ZEROED"); \
     } while (false)
 
 /**
