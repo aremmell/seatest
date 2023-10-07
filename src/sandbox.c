@@ -42,8 +42,6 @@ int main(int argc, char** argv)
 
 ST_BEGIN_TEST_IMPL(test_tests)
 {
-    st_sleep_msec(200);
-
     // should all succeed
     const char* msg = "hello there";
     const char* msg2 = "\ni'm surrounded!\r\n";
