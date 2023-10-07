@@ -131,6 +131,10 @@
 
 # define ST_BITWISE_ZEROED(ptr, size) \
     do { \
+        if (!(ptr)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(ptr), "ST_BITWISE_ZEROED"); \
+            break; \
+        } \
         const unsigned char* const p = (const unsigned char* const)ptr; \
         for (size_t n = 0; n < size; n++) { \
             if (p[n] != 0) { \
@@ -142,6 +146,10 @@
 
 # define ST_BITWISE_NOT_ZEROED(ptr, size) \
     do { \
+        if (!(ptr)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(ptr), "ST_BITWISE_NOT_ZEROED"); \
+            break; \
+        } \
         const unsigned char* const p = (const unsigned char* const)ptr; \
         bool all_zero_bytes = true; \
         for (size_t n = 0; n < size; n++) { \
@@ -161,7 +169,7 @@
     _ST_EVALUATE_EXPR((str) == NULL || *(str) == '\0', "ST_STR_EMPTY")
 
 # define ST_STR_NOT_EMPTY(str) \
-    _ST_EVALUATE_EXPR((str) != NULL && *(str) != '\0', "ST_STR_NOT_EMPTY")
+    _ST_EVALUATE_EXPR(_ST_NOTNULL(str) && *(str) != '\0', "ST_STR_NOT_EMPTY")
 
 # define ST_STR_EQUAL(str1, str2, len) \
     _ST_EVALUATE_EXPR(!st_strncmp(str1, str2, len), "ST_STR_EQUAL")
@@ -237,26 +245,34 @@
 
 # define ST_STR_ENDSWITH_WSPACE(str) \
     do { \
-        const char* const p = (const char* const)str; \
-        _ST_EVALUATE_EXPR(isspace(p[strlen(p) - 1]), "ST_STR_ENDSWITH_WSPACE"); \
+        if (!(str)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_ENDSWITH_WSPACE"); \
+            break; \
+        } \
+        const char* const s = (const char* const)str; \
+        _ST_EVALUATE_EXPR(isspace(s[strlen(s) - 1]), "ST_STR_ENDSWITH_WSPACE"); \
     } while (false)
 
 # define ST_STR_NOT_ENDSWITH_WSPACE(str) \
     do { \
-        const char* const p = (const char* const)str; \
-        _ST_EVALUATE_EXPR(!isspace(p[strlen(p) - 1]), "ST_STR_NOT_ENDSWITH_WSPACE"); \
+        if (!(str)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_NOT_ENDSWITH_WSPACE"); \
+            break; \
+        } \
+        const char* const s = (const char* const)str; \
+        _ST_EVALUATE_EXPR(!isspace(s[strlen(s) - 1]), "ST_STR_NOT_ENDSWITH_WSPACE"); \
     } while (false)
 
 # define ST_STR_ALPHA(str) \
     do { \
-        if (!(str) || !*(str)) { \
-            _ST_EVALUATE_EXPR((str) && *(str) != '\0', "ST_STR_ALPHA"); \
+        if (!(str)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_ALPHA"); \
             break; \
         } \
-        const char* const p = (const char* const)(str); \
-        for (size_t n = 0; n < strlen(str); n++) { \
-            if (!isalpha(p[n])) { \
-                _ST_EVALUATE_EXPR(isalpha(p[n]), "ST_STR_ALPHA"); \
+        const char* const s = (const char* const)(str); \
+        for (size_t n = 0; n < strlen(s); n++) { \
+            if (!isalpha(s[n])) { \
+                _ST_EVALUATE_EXPR(isalpha(s[n]), "ST_STR_ALPHA"); \
                 break; \
             } \
         } \
@@ -264,14 +280,14 @@
 
 # define ST_STR_NUMERIC(str) \
     do { \
-        if (!(str) || !*(str)) { \
-            _ST_EVALUATE_EXPR((str) && *(str) != '\0', "ST_STR_NUMERIC"); \
+        if (!(str)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_NUMERIC"); \
             break; \
         } \
-        const char* const p = (const char* const)(str); \
-        for (size_t n = 0; n < strlen(str); n++) { \
-            if (!isdigit(p[n])) { \
-                _ST_EVALUATE_EXPR(isdigit(p[n]), "ST_STR_NUMERIC"); \
+        const char* const s = (const char* const)(str); \
+        for (size_t n = 0; n < strlen(s); n++) { \
+            if (!isdigit(s[n])) { \
+                _ST_EVALUATE_EXPR(isdigit(s[n]), "ST_STR_NUMERIC"); \
                 break; \
             } \
         } \
@@ -279,14 +295,14 @@
 
 # define ST_STR_ALPHANUMERIC(str) \
     do { \
-        if (!(str) || !*(str)) { \
-            _ST_EVALUATE_EXPR((str) && *(str) != '\0', "ST_STR_ALPHANUMERIC"); \
+        if (!(str)) { \
+            _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_ALPHANUMERIC"); \
             break; \
         } \
-        const char* const p = (const char* const)(str); \
-        for (size_t n = 0; n < strlen(str); n++) { \
-            if (!isalnum(p[n])) { \
-                _ST_EVALUATE_EXPR(isalnum(p[n]), "ST_STR_ALPHANUMERIC"); \
+        const char* const s = (const char* const)(str); \
+        for (size_t n = 0; n < strlen(s); n++) { \
+            if (!isalnum(s[n])) { \
+                _ST_EVALUATE_EXPR(isalnum(s[n]), "ST_STR_ALPHANUMERIC"); \
                 break; \
             } \
         } \
@@ -303,28 +319,16 @@
     _ST_EVALUATE_EXPR((num) < 0, "ST_NUM_NEGATIVE")
 
 # define ST_NUM_EVEN(num) \
-    do { \
-        div_t dt = div((int)num, 2); \
-        _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_EVEN"); \
-    } while (false)
+    _ST_EVALUATE_EXPR(div((int)num, 2).rem == 0, "ST_NUM_EVEN"); \
 
 # define ST_NUM_ODD(num) \
-    do { \
-        div_t dt = div((int)num, 2); \
-        _ST_EVALUATE_EXPR(dt.rem != 0, "ST_NUM_ODD"); \
-    } while (false)
+    _ST_EVALUATE_EXPR(div((int)num, 2).rem != 0, "ST_NUM_ODD"); \
 
 # define ST_NUM_MULTIPLE_OF(num, exp) \
-    do { \
-        div_t dt = div((int)num, (int)exp); \
-        _ST_EVALUATE_EXPR(dt.rem == 0, "ST_NUM_MULTIPLE_OF"); \
-    } while (false)
+    _ST_EVALUATE_EXPR(div((int)num, (int)exp).rem == 0, "ST_NUM_MULTIPLE_OF"); \
 
 # define ST_NUM_NOT_MULTIPLE_OF(num, exp) \
-    do { \
-        div_t dt = div((int)num, (int)exp); \
-        _ST_EVALUATE_EXPR(dt.rem != 0, "ST_NUM_NOT_MULTIPLE_OF"); \
-    } while (false)
+    _ST_EVALUATE_EXPR(div((int)num, (int)exp).rem != 0, "ST_NUM_NOT_MULTIPLE_OF"); \
 
 # define ST_NUM_IN_RANGE(num, low, high) \
     _ST_EVALUATE_EXPR((num) >= (low) && (num) <= (high), "ST_NUM_IN_RANGE")
