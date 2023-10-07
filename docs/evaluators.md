@@ -4,7 +4,9 @@ seatest evaluators make writing tests less painful. They provide a straightforwa
 
 Each evaluator ultimately boils down to a truthy statement about the expression and data passed into it. At each step of your test, its state can be positively confirmed to either be correct or incorrect.
 
-Any evaluator that results in a false expression will cause the active test to fail (*but not stop&mdash;it is on the TODO list to make that behavior configurable*). Finally, [additional helpers](./helpers.md) are provided to check the state of a test at any time, and optionally exit immediately.
+Any evaluator[^1] that results in a false expression will cause the active test to fail (*but not stop&mdash;it is on the TODO list to make that behavior configurable*). Finally, [additional helpers](./helpers.md) are provided to check the state of a test at any time, and optionally exit immediately.
+
+[^1]: All evaluators but `ST_EXPECT`.
 
 ## General Purpose
 
@@ -35,45 +37,46 @@ Any evaluator that results in a false expression will cause the active test to f
 
 ## String
 
-|                    Evaluator | Expression                                                   |
+| Evaluator                    | Expression                                                   |
 | :--------------------------- | :----------------------------------------------------------- |
-|                 ST_STR_EMPTY | str == NULL || *str == '\0'                                  |
-|             ST_STR_NOT_EMPTY | str != NULL && *str != '\0'                                  |
-|                 ST_STR_EQUAL | strcmp(str1, str2) == 0                                      |
-|             ST_STR_NOT_EQUAL | strcmp(str1, str2) != 0                                      |
-|               ST_STR_EQUAL_I | strcasecmp/StrCmpI(str1, str2) == 0                          |
-|           ST_STR_NOT_EQUAL_I | strcasecmp/StrCmpI(str1, str2) != 0                          |
-|              ST_STR_CONTAINS | strstr/StrStr(needle, haystack) != NULL                      |
-|          ST_STR_NOT_CONTAINS | strstr/StrStr(needle, haystack) == NULL                      |
-|            ST_STR_CONTAINS_I | strcasestr/StrStrI(needle, haystack) != NULL                 |
-|        ST_STR_NOT_CONTAINS_I | strcasestr/StrStrI(needle, haystack) == NULL                 |
-|            ST_STR_BEGINSWITH | strncmp/StrCmpN(needle, haystack, needle_len) == 0           |
-|        ST_STR_NOT_BEGINSWITH | strncmp/StrCmpN(needle, haystack, needle_len) != 0           |
-|          ST_STR_BEGINSWITH_I | strncasecmp/StrCmpNI(needle, haystack, needle_len) == 0      |
-|      ST_STR_NOT_BEGINSWITH_I | strncasecmp/StrCmpNI(needle, haystack, needle_len) != 0      |
-|     ST_STR_BEGINSWITH_WSPACE | isspace(str[0])                                              |
+| ST_STR_EMPTY                 | str == NULL \|\| *(str) == '\0'                              |
+| ST_STR_NOT_EMPTY             | str != NULL && *str != '\0'                                  |
+| ST_STR_EQUAL                 | strcmp(str1, str2) == 0                                      |
+| ST_STR_NOT_EQUAL             | strcmp(str1, str2) != 0                                      |
+| ST_STR_EQUAL_I               | strcasecmp/StrCmpI(str1, str2) == 0                          |
+| ST_STR_NOT_EQUAL_I           | strcasecmp/StrCmpI(str1, str2) != 0                          |
+| ST_STR_CONTAINS              | strstr/StrStr(needle, haystack) != NULL                      |
+| ST_STR_NOT_CONTAINS          | strstr/StrStr(needle, haystack) == NULL                      |
+| ST_STR_CONTAINS_I            | strcasestr/StrStrI(needle, haystack) != NULL                 |
+| ST_STR_NOT_CONTAINS_I        | strcasestr/StrStrI(needle, haystack) == NULL                 |
+| ST_STR_BEGINSWITH            | strncmp/StrCmpN(needle, haystack, needle_len) == 0           |
+| ST_STR_NOT_BEGINSWITH        | strncmp/StrCmpN(needle, haystack, needle_len) != 0           |
+| ST_STR_BEGINSWITH_I          | strncasecmp/StrCmpNI(needle, haystack, needle_len) == 0      |
+| ST_STR_NOT_BEGINSWITH_I      | strncasecmp/StrCmpNI(needle, haystack, needle_len) != 0      |
+| ST_STR_BEGINSWITH_WSPACE     | isspace(str[0])                                              |
 | ST_STR_NOT_BEGINSWITH_WSPACE | !isspace(str[0])                                             |
-|              ST_STR_ENDSWITH | strncmp/StrCmpN(haystack + (haystack_len - needle_len), needle_len) == 0 |
-|          ST_STR_NOT_ENDSWITH | strncmp/StrCmpN(haystack + (haystack_len - needle_len), needle_len) != 0 |
-|            ST_STR_ENDSWITH_I | strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) == 0 |
-|        ST_STR_NOT_ENDSWITH_I | strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) != 0 |
-|       ST_STR_ENDSWITH_WSPACE | isspace(p[strlen(p) - 1])                                    |
-|   ST_STR_NOT_ENDSWITH_WSPACE | !isspace(p[strlen(p) - 1])                                   |
-|                 ST_STR_ALPHA | foreach(str) => isalpha                                      |
-|               ST_STR_NUMERIC | foreach(str) => isdigit                                      |
-|          ST_STR_ALPHANUMERIC | foreach(str) => isalnum                                      |
+| ST_STR_ENDSWITH              | strncmp/StrCmpN(haystack + (haystack_len - needle_len), needle_len) == 0 |
+| ST_STR_NOT_ENDSWITH          | strncmp/StrCmpN(haystack + (haystack_len - needle_len), needle_len) != 0 |
+| ST_STR_ENDSWITH_I            | strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) == 0 |
+| ST_STR_NOT_ENDSWITH_I        | strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) != 0 |
+| ST_STR_ENDSWITH_WSPACE       | isspace(p[strlen(p) - 1])                                    |
+| ST_STR_NOT_ENDSWITH_WSPACE   | !isspace(p[strlen(p) - 1])                                   |
+| ST_STR_ALPHA                 | foreach(str) => isalpha                                      |
+| ST_STR_NUMERIC               | foreach(str) => isdigit                                      |
+| ST_STR_ALPHANUMERIC          | foreach(str) => isalnum                                      |
 
 ## Numeric
 
-|                    Evaluator | Expression                                                   |
-| :--------------------------- | :----------------------------------------------------------- |
-|              ST_NUM_POSITIVE | num > 0                                                      |
-|              ST_NUM_NEGATIVE | num < 0                                                      |
-|                  ST_NUM_EVEN | num % 2 == 0                                                 |
-|                   ST_NUM_ODD | num % 2 != 0                                                 |
-|           ST_NUM_MULTIPLE_OF | num % exp == 0                                               |
-|       ST_NUM_NOT_MULTIPLE_OF | num % exp != 0                                               |
-|       ST_NUM_IN_RANGE        | num >= low && num <= high                                    |
+| Evaluator              | Expression                |
+| :--------------------- | :------------------------ |
+| ST_NUM_POSITIVE        | num > 0                   |
+| ST_NUM_NEGATIVE        | num < 0                   |
+| ST_NUM_EVEN            | num % 2 == 0              |
+| ST_NUM_ODD             | num % 2 != 0              |
+| ST_NUM_MULTIPLE_OF     | num % exp == 0            |
+| ST_NUM_NOT_MULTIPLE_OF | num % exp != 0            |
+| ST_NUM_IN_RANGE        | num >= low && num <= high |
+| ST_NUM_NOT_IN_RANGE    | num < low \|\| num > high |
 
 ## Array
 
