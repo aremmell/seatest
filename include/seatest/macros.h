@@ -73,11 +73,11 @@
 # if defined(ST_DEBUG_MESSAGES)
 /** Emits a diagnotic message in gray. Accepts printf-like variable arguments and requires a
  * minimum of two arguments; use ST_DEBUG0() if just a simple message is required. */
-#  define ST_DEBUG(msg, ...)    __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n", __VA_ARGS__)
+#  define ST_DEBUG(msg, ...)   __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n", __VA_ARGS__)
 
 /** Emits a diagnotic message in gray. Only accepts a single message argument; use ST_DEBUG()
  * for printf-like behavior. */
-#  define ST_DEBUG0(msg)        __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n")
+#  define ST_DEBUG0(msg)       __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n")
 # else
 #  define ST_DEBUG(...)
 #  define ST_DEBUG0(...)
