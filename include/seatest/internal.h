@@ -36,6 +36,7 @@
 /** Global state container. */
 typedef struct {
     const char* app_name;
+    bool fail_early;
 } st_state;
 
 /** Data associated with a test. */
@@ -75,9 +76,10 @@ typedef struct {
 
 /** A command line argument. */
 typedef struct {
-    const char* const flag;  /**< e.g. --whiz-bang. */
-    const char* const usage; /**< e.g. [file, ...]. */
-    const char* const desc;  /**< e.g. 'causes you to levitate'. */
+    const char* const s_flag; /**< e.g. -w. */
+    const char* const flag;   /**< e.g. --whiz-bang. */
+    const char* const usage;  /**< e.g. [file, ...]. */
+    const char* const desc;   /**< e.g. 'causes you to levitate'. */
 } st_cl_arg;
 
 /** Command line configuration. */

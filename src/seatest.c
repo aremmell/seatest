@@ -72,10 +72,15 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
         }
 
         tests[n].msec = st_timer_elapsed(&timer) - started_at;
+        st_print_test_outro(n + 1, to_run, tests[n].name, &tests[n]);
+
         if (tests[n].res.pass || !tests[n].res.fatal || tests[n].res.skip) {
             passed++;
+        } else if (_state.fail_early) {
+            _ST_WARNING("%s '%s' "ST_LOC_FAIL_EARLY, _ST_WARN_PREFIX, tests[n].name,
+                EXIT_FAILURE, ST_LOC_FAIL_FLAG);
+            return EXIT_FAILURE;
         }
-        st_print_test_outro(n + 1, to_run, tests[n].name, &tests[n]);
     }
 
     st_print_test_summary(passed, to_run, tests, num_tests, st_timer_elapsed(&timer));
@@ -229,8 +234,8 @@ void st_print_test_outro(size_t num, size_t to_run, const char* name, const st_t
         }
     }
 
-    (void)printf("\n" WHITEB("(%zu/%zu) '%s' "ST_LOC_FINISHED" "ST_LOC_IN" "
-        "%s"ST_LOC_MSEC_ABV ":") " %s", num, to_run, name,
+    (void)printf("\n" WHITEB("(%zu/%zu) '%s' "ST_LOC_FINISHED)
+        WHITE(" [%s"ST_LOC_MSEC_ABV"]") WHITEB(":") " %s", num, to_run, name,
         (msec_str ? msec_str : ST_LOC_MSEC_ZERO), _ST_SKIP_PASS_FAIL(test));
 
     (void)printf(test->res.errors > 0 ?
@@ -323,17 +328,18 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
 {
     size_t longest = 0;
     for (size_t n = 0; n < num_args; n++) {
-        size_t len = strlen(args[n].flag);
-        if (len > longest)
+        size_t len = strlen(args[n].flag) + strlen(args[n].s_flag);
+        if (len > longest) {
             longest = len;
+        }
     }
 
     (void)fprintf(stderr, "\n" WHITE(ST_LOC_USAGE":") "\n\n");
 
     for (size_t n = 0; n < num_args; n++) {
-        (void)fprintf(stderr, "\t%s ", args[n].flag);
+        (void)fprintf(stderr, "\t%s, %s  ", args[n].s_flag, args[n].flag);
 
-        size_t len = strlen(args[n].flag);
+        size_t len = strlen(args[n].flag) + strlen(args[n].s_flag);
         if (len < longest) {
             for (size_t j = len; j < longest; j++) {
                 (void)fprintf(stderr, " ");
@@ -378,10 +384,16 @@ void st_print_seatest_ansi(bool bold)
     }
 }
 
+bool st_is_cl_arg(const st_cl_arg* arg, const char* flag)
+{
+    return 0 == st_strncmp(flag, arg->flag, strlen(arg->flag)) ||
+           0 == st_strncmp(flag, arg->s_flag, strlen(arg->s_flag));
+}
+
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args)
 {
     for (size_t n = 0; n < num_args; n++) {
-        if (0 == st_strncmp(flag, args[n].flag, strlen(args[n].flag))) {
+        if (st_is_cl_arg(&args[n], flag)) {
             return &args[n];
         }
     }
@@ -403,16 +415,14 @@ bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_
             st_print_usage_info(args, num_args);
             return false;
         }
-        if (!st_strncmp(cur->flag, ST_LOC_WAIT_FLAG, strlen(ST_LOC_WAIT_FLAG))) {
+        if (st_is_cl_arg(cur, ST_LOC_WAIT_FLAG)) {
             config->wait = true;
-        } else if (!st_strncmp(cur->flag, ST_LOC_ONLY_FLAG,
-            strlen(ST_LOC_ONLY_FLAG))) {
+        } else if (st_is_cl_arg(cur, ST_LOC_ONLY_FLAG)) {
             while (++n < argc) {
                 if (!argv[n] || !*argv[n])
                     continue;
                 if (*argv[n] == '-' || !st_mark_test_to_run(argv[n], tests, num_tests)) {
-                    _ST_ERROR(ST_LOC_INVAL_ARG" %s: '%s'", ST_LOC_ONLY_FLAG,
-                        argv[n]);
+                    _ST_ERROR(ST_LOC_INVAL_ARG" %s: '%s'", ST_LOC_ONLY_FLAG, argv[n]);
                     st_print_usage_info(args, num_args);
                     return false;
                 }
@@ -423,13 +433,17 @@ bool st_parse_cmd_line(int argc, char** argv, const st_cl_arg* args, size_t num_
                 st_print_usage_info(args, num_args);
                 return false;
             }
-        } else if (!st_strncmp(cur->flag, ST_LOC_LIST_FLAG, strlen(ST_LOC_LIST_FLAG))) {
+        } else if (st_is_cl_arg(cur, ST_LOC_LIST_FLAG)) {
             st_print_test_list(tests, num_tests);
             return false;
-        } else if (!st_strncmp(cur->flag, ST_LOC_VERS_FLAG, strlen(ST_LOC_VERS_FLAG))) {
+        } else if (st_is_cl_arg(cur, ST_LOC_FAIL_FLAG)) {
+            _ST_DEBUG("will exit immediately upon any falied test due to %s",
+                ST_LOC_FAIL_FLAG);
+            _state.fail_early = true;
+        } else if (st_is_cl_arg(cur, ST_LOC_VERS_FLAG)) {
             st_print_version_info();
             return false;
-        } else if (!st_strncmp(cur->flag, ST_LOC_HELP_FLAG, strlen(ST_LOC_HELP_FLAG))) {
+        } else if (st_is_cl_arg(cur, ST_LOC_HELP_FLAG)) {
             st_print_usage_info(args, num_args);
             return false;
         } else {

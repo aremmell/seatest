@@ -70,13 +70,18 @@
 # define ST_END_DECLARE_TEST_LIST() \
     };
 
+# if defined(ST_DEBUG_MESSAGES)
 /** Emits a diagnotic message in gray. Accepts printf-like variable arguments and requires a
  * minimum of two arguments; use ST_DEBUG0() if just a simple message is required. */
-# define ST_DEBUG(msg, ...)    __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n", __VA_ARGS__)
+#  define ST_DEBUG(msg, ...)    __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n", __VA_ARGS__)
 
 /** Emits a diagnotic message in gray. Only accepts a single message argument; use ST_DEBUG()
  * for printf-like behavior. */
-# define ST_DEBUG0(msg)        __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n")
+#  define ST_DEBUG0(msg)        __ST_MESSAGE(ST_LOC_INDENT DGRAY(msg) "\n")
+# else
+#  define ST_DEBUG(...)
+#  define ST_DEBUG0(...)
+# endif
 
 /** Emits an informative message. Accepts printf-like variable arguments and requires a
  * minimum of two arguments; use ST_MESSAGE0() if just a simple message is required. */
@@ -122,8 +127,6 @@
 # define ST_TEST_EXIT_IF_FAILED() \
     do { \
         if (ST_TEST_IS_FAILED()) { \
-            ST_WARNING(ST_LOC_RET_ERRS, __retval.errors, _ST_PLURAL(ST_LOC_ERROR, \
-                __retval.errors)); \
             return __retval; \
         } \
     } while (false)

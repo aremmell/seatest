@@ -42,6 +42,12 @@ int main(int argc, char** argv)
 
 ST_BEGIN_TEST_IMPL(test_tests)
 {
+    // console output helpers
+    ST_DEBUG0("diagnostically diagnostic");
+    ST_MESSAGE0("informationally informational");
+    ST_WARNING0("a stern warning");
+    ST_ERROR0("something has gone terribly wrong");
+
     // should all succeed
     const char* msg = "hello there";
     const char* msg2 = "\ni'm surrounded!\r\n";
@@ -90,13 +96,6 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_STR_ALPHA("loremipsum");
     ST_STR_NUMERIC("123456");
     ST_STR_ALPHANUMERIC("lorem123ipsum456");
-
-    // should fail
-    ST_MESSAGE0("expecting the next 2 to fail");
-    int a = 1;
-    int b = 2;
-    ST_TRUE(strlen(msg) < 10);
-    ST_EXPECT(a == b);
 
     // should all fail
     ST_MESSAGE0("expecting the next 38 to fail");
@@ -276,10 +275,11 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_MESSAGE0("testing OS error formatting");
     ST_OS_ERROR(22, "sysfunc123 failed!");
 
-    ST_DEBUG("exiting with %d warning(s) and %d error(s)", ST_TEST_WARNING_COUNT(),
-        ST_TEST_ERROR_COUNT());
+    // should be true
+    ST_TRUE(ST_TEST_WARNING_COUNT() > 0);
+    ST_TRUE(ST_TEST_ERROR_COUNT() > 0);
 
-    // should emit a warning and return
+    // causes the test to end immediately
     ST_TEST_EXIT_IF_FAILED();
 }
 ST_END_TEST_IMPL()

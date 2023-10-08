@@ -84,7 +84,6 @@
 # define ST_LOC_SKIPPED_COND  "will be skipped due to"
 # define ST_LOC_CONDITION     "condition"
 # define ST_LOC_SKIPPED_UNMET "skipped due to unmet %s"
-# define ST_LOC_RET_ERRS      "returning; encountered %d %s!"
 # define ST_LOC_INVAL_ANAME   "the app_name parameter to ST_MAIN_IMPL is" \
                               " invalid (may not be null or an empty string)"
 # define ST_LOC_NO_SPACES     "is invalid (names may not contain spaces)"
@@ -98,6 +97,7 @@
                               " COND_DISK will be skipped"
 # define ST_LOC_NO_INTERNET   "no internet connection detected; tests requiring" \
                               " COND_INET will be skipped"
+# define ST_LOC_FAIL_EARLY    "failed; exiting with code %d due to %s..."
 # define ST_LOC_SKIP          "SKIP"
 # define ST_LOC_PASS          "PASS"
 # define ST_LOC_WARN          "WARN"
@@ -105,27 +105,35 @@
 # define ST_LOC_INDENT        "  "
 
 # define ST_LOC_WAIT_FLAG     "--wait"
+# define ST_LOC_WAIT_FLAG_S   "-w"
 # define ST_LOC_ONLY_FLAG     "--only"
+# define ST_LOC_ONLY_FLAG_S   "-o"
 # define ST_LOC_LIST_FLAG     "--list"
+# define ST_LOC_LIST_FLAG_S   "-l"
+# define ST_LOC_FAIL_FLAG     "--fail-early"
+# define ST_LOC_FAIL_FLAG_S   "-f"
 # define ST_LOC_VERS_FLAG     "--version"
+# define ST_LOC_VERS_FLAG_S   "-v"
 # define ST_LOC_HELP_FLAG     "--help"
+# define ST_LOC_HELP_FLAG_S   "-h"
 
 # define ST_LOC_ONLY_USAGE    ULINE("name") " [, " ULINE("name") ", ...]"
 
-# define ST_LOC_WAIT_DESC     "After running all test(s), wait for a keypress" \
-                              " before exiting"
+# define ST_LOC_WAIT_DESC     "Wait for a key press before exiting"
 # define ST_LOC_ONLY_DESC     "Run only the test(s) specified"
 # define ST_LOC_LIST_DESC     "Print a list of all available tests"
-# define ST_LOC_VERS_DESC     "Displays version information"
-# define ST_LOC_HELP_DESC     "Displays this message"
+# define ST_LOC_FAIL_DESC     "Exit immediately upon failure of any test"
+# define ST_LOC_VERS_DESC     "Display version information"
+# define ST_LOC_HELP_DESC     "Display this message"
 
 /** Command line configuration (flag, usage, description). If entries are changed,
  * st_parse_cmd_line and st_print_usage_info must be modified as well. */
 # define ST_CL_CONFIG() \
-    {ST_LOC_WAIT_FLAG, "",                ST_LOC_WAIT_DESC}, \
-    {ST_LOC_ONLY_FLAG, ST_LOC_ONLY_USAGE, ST_LOC_ONLY_DESC}, \
-    {ST_LOC_LIST_FLAG, "",                ST_LOC_LIST_DESC}, \
-    {ST_LOC_VERS_FLAG, "",                ST_LOC_VERS_DESC}, \
-    {ST_LOC_HELP_FLAG, "",                ST_LOC_HELP_DESC}
+    {ST_LOC_WAIT_FLAG_S, ST_LOC_WAIT_FLAG, "",                ST_LOC_WAIT_DESC}, \
+    {ST_LOC_ONLY_FLAG_S, ST_LOC_ONLY_FLAG, ST_LOC_ONLY_USAGE, ST_LOC_ONLY_DESC}, \
+    {ST_LOC_LIST_FLAG_S, ST_LOC_LIST_FLAG, "",                ST_LOC_LIST_DESC}, \
+    {ST_LOC_FAIL_FLAG_S, ST_LOC_FAIL_FLAG, "",                ST_LOC_FAIL_DESC}, \
+    {ST_LOC_VERS_FLAG_S, ST_LOC_VERS_FLAG, "",                ST_LOC_VERS_DESC}, \
+    {ST_LOC_HELP_FLAG_S, ST_LOC_HELP_FLAG, "",                ST_LOC_HELP_DESC}
 
 #endif /* !_SEATEST_CONFIG_H_INCLUDED */

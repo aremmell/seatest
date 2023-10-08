@@ -60,6 +60,9 @@ void st_print_version_info(void);
 /** Prints 'seatests' in pretty colors. */
 void st_print_seatest_ansi(bool bold);
 
+/** Determines if a command line argument matches the given input string. */
+bool st_is_cl_arg(const st_cl_arg* arg, const char* flag);
+
 /** Looks up a command line argument by flag. Returns NULL if no match was found. */
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args);
 
