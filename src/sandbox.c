@@ -29,16 +29,25 @@ ST_DECLARE_STATIC_VARS()
 
 ST_DECLARE_TEST(test_tests)
 ST_DECLARE_TEST(requires_inet)
+ST_DECLARE_TEST(temp)
 
 ST_BEGIN_DECLARE_TEST_LIST()
     ST_DECLARE_TEST_LIST_ENTRY(testing-the-tests, test_tests)
     ST_DECLARE_TEST_LIST_ENTRY_COND(requires-inet, requires_inet, COND_INET)
+    ST_DECLARE_TEST_LIST_ENTRY(temp-test, temp)
 ST_END_DECLARE_TEST_LIST()
 
 int main(int argc, char** argv)
 {
     return ST_MAIN_IMPL("selftest");
 }
+
+ST_BEGIN_TEST_IMPL(temp)
+{
+    _retval.warnings+=2;
+    _retval.errors+=2;
+}
+ST_END_TEST_IMPL()
 
 ST_BEGIN_TEST_IMPL(test_tests)
 {
