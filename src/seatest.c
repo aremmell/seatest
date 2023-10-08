@@ -200,11 +200,46 @@ void st_print_test_outro(size_t num, size_t to_run, const char* name, const st_t
         }
     }
 
-    (void)printf("\n" WHITEB("(%zu/%zu) '%s' "ST_LOC_FINISHED" (")
-        WHITE("%s"ST_LOC_MSEC_ABV) WHITEB("): ") "%s\n", num, to_run, name,
+   char* warn_str = NULL;
+    if (test->res.warnings > 0) {
+        int len = snprintf(NULL, 0, " (%d %s%s", test->res.warnings,
+            _ST_PLURAL(ST_LOC_WARNING, test->res.warnings),
+            (test->res.errors > 0 ? "" : ")"));
+        if (len > 0) {
+            warn_str = calloc(len + 1, sizeof(char));
+            if (warn_str) {
+                (void)snprintf(warn_str, len + 1, " (%d %s%s", test->res.warnings,
+                    _ST_PLURAL(ST_LOC_WARNING, test->res.warnings),
+                    (test->res.errors > 0 ? "" : ")"));
+            }
+        }
+    }
+
+    char* err_str = NULL;
+    if (test->res.errors > 0) {
+        int len = snprintf(NULL, 0, "%s%d %s)", (test->res.warnings > 0 ? ", " : " ("),
+            test->res.errors, _ST_PLURAL(ST_LOC_ERROR, test->res.errors));
+        if (len > 0) {
+            err_str = calloc(len + 1, sizeof(char));
+            if (err_str) {
+                (void)snprintf(err_str, len + 1, "%s%d %s)",
+                    (test->res.warnings > 0 ? ", " : " ("), test->res.errors,
+                    _ST_PLURAL(ST_LOC_ERROR, test->res.errors));
+            }
+        }
+    }
+
+    (void)printf("\n" WHITEB("(%zu/%zu) '%s' "ST_LOC_FINISHED" "ST_LOC_IN" "
+        "%s"ST_LOC_MSEC_ABV ":") " %s", num, to_run, name,
         (msec_str ? msec_str : ST_LOC_MSEC_ZERO), _ST_SKIP_PASS_FAIL(test));
 
+    (void)printf(test->res.errors > 0 ?
+        FG_COLOR(0, 196, "%s%s\n") : FG_COLOR(0, 208, "%s%s\n"),
+        (warn_str ? warn_str : ""), (err_str ? err_str : ""));
+
     _st_safefree(&msec_str);
+    _st_safefree(&warn_str);
+    _st_safefree(&err_str);
 }
 
 void st_print_test_summary(size_t passed, size_t to_run, const st_test* tests,

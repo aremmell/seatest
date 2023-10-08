@@ -251,22 +251,35 @@ typedef struct {
         ST_CL_CONFIG() \
     }
 
+# define _ST_VALIDATE_RETURN() \
+    do { \
+        if (__retval.warnings > 0 || !__retval.pass) { \
+            assert(__retval.warnings > 0); \
+            assert(!__retval.pass); \
+        } \
+        if (__retval.errors > 0 || __retval.fatal) { \
+            assert(__retval.errors > 0); \
+            assert(__retval.fatal); \
+        } \
+        return __retval; \
+    } while (false)
+
 # define _ST_EVALUATE_EXPR_RAW(expr, name, color, is_fatal) \
     do { \
         if (!(expr)) { \
-            _retval.pass = false; \
-            _retval.last_fail = true; \
+            __retval.pass = false; \
+            __retval.last_fail = true; \
             if ((is_fatal)) { \
-                _retval.fatal = true; \
-                _retval.errors++; \
+                __retval.fatal = true; \
+                __retval.errors++; \
             } else { \
-                _retval.warnings++; \
+                __retval.warnings++; \
             } \
             (void)printf(ST_LOC_INDENT FG_COLOR(0, color, name " ("ST_LOC_LINE \
                 " %"PRIu32"):") DGRAY(" "ST_LOC_EXPRESSION) WHITE(" '" #expr "'") \
                 DGRAY(" "ST_LOC_IS_FALSE"\n"), __LINE__); \
         } else { \
-            _retval.last_fail = false; \
+            __retval.last_fail = false; \
         } \
     } while (false)
 

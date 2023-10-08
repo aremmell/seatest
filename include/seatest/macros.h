@@ -26,18 +26,19 @@
 #ifndef _SEATEST_MACROS_H_INCLUDED
 # define _SEATEST_MACROS_H_INCLUDED
 
-/** The only code needed in main()/the entry point. `app_name` is a name to associate with the
- * test suite, such as a product or company name. */
+/** The only code needed in main()/the entry point. `app_name` is a name to associate
+ * with the test rig, such as a product or company name. */
 # define ST_MAIN_IMPL(app_name) \
     st_main(argc, argv, app_name, st_cl_args, _ST_COUNTOF(st_cl_args), \
         st_tests, _ST_COUNTOF(st_tests))
 
-/** Declares static variables required by seatest. Place above your entry point routine. */
+/** Declares static variables required by seatest. Place above the entry point routine. */
 # define ST_DECLARE_STATIC_VARS() \
     _ST_DECLARE_CL_ARGS();
 
-/** Declares an individual test function. `name` must only contain characters allowed in C
- * function names. Place these declarations in a header file, or above your entry point routine. */
+/** Declares an individual test function. `name` must only contain characters allowed
+ * in C function names. Place these declarations in a header file, or above the entry
+ *  point routine. */
 # define ST_DECLARE_TEST(name) \
     st_testres st_test_##name(void);
 
@@ -45,12 +46,12 @@
 # define ST_BEGIN_TEST_IMPL(name) \
     st_testres st_test_##name(void) \
     { \
-        st_testres _retval = {0}; \
-        _retval.pass = true;
+        st_testres __retval = {0}; \
+        __retval.pass = true;
 
 /** Ends the definition (implementation) of an individual test function. */
 # define ST_END_TEST_IMPL() \
-        return _retval; \
+        _ST_VALIDATE_RETURN(); \
     }
 
 /** Begins the declaration of the global list of available tests. */
@@ -112,18 +113,18 @@
  * argument; use ST_ERROR() for printf-like behavior. */
 # define ST_ERROR0(msg)        __ST_MESSAGE(ST_LOC_INDENT FG_COLOR(0, 196, msg) "\n")
 
-# define ST_TEST_IS_FAILED()       (_retval.fatal)
-# define ST_TEST_IS_PASSING()      (!_retval.fatal)
-# define ST_TEST_LAST_EVAL_FALSE() (_retval.last_fail)
-# define ST_TEST_ERROR_COUNT()     (_retval.errors)
-# define ST_TEST_WARNING_COUNT()   (_retval.warnings)
+# define ST_TEST_IS_FAILED()       (__retval.fatal)
+# define ST_TEST_IS_PASSING()      (!__retval.fatal)
+# define ST_TEST_LAST_EVAL_FALSE() (__retval.last_fail)
+# define ST_TEST_ERROR_COUNT()     (__retval.errors)
+# define ST_TEST_WARNING_COUNT()   (__retval.warnings)
 
 # define ST_TEST_EXIT_IF_FAILED() \
     do { \
         if (ST_TEST_IS_FAILED()) { \
-            ST_WARNING(ST_LOC_RET_ERRS, _retval.errors, _ST_PLURAL(ST_LOC_ERROR, \
-                _retval.errors)); \
-            return _retval; \
+            ST_WARNING(ST_LOC_RET_ERRS, __retval.errors, _ST_PLURAL(ST_LOC_ERROR, \
+                __retval.errors)); \
+            return __retval; \
         } \
     } while (false)
 
