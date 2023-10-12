@@ -276,8 +276,11 @@ ST_BEGIN_TEST_IMPL(test_tests)
     ST_OS_ERROR(22, "sysfunc123 failed!");
 
     // should be true
-    ST_TRUE(ST_TEST_WARNING_COUNT() > 0);
-    ST_TRUE(ST_TEST_ERROR_COUNT() > 0);
+    int warnings = ST_TEST_WARNING_COUNT();
+    ST_TRUE(warnings > 0);
+
+    int errors = ST_TEST_ERROR_COUNT();
+    ST_TRUE(errors > 0);
 
     // causes the test to end immediately
     ST_TEST_EXIT_IF_FAILED();
