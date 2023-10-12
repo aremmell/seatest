@@ -147,8 +147,8 @@ bool st_prepare_tests(st_test* tests, size_t num_tests)
     if (!cond_disk) {
         _ST_ERROR("%s "ST_LOC_CALC_DISK_ERR, _ST_ERROR_PREFIX);
     } else if (fs_avail < ST_MIN_FS_AVAIL) {
-        _ST_WARNING("%s "ST_LOC_DISK_SPACE,
-            _ST_WARN_PREFIX, fs_avail, (uint64_t)ST_MIN_FS_AVAIL);
+        _ST_WARNING("%s "ST_LOC_DISK_SPACE, _ST_WARN_PREFIX, fs_avail,
+            (uint64_t)ST_MIN_FS_AVAIL);
     }
 
     bool cond_inet = st_have_inet_connection();
