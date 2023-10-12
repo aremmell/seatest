@@ -15,7 +15,7 @@ set(SHARED_LIBRARY_NAME seatest_shared)
 
 # versioning
 set(PROJECT_VERSION_SUFFIX -dev)
-set(PROJECT_IS_REL_BUILD true)
+set(PROJECT_IS_REL_BUILD false)
 
 # compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
