@@ -75,7 +75,7 @@ ST_BEGIN_TEST_IMPL(widget_sanity)
 
   /** Emits a message printed in green, to show that something postive happened. */
   if (created) {
-      ST_SUCCESS0("successfully created widget");
+    ST_SUCCESS0("successfully created widget");
   }
 
   /** The following emit red messages and cause the test to fail if the
