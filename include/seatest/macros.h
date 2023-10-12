@@ -212,12 +212,17 @@
  * String
  */
 
+/** Evaluates whether `str` is null or contains a null terminator at index 0. */
 # define ST_STR_EMPTY(str) \
     _ST_EVALUATE_EXPR((str) == NULL || *(str) == '\0', "ST_STR_EMPTY")
 
+/** Evaluates whether `str` is non-null and contains a value other than a null
+ * terminator at index 0. */
 # define ST_STR_NOT_EMPTY(str) \
     _ST_EVALUATE_EXPR(_ST_NOTNULL(str) && *(str) != '\0', "ST_STR_NOT_EMPTY")
 
+/** Evaluates whether `str1` and `str2` equivalent (up to `len` characters). The
+ * comparison is case-sensitive. */
 # define ST_STR_EQUAL(str1, str2, len) \
     do { \
         if (!(str1) || !(str2)) { \
@@ -227,6 +232,8 @@
         _ST_EVALUATE_EXPR(!st_strncmp(str1, str2, len), "ST_STR_EQUAL"); \
     } while (false)
 
+/** Evaluates whether `str1` and `str2` are not equivalent (up to `len` characters).
+ * The comparison is case-sensitive. */
 # define ST_STR_NOT_EQUAL(str1, str2, len) \
     do { \
         if (!(str1) || !(str2)) { \
@@ -236,6 +243,8 @@
         _ST_EVALUATE_EXPR(st_strncmp(str1, str2, len), "ST_STR_NOT_EQUAL"); \
     } while (false)
 
+/** Evaluates whether `str1` and `str2` are equivalent (up to `len` characters).
+ * The comparison is case-insensitive. */
 # define ST_STR_EQUAL_I(str1, str2, len) \
     do { \
         if (!(str1) || !(str2)) { \
@@ -245,6 +254,8 @@
         _ST_EVALUATE_EXPR(!st_strnicmp(str1, str2, len), "ST_STR_EQUAL_I"); \
     } while (false)
 
+/** Evaluates whether `str1` and `str2` are not equivalent (up to `len` characters).
+ * The comparison is case-insensitive. */
 # define ST_STR_NOT_EQUAL_I(str1, str2, len) \
     do { \
         if (!(str1) || !(str2)) { \
@@ -254,6 +265,8 @@
         _ST_EVALUATE_EXPR(st_strnicmp((str1), (str2), (len)), "ST_STR_NOT_EQUAL_I"); \
     } while (false)
 
+/** Evaluates whether `haystack` contains the sub-string `needle`. The search is
+ * case-sensitive. */
 # define ST_STR_CONTAINS(needle, haystack) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -265,6 +278,8 @@
         _ST_EVALUATE_EXPR(st_strstr(haystack, needle), "ST_STR_CONTAINS"); \
     } while (false)
 
+/** Evaluates whether `haystack` does not contain the sub-string `needle`. The
+ * search is case-sensitive. */
 # define ST_STR_NOT_CONTAINS(needle, haystack) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -276,6 +291,8 @@
         _ST_EVALUATE_EXPR(!st_strstr(haystack, needle), "ST_STR_NOT_CONTAINS"); \
     } while (false)
 
+/** Evaluates whether `haystack` contains the sub-string `needle`. The search is
+ * case-insensitive. */
 # define ST_STR_CONTAINS_I(needle, haystack) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -287,6 +304,8 @@
         _ST_EVALUATE_EXPR(st_stristr((haystack), (needle)), "ST_STR_CONTAINS_I"); \
     } while (false)
 
+/** Evaluates whether `haystack` does not contain the sub-string `needle`. The
+ * search is case-insensitive. */
 # define ST_STR_NOT_CONTAINS_I(needle, haystack) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -298,6 +317,8 @@
         _ST_EVALUATE_EXPR(!st_stristr((haystack), (needle)), "ST_STR_NOT_CONTAINS_I"); \
     } while (false)
 
+/** Evaluates whether `haystack` begins with the string `needle`. The search is
+ * case-sensitive. */
 # define ST_STR_BEGINSWITH(needle, haystack, needle_len) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -309,6 +330,8 @@
         _ST_EVALUATE_EXPR(!st_strncmp((haystack), (needle), (needle_len)), "ST_STR_BEGINSWITH"); \
     } while (false)
 
+/** Evaluates whether `haystack` does not begin with the string `needle`. The
+ * search is case-sensitive. */
 # define ST_STR_NOT_BEGINSWITH(needle, haystack, needle_len) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -320,6 +343,8 @@
         _ST_EVALUATE_EXPR(st_strncmp((haystack), (needle), (needle_len)), "ST_STR_NOT_BEGINSWITH"); \
     } while (false)
 
+/** Evaluates whether `haystack` begins with the string `needle`. The search is
+ * case-insensitive. */
 # define ST_STR_BEGINSWITH_I(needle, haystack, needle_len) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -331,6 +356,8 @@
         _ST_EVALUATE_EXPR(!st_strnicmp((needle), (haystack), (needle_len)), "ST_STR_BEGINSWITH_I"); \
     } while (false)
 
+/** Evaluates whether `haystack` does not begin with the string `needle`. The
+ * search is case-insensitive. */
 # define ST_STR_NOT_BEGINSWITH_I(needle, haystack, needle_len) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -342,6 +369,8 @@
         _ST_EVALUATE_EXPR(st_strnicmp((needle), (haystack), (needle_len)), "ST_STR_NOT_BEGINSWITH_I"); \
     } while (false)
 
+/** Evaluates whether `str` begins with a whitespace character. For further infor-
+ * mation, consult the documentation for isspace(). */
 # define ST_STR_BEGINSWITH_WSPACE(str) \
     do { \
         if (!(str)) { \
@@ -351,6 +380,8 @@
         _ST_EVALUATE_EXPR(isspace((str)[0]), "ST_STR_BEGINSWITH_WSPACE"); \
     } while (false)
 
+/** Evaluates whether `str` does not begin with a whitespace character. For further
+ * information, consult the documentation for isspace(). */
 # define ST_STR_NOT_BEGINSWITH_WSPACE(str) \
     do { \
         if (!(str)) { \
@@ -360,6 +391,8 @@
         _ST_EVALUATE_EXPR(!isspace((str)[0]), "ST_STR_NOT_BEGINSWITH_WSPACE"); \
     } while (false)
 
+/** Evaluates whether `haystack` ends with the string `needle`. The search is case-
+ * sensitive. */
 # define ST_STR_ENDSWITH(needle, haystack, needle_len, haystack_len) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -374,6 +407,8 @@
         ); \
     } while (false)
 
+/** Evaluates whether `haystack` does not end with the string `needle`. The search
+ * is case-sensitive. */
 # define ST_STR_NOT_ENDSWITH(needle, haystack, needle_len, haystack_len) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -388,6 +423,8 @@
         ); \
     } while (false)
 
+/** Evaluates whether `haystack` ends with the string `needle`. The search is
+ * case-insensitive. */
 # define ST_STR_ENDSWITH_I(needle, haystack, needle_len, haystack_len) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -402,6 +439,8 @@
         ); \
     } while (false)
 
+/** Evaluates whether `haystack` does not end with the string `needle`. The search
+ * is case-insensitive. */
 # define ST_STR_NOT_ENDSWITH_I(needle, haystack, needle_len, haystack_len) \
     do { \
         if (!(needle) || !(haystack)) { \
@@ -416,6 +455,8 @@
         ); \
     } while (false)
 
+/** Evaluates whether `str` ends with a whitespace character. For further infor-
+ * mation, consult the documentation for isspace(). */
 # define ST_STR_ENDSWITH_WSPACE(str) \
     do { \
         if (!(str)) { \
@@ -425,6 +466,8 @@
         _ST_EVALUATE_EXPR(isspace((str)[strlen((str)) - 1]), "ST_STR_ENDSWITH_WSPACE"); \
     } while (false)
 
+/** Evaluates whether `str` does not end with a whitespace character. For further
+ * information, consult the documentation for isspace(). */
 # define ST_STR_NOT_ENDSWITH_WSPACE(str) \
     do { \
         if (!(str)) { \
@@ -434,6 +477,8 @@
         _ST_EVALUATE_EXPR(!isspace((str)[strlen((str)) - 1]), "ST_STR_NOT_ENDSWITH_WSPACE"); \
     } while (false)
 
+/** Evaluates whether `str` contains only characters in the alphabet. For further
+ * information, consult the documentation for isalpha(). */
 # define ST_STR_ALPHA(str) \
     do { \
         if (!(str)) { \
@@ -448,6 +493,7 @@
         } \
     } while (false)
 
+/** Evaluates whether `str` only contains the characters '0'-'9'. */
 # define ST_STR_NUMERIC(str) \
     do { \
         if (!(str)) { \
@@ -462,6 +508,8 @@
         } \
     } while (false)
 
+/** Evaluates whether `str` contains only alphanumeric characters. For further
+ * information, consult the documentation for isalnum(). */
 # define ST_STR_ALPHANUMERIC(str) \
     do { \
         if (!(str)) { \
@@ -585,7 +633,7 @@
         _ST_EVALUATE_EXPR(value_found, "ST_ARRAY_CONTAINS"); \
     } while (false)
 
-/** Evaluates whether `arr` does *not* contain `val`. */
+/** Evaluates whether `arr` does not contain `val`. */
 # define ST_ARRAY_NOT_CONTAINS(arr, val) \
     do { \
         size_t elem_size = sizeof((arr)[0]); \
