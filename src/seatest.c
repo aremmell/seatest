@@ -195,7 +195,7 @@ void st_print_test_intro(size_t num, size_t to_run, const char* name)
 void st_print_test_outro(size_t num, size_t to_run, const char* name, const st_test* test)
 {
     char* msec_str = NULL;
-    if (test->msec > 0.0) {
+    if (test->msec > 1.0 + DBL_EPSILON) {
         int len = snprintf(NULL, 0, "%.f", test->msec);
         if (len > 0) {
             msec_str = calloc(len + 1, sizeof(char));
@@ -516,7 +516,7 @@ long st_timer_getres(void)
     return retval;
 }
 
-bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf)
+bool st_clock_gettime(int clock, time_t* tbuf, double* msecbuf)
 {
     if (tbuf) {
 #if defined(ST_MSEC_POSIX)
@@ -524,11 +524,13 @@ bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf)
         int ret = clock_gettime(clock, &ts);
         if (0 == ret) {
             *tbuf = ts.tv_sec;
-            if (msecbuf)
-                *msecbuf = ts.tv_nsec / 1000000L;
+            if (msecbuf) {
+                *msecbuf = (double)(ts.tv_nsec) / 1e6;
+            }
         } else {
-            if (msecbuf)
-                *msecbuf = 0L;
+            if (msecbuf) {
+                *msecbuf = 0.0;
+            }
             return false;
         }
 #elif defined(ST_MSEC_WIN32)
@@ -548,17 +550,17 @@ bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf)
         SYSTEMTIME st = {0};
         if (FileTimeToSystemTime(&ftutc, &st)) {
             if (msecbuf)
-                *msecbuf = (long)st.wMilliseconds;
+                *msecbuf = (double)st.wMilliseconds;
         } else {
             if (msecbuf)
-                *msecbuf = 0L;
+                *msecbuf = 0.0;
             return false;
         }
 #else
        _ST_UNUSED(clock);
         time(tbuf);
         if (msecbuf)
-            *msecbuf = 0L;
+            *msecbuf = 0.0;
 #endif
         return true;
     }
@@ -572,15 +574,17 @@ double st_msec_since(const st_timer* when, st_timer* out)
 
 #if !defined(__WIN__)
     out->sec = 0;
-    out->msec = 0L;
+    out->msec = 0.0;
 
     bool gettime = st_clock_gettime(ST_INTERVALCLOCK, &out->sec, &out->msec);
     if (when == NULL || !gettime || (out->sec < when->sec ||
         (out->sec == when->sec && out->msec < when->msec)))
         return 0.0;
 
-    return ((((double)out->sec) * 1e3) + (double)out->msec) -
-           ((((double)when->sec) * 1e3) + (double)when->msec);
+
+
+    return ((((double)out->sec) * 1e3) + out->msec) -
+           ((((double)when->sec) * 1e3) + when->msec);
 #else /* __WIN__ */
     LARGE_INTEGER perf_freq = {0};
 

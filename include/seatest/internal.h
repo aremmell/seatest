@@ -93,7 +93,7 @@ typedef struct {
 typedef struct {
 # if !defined(__WIN__)
     time_t sec;
-    long msec;
+    double msec;
 # else /* __WIN__ */
     LARGE_INTEGER counter;
 # endif
@@ -320,22 +320,22 @@ static inline
 void _st_strcpy(char* const restrict dst, size_t dstsz,
     const char* const restrict src, size_t count)
 {
-#if defined(__HAVE_STRLCPY__)
+# if defined(__HAVE_STRLCPY__)
     size_t ret = strlcpy(dst, src, dstsz);
     assert(ret < dstsz);
     _ST_UNUSED(count);
     _ST_UNUSED(ret);
-#elif defined(__HAVE_STRNCPY_S__)
+# elif defined(__HAVE_STRNCPY_S__)
     errno_t ret = strncpy_s(dst, dstsz, src, _TRUNCATE);
     assert(STRUNCATE != ret);
     _ST_UNUSED(count);
     _ST_UNUSED(ret);
-#else
+# else
     size_t ret = __strlcpy(dst, src, dstsz);
     assert(ret < dstsz);
     _ST_UNUSED(count);
     _ST_UNUSED(ret);
-#endif
+# endif
 }
 
 /** Wrapper for 'safe' versions of strcat, depending on what's available. */
@@ -343,22 +343,22 @@ static inline
 void _st_strcat(char* const restrict dst, size_t dstsz,
     const char* const restrict src, size_t count)
 {
-#if defined(__HAVE_STRLCAT__)
+# if defined(__HAVE_STRLCAT__)
     size_t ret = strlcat(dst, src, dstsz);
     assert(ret < dstsz);
     _ST_UNUSED(count);
     _ST_UNUSED(ret);
-#elif defined(__HAVE_STRNCAT_S__)
+# elif defined(__HAVE_STRNCAT_S__)
     errno_t ret = strncat_s(dst, dstsz, src, _TRUNCATE);
     assert(0 == ret);
     _ST_UNUSED(count);
     _ST_UNUSED(ret);
-#else
+# else
     size_t ret = __strlcat(dst, src, dstsz);
     assert(ret < dstsz);
     _ST_UNUSED(count);
     _ST_UNUSED(ret);
-#endif
+# endif
 }
 
 /** Converts a bitmask of conditions into a string. */

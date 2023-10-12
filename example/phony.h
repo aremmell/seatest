@@ -35,9 +35,9 @@
  * Widgets.
  */
 
-#define WIDGET_COLOR_PURPLE     1
-#define WIDGET_CLASS_STANDARD 102
-#define WIDGET_FLAGS_STANDARD (0x1 | 0x2 | 0x4)
+# define WIDGET_COLOR_PURPLE     1
+# define WIDGET_CLASS_STANDARD 102
+# define WIDGET_FLAGS_STANDARD (0x1 | 0x2 | 0x4)
 
 typedef struct {
     int32_t color;
@@ -62,7 +62,7 @@ bool acme_create_widget_purple(acme_widget* out) {
  * REST client.
  */
 
-#define HTTP_OK 200
+# define HTTP_OK 200
 
 typedef struct {
     int code;

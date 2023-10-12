@@ -111,6 +111,7 @@ typedef int st_optlen;
 # endif /* !_WIN32 */
 
 # include <math.h>
+# include <float.h>
 # include <time.h>
 # include <ctype.h>
 # include <stdio.h>
@@ -162,7 +163,9 @@ typedef int st_optlen;
 #  undef ST_MSEC_TIMER
 # endif
 
-# if defined(CLOCK_UPTIME)
+# if defined (CLOCK_UPTIME_RAW)
+#  define ST_INTERVALCLOCK CLOCK_UPTIME_RAW
+# elif if defined(CLOCK_UPTIME)
 #  define ST_INTERVALCLOCK CLOCK_UPTIME
 # elif defined(CLOCK_BOOTTIME)
 #  define ST_INTERVALCLOCK CLOCK_BOOTTIME
@@ -210,7 +213,7 @@ typedef int st_optlen;
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#if !defined(__HAVE_STRLCPY__) && !defined(__HAVE_STRNCPY_S__)
+# if !defined(__HAVE_STRLCPY__) && !defined(__HAVE_STRNCPY_S__)
 /*
  * Copy string src to buffer dst of size dsize.  At most dsize-1
  * chars will be copied.  Always NUL terminates (unless dsize == 0).
@@ -239,9 +242,9 @@ __strlcpy(char *dst, const char *src, size_t dsize)
 
   return src - osrc - 1; /* count does not include NUL */
 }
-#endif
+# endif
 
-#if !defined(__HAVE_STRLCAT__) && !defined(__HAVE_STRNCAT_S__)
+# if !defined(__HAVE_STRLCAT__) && !defined(__HAVE_STRNCAT_S__)
 /*
  * Appends src to string dst of size dsize (unlike strncat, dsize is the
  * full size of dst, not space left).  At most dsize-1 characters
@@ -278,6 +281,6 @@ __strlcat(char *dst, const char *src, size_t dsize)
 
   return dlen + (src - osrc); /* count does not include NUL */
 }
-#endif
+# endif
 
 #endif /* !_SEATEST_PLATFORM_H_INCLUDED */

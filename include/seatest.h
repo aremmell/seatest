@@ -81,7 +81,7 @@ void st_timer_begin(st_timer* timer);
 double st_timer_elapsed(const st_timer* timer);
 long st_timer_getres(void);
 
-bool st_clock_gettime(int clock, time_t* tbuf, long* msecbuf);
+bool st_clock_gettime(int clock, time_t* tbuf, double* msecbuf);
 double st_msec_since(const st_timer* when, st_timer* out);
 
 /** Retrieves a formatted error message for the specified code. */
@@ -103,11 +103,11 @@ bool st_have_inet_connection(void);
 static inline
 int st_last_sockerr(void)
 {
-#if !defined(__WIN__)
+# if !defined(__WIN__)
     return errno;
-#else
+# else
     return WSAGetLastError();
-#endif
+# endif
 }
 
 #endif /* !_SEATEST_H_INCLUDED */
