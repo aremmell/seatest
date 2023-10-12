@@ -175,17 +175,15 @@ ST_BEGIN_TEST_IMPL(test_tests)
     struct foo not_zeroed = {0, 1};
 
     // should succeed (all bytes zero)
-    ST_BITWISE_ZEROED(&zeroed, sizeof(struct foo));
+    ST_BITWISE_ZEROED(zeroed, sizeof(struct foo));
 
     // should succeed (any byte not zero)
-    ST_BITWISE_NOT_ZEROED(&not_zeroed, sizeof(struct foo));
+    ST_BITWISE_NOT_ZEROED(not_zeroed, sizeof(struct foo));
 
     // should fail (some bytes not zero)
     ST_MESSAGE0("expecting the next 4 to fail");
-    ST_BITWISE_ZEROED(&not_zeroed, sizeof(struct foo));
-    ST_BITWISE_ZEROED(NULL, sizeof(struct foo));
-    ST_BITWISE_NOT_ZEROED(NULL, sizeof(struct foo));
-    ST_BITWISE_NOT_ZEROED(&zeroed, sizeof(struct foo));
+    ST_BITWISE_ZEROED(not_zeroed, sizeof(struct foo));
+    ST_BITWISE_NOT_ZEROED(zeroed, sizeof(struct foo));
 
     struct foo lhs = {1234, 5678};
     struct foo rhs = {1234, 5678};

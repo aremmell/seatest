@@ -186,29 +186,21 @@
 # define ST_BITWISE_NOT_EQUAL(lhs, rhs, size) \
     _ST_EVALUATE_EXPR(0 != memcmp(&(lhs), &(rhs), (size)), "ST_BITWISE_NOT_EQUAL")
 
-# define ST_BITWISE_ZEROED(ptr, size) \
+# define ST_BITWISE_ZEROED(obj, size) \
     do { \
-        if (!(ptr)) { \
-            _ST_EVALUATE_EXPR(_ST_NOTNULL(ptr), "ST_BITWISE_ZEROED"); \
-            break; \
-        } \
         for (size_t n = 0; n < size; n++) { \
-            if (((const unsigned char*)(ptr))[n] != 0) { \
-                _ST_EVALUATE_EXPR(((const unsigned char*)(ptr))[n] == 0, "ST_BITWISE_ZEROED"); \
+            if (((const unsigned char*)&(obj))[n] != 0) { \
+                _ST_EVALUATE_EXPR(((const unsigned char*)&(obj))[n] == 0, "ST_BITWISE_ZEROED"); \
                 break; \
             } \
         } \
     } while (false)
 
-# define ST_BITWISE_NOT_ZEROED(ptr, size) \
+# define ST_BITWISE_NOT_ZEROED(obj, size) \
     do { \
-        if (!(ptr)) { \
-            _ST_EVALUATE_EXPR(_ST_NOTNULL(ptr), "ST_BITWISE_NOT_ZEROED"); \
-            break; \
-        } \
         bool all_bytes_zero = true; \
         for (size_t n = 0; n < size; n++) { \
-            if (((const unsigned char*)(ptr))[n] != 0) { \
+            if (((const unsigned char*)&(obj))[n] != 0) { \
                 all_bytes_zero = false; \
                 break; \
             } \
