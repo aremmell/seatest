@@ -139,34 +139,46 @@
             context, code, message); \
     } while (false)
 
+/** Evaluates whether `expr` evaluates to true. Emits a warning message and marks
+ * the test with a warning otherwise. */
 # define ST_EXPECT(expr) \
     _ST_EVALUATE_EXPR_RAW(expr, "ST_EXPECT", 208, false)
 
+/** Evaluates whether `expr` evaluates to true. */
 # define ST_TRUE(expr) _ST_EVALUATE_EXPR(expr, "ST_TRUE")
 
+/** Evaluates whether `expr` evaluates to false. */
 # define ST_FALSE(expr) _ST_EVALUATE_EXPR(!(expr), "ST_FALSE")
 
+/** Evaluates whether `lhs` is equal to `rhs`. */
 # define ST_EQUAL(lhs, rhs) \
     _ST_EVALUATE_EXPR((lhs) == (rhs), "ST_EQUAL")
 
+/** Evaluates whether `lhs` is not equal to `rhs`. */
 # define ST_NOT_EQUAL(lhs, rhs) \
     _ST_EVALUATE_EXPR((lhs) != (rhs), "ST_NOT_EQUAL")
 
+/** Evaluates whether `lhs` is less than `rhs`. */
 # define ST_LESS_THAN(lhs, rhs) \
     _ST_EVALUATE_EXPR((lhs) < (rhs), "ST_LESS_THAN")
 
+/** Evaluates whether `lhs` is less than or equal to `rhs`. */
 # define ST_LESS_THAN_OR_EQUAL(lhs, rhs) \
     _ST_EVALUATE_EXPR((lhs) <= (rhs), "ST_LESS_THAN_OR_EQUAL")
 
+/** Evaluates whether `lhs` is greater than `rhs`. */
 # define ST_GREATER_THAN(lhs, rhs) \
     _ST_EVALUATE_EXPR((lhs) > (rhs), "ST_GREATER_THAN")
 
+/** Evaluates whether `lhs` is greater than or equal to `rhs`. */
 # define ST_GREATER_THAN_OR_EQUAL(lhs, rhs) \
     _ST_EVALUATE_EXPR((lhs) >= (rhs), "ST_GREATER_THAN_OR_EQUAL")
 
+/** Evaluates whether `ptr` is null. */
 # define ST_NULL(ptr) \
     _ST_EVALUATE_EXPR((ptr) == NULL, "ST_NULL")
 
+/** Evaluates whether `ptr` is non-null. */
 # define ST_NOT_NULL(ptr) \
     _ST_EVALUATE_EXPR((ptr) != NULL, "ST_NOT_NULL")
 
@@ -174,18 +186,24 @@
  * Bitwise
  */
 
+/** Evaluates whether the bit(s) in `bits` are set to one in `bitmask`. */
 # define ST_BITS_HIGH(bitmask, bits) \
     _ST_EVALUATE_EXPR(((bitmask) & (bits)) == (bits), "ST_BITS_HIGH")
 
+/** Evaluates whether the bit(s) in `bits` are set to zero in `bitmask`. */
 # define ST_BITS_LOW(bitmask, bits) \
     _ST_EVALUATE_EXPR(((bitmask) & (bits)) == 0, "ST_BITS_LOW")
 
+/** Evaluates whether `lhs` and `rhs` contain exactly the same bytes (up to `size`). */
 # define ST_BITWISE_EQUAL(lhs, rhs, size) \
     _ST_EVALUATE_EXPR(0 == memcmp(&(lhs), &(rhs), (size)), "ST_BITWISE_EQUAL")
 
+/** Evaluates whether `lhs` and `rhs` do not contain exactly the same bytes
+ * (up to `size`). */
 # define ST_BITWISE_NOT_EQUAL(lhs, rhs, size) \
     _ST_EVALUATE_EXPR(0 != memcmp(&(lhs), &(rhs), (size)), "ST_BITWISE_NOT_EQUAL")
 
+/** Evaluates whether `obj` is comprised of all zero bytes. */
 # define ST_BITWISE_ZEROED(obj, size) \
     do { \
         for (size_t n = 0; n < size; n++) { \
@@ -196,6 +214,7 @@
         } \
     } while (false)
 
+/** Evaluates whether `obj` is not comprised of all zero bytes. */
 # define ST_BITWISE_NOT_ZEROED(obj, size) \
     do { \
         bool all_bytes_zero = true; \
@@ -212,12 +231,12 @@
  * String
  */
 
-/** Evaluates whether `str` is null or contains a null terminator at index 0. */
+/** Evaluates whether `str` is null or contains a null terminator at index zero. */
 # define ST_STR_EMPTY(str) \
     _ST_EVALUATE_EXPR((str) == NULL || *(str) == '\0', "ST_STR_EMPTY")
 
 /** Evaluates whether `str` is non-null and contains a value other than a null
- * terminator at index 0. */
+ * terminator at index zero. */
 # define ST_STR_NOT_EMPTY(str) \
     _ST_EVALUATE_EXPR(_ST_NOTNULL(str) && *(str) != '\0', "ST_STR_NOT_EMPTY")
 
