@@ -14,8 +14,16 @@ set(STATIC_LIBRARY_NAME seatest_static)
 set(SHARED_LIBRARY_NAME seatest_shared)
 
 # versioning
-set(PROJECT_VERSION_SUFFIX -dev)
-set(PROJECT_IS_REL_BUILD false)
+set(PROJECT_VERSION_SUFFIX -alpha2)
+set(PROJECT_IS_REL_BUILD true)
+
+# define the project
+project(
+    ${PROJECT_NAME}
+    VERSION 0.1.0
+    LANGUAGES C
+    DESCRIPTION ${PROJECT_NAME}
+)
 
 # compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
@@ -42,14 +50,6 @@ endif()
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.21")
     cmake_policy(SET CMP0126 NEW) # cache
 endif()
-
-# define the project
-project(
-    ${PROJECT_NAME}
-    VERSION 0.1.0
-    LANGUAGES C
-    DESCRIPTION ${PROJECT_NAME}
-)
 
 # preprocessor defines
 add_compile_definitions(
