@@ -71,7 +71,11 @@
 # define ST_LOC_PASSED        "passed"
 # define ST_LOC_FAILED_L      "failed"
 # define ST_LOC_MSEC_ABV      "ms"
-# define ST_LOC_MSEC_ZERO     "\xe2\x89\xa4\x31" /* ≤1 */
+# if !defined(__WIN__)
+#  define ST_LOC_MSEC_ZERO    "\xe2\x89\xa4\x31" /* ≤1 */
+# else
+#  define ST_LOC_MSEC_ZERO    "<1"
+# endif
 # define ST_LOC_SEC_ABV       "s"
 # define ST_LOC_USAGE         "Usage"
 # define ST_LOC_AVAIL_TESTS   "Available tests"
