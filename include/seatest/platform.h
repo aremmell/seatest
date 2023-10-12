@@ -165,7 +165,7 @@ typedef int st_optlen;
 
 # if defined (CLOCK_UPTIME_RAW)
 #  define ST_INTERVALCLOCK CLOCK_UPTIME_RAW
-# elif if defined(CLOCK_UPTIME)
+# elif defined(CLOCK_UPTIME)
 #  define ST_INTERVALCLOCK CLOCK_UPTIME
 # elif defined(CLOCK_BOOTTIME)
 #  define ST_INTERVALCLOCK CLOCK_BOOTTIME
