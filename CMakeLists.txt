@@ -14,8 +14,8 @@ set(STATIC_LIBRARY_NAME seatest_static)
 set(SHARED_LIBRARY_NAME seatest_shared)
 
 # versioning
-set(PROJECT_VERSION_SUFFIX -alpha2)
-set(PROJECT_IS_REL_BUILD true)
+set(PROJECT_VERSION_SUFFIX -dev)
+set(PROJECT_IS_REL_BUILD false)
 
 # define the project
 project(
