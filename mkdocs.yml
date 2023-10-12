@@ -17,8 +17,8 @@ theme:
       - navigation.indexes
       - navigation.top
       - content.code.copy
-      #- toc.follow
-      #- toc.integrate
+      - toc.follow
+      - toc.integrate
   palette:
     scheme: slate
     primary: black

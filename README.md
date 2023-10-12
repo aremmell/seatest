@@ -3,7 +3,7 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2023 Ryan M. Lederman <lederman@gmail.com> -->
 
-seatest (ˈsiːtɪst)&mdash;a featherweight cross-platform C17 test framework.
+seatest (ˈsiːtɪst)&mdash;a featherweight cross-platform C17 test framework for C libraries and applications.
 
 <img src="https://rml.dev/pub/seatest-logo.png" alt="logo" width="500px" height="auto" />
 
