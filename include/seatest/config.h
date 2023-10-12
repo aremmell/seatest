@@ -71,7 +71,7 @@
 # define ST_LOC_PASSED        "passed"
 # define ST_LOC_FAILED_L      "failed"
 # define ST_LOC_MSEC_ABV      "ms"
-# define ST_LOC_MSEC_ZERO     "<1"
+# define ST_LOC_MSEC_ZERO     "≤1"
 # define ST_LOC_SEC_ABV       "s"
 # define ST_LOC_USAGE         "Usage"
 # define ST_LOC_AVAIL_TESTS   "Available tests"
