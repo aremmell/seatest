@@ -6,9 +6,7 @@ seatest evaluators make writing tests less painful. They provide a straightforwa
 
 If an evaluator represents a false expression, an error message is emitted which includes the evaluator's name, the line of code at which the expression resides, and the expression that evaluated to false.
 
-Upon the failure of any evaulator[^1], the test is marked as failed.
-
-[^1]: Other than ST_EXPECT
+Upon the failure of any evaulator (*with the exception of ST_EXPECT*), the test is marked as failed.
 
 ### Special
 
