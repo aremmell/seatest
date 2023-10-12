@@ -6,7 +6,15 @@ seatest evaluators make writing tests less painful. They provide a straightforwa
 
 If an evaluator represents a false expression, an error message is emitted which includes the evaluator's name, the line of code at which the expression resides, and the expression that evaluated to false.
 
-TODO: discuss failing tests/warnings/ST_EXPECT
+Upon the failure of any evaulator[^1], the test is marked as failed.
+
+[^1]: Other than ST_EXPECT
+
+### Special
+
+|                    Evaluator | Expression                   |
+| :--------------------------- | :--------------------------- |
+| ST_EXPECT                    | Any truthy expression. Unlike all other evaluators, marks the test with a warning instead of an error if the expression passed to it evaluates to false |
 
 ### General Purpose
 
@@ -89,3 +97,26 @@ TODO: discuss failing tests/warnings/ST_EXPECT
 
 ## Helpers
 
+| Helper                  | Description                                                                         |
+|:------------------------|:------------------------------------------------------------------------------------|
+| ST_DEBUG                | If `ST_DEBUG_MESSAGES` is defined, emits a diagnotic message in gray                |
+| ST_MESSAGE              | Emits an informative message                                                        |
+| ST_SUCCESS              | Emits a message in green                                                            |
+| ST_WARNING              | Emits a message in orange                                                           |
+| ST_ERROR                | Emits a message in red                                                              |
+| ST_TEST_IS_FAILED       | Returns true if any errors have occurred during the execution of the test           |
+| ST_TEST_IS_PASSING      | Returns true if no errors have occurred during the excecution of the test           |
+| ST_TEST_LAST_EVAL_FALSE | Returns true if the very last evaluator to execute resulted in a false expression    |
+| ST_TEST_ERROR_COUNT     | Returns the number of errors that have occurred during the excecution of the test   |
+| ST_TEST_WARNING_COUNT   | Returns the number of warnings that have occurred during the excecution of the test |
+| ST_TEST_EXIT_IF_FAILED  | Exits immediately from the test if any errors have occurred                         |
+| ST_OS_ERROR_MSG         | Emits a formatted error message describing an OS/libc error that occcurred          |
+
+## Preprocessor macros
+
+| Macro                       | Description                                                                           |
+|:----------------------------|:--------------------------------------------------------------------------------------|
+| ST_SIMULATE_FS_ERROR        | Simulates a failure to determine available disk space                                 |
+| ST_SIMULATE_FS_INSUFFICIENT | Simulates a low disk space condition (*mutually exclusive with ST_SIMULATE_FS_ERROR*) |
+| ST_SIMULATE_INET_ERROR      | Simulates a failure to detect an Internet connection                                  |
+| ST_DEBUG_MESSAGES           | Enables the diagnostic output to the terminal                                         |

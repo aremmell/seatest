@@ -274,7 +274,7 @@ ST_BEGIN_TEST_IMPL(test_tests)
 
     // emits an error message with a formatted string from the OS.
     ST_MESSAGE0("testing OS error formatting");
-    ST_OS_ERROR(22, "sysfunc123 failed!");
+    ST_OS_ERROR_MSG(22, "sysfunc123 failed!");
 
     // should be true
     int warnings = ST_TEST_WARNING_COUNT();

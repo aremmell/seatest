@@ -131,7 +131,7 @@
         } \
     } while (false)
 
-# define ST_OS_ERROR(code, context) \
+# define ST_OS_ERROR_MSG(code, context) \
     do { \
         char message[ST_MAX_ERROR] = {0}; \
         (void)st_format_error_msg(code, message); \
