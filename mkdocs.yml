@@ -25,15 +25,6 @@ theme:
     accent: blue
   font:
     code: Source Code Pro
-nav:
-  - Home: index.md
-  - Getting Started:
-    - Building and Linking: development.md
-    - Writing a Test Rig: writing-a-test-rig.md
-  - Documentation:
-    - Evaluators: evaluators.md
-    - Helpers: helpers.md
-    - Command-line: command-line.md
 markdown_extensions:
   - toc
   - pymdownx.highlight:
