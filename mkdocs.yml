@@ -25,9 +25,6 @@ theme:
     accent: blue
   font:
     code: Source Code Pro
-  nav:
-    - Home: index.md
-    - Documentation: documentation.md
 markdown_extensions:
   - toc
   - pymdownx.highlight:

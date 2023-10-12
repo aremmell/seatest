@@ -5,29 +5,4 @@
          <lastmod>2023-10-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
-    <url>
-         <loc>https://seatest.rml.dev/command-line/</loc>
-         <lastmod>2023-10-12</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://seatest.rml.dev/development/</loc>
-         <lastmod>2023-10-12</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://seatest.rml.dev/evaluators/</loc>
-         <lastmod>2023-10-12</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://seatest.rml.dev/helpers/</loc>
-         <lastmod>2023-10-12</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://seatest.rml.dev/writing-a-test-rig/</loc>
-         <lastmod>2023-10-12</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
 </urlset>

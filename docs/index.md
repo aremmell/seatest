@@ -1,16 +1,91 @@
-Welcome to the documentation for seatest, a featherweight cross-platform C17 test framework. Designed with *simplicity*, *completeness*, and *practicality* in mind, perhaps it is the right test framework for your project.
+# Documentation
 
-## Highlights
+## Evaluators
 
-* Won't even make a dent in the size of your deployables–the static library weighs in at xxKiB, and the shared library at XXKiB
-* A built-in command-line interface which makes both manual and automated (*i.e. CI*) invocation more flexible and customizable
-* A comprehensive collection of evaluator and helper macros are available in order to facilitate writing expressive, complete, and straightforward tests
-* Provides for special "conditions" that may optionally be used to prevent certain tests from running at all when the condition(s) are not present. For example, if a test absolutely requires an Internet connection in order to pass, that test can be skipped instead of failing.
-* When a test fails, you will know precisely why, as well as where.
+seatest evaluators make writing tests less painful. They provide a straightforward yet verbose way to express what the results of your tests should be&mdash;in a granular fashion. Each evaluator ultimately boils down to a truthy statement about the expression and/or data passed into it. At each step of your test, its state can be positively confirmed to either be correct or incorrect.
 
-## How it works
+If an evaluator represents a false expression, an error message is emitted which includes the evaluator's name, the line of code at which the expression resides, and the expression that evaluated to false.
 
-The public interface to seatest is primarily macro-driven. This is by design, and allows repetitive, easily-forgettable code to be replaced by one-liners. This applies not only to the setup and configuration of the framework itself, but in the implementation of the tests.
+TODO: discuss failing tests/warnings/ST_EXPECT
 
-If you are anxious to just see an example test rig, there's one [right here](https://github.com/aremmell/seatest/blob/master/example/example.c). If you would rather take your time and learn about the features and functionality available using the seatest framework, check out the [documentation](documentation.md).
+### General Purpose
+
+|                    Evaluator | Expression                   |
+| :--------------------------- | :--------------------------- |
+|                      ST_TRUE | `any truthy expression`      |
+|                     ST_FALSE | `!(any truthy expression)`   |
+|                     ST_EQUAL | `lhs == rhs`                 |
+|                 ST_NOT_EQUAL | `lhs != rhs`                 |
+|                 ST_LESS_THAN | `lhs < rhs`                  |
+|        ST_LESS_THAN_OR_EQUAL | `lhs <= rhs`                 |
+|              ST_GREATER_THAN | `lhs > rhs`                  |
+|     ST_GREATER_THAN_OR_EQUAL | `lhs >= rhs`                 |
+|                      ST_NULL | `ptr == NULL`                |
+|                  ST_NOT_NULL | `ptr != NULL`                |
+
+### Bitwise
+
+|                    Evaluator | Expression                                                   |
+| :--------------------------- | :----------------------------------------------------------- |
+|                 ST_BITS_HIGH | `(bitmask & bits) == bits`                                   |
+|                  ST_BITS_LOW | `(bitmask & bits) == 0`                                      |
+|             ST_BITWISE_EQUAL | `memcmp(&lhs, &rhs, size) == 0`                              |
+|         ST_BITWISE_NOT_EQUAL | `memcmp(&lhs, &rhs, size) != 0`                              |
+|            ST_BITWISE_ZEROED | `all bytes == 0`                                             |
+|        ST_BITWISE_NOT_ZEROED | `any byte != 0`                                              |
+
+### String
+
+| Evaluator                    | Expression                                                                       |
+| :--------------------------- | :------------------------------------------------------------------------------- |
+| ST_STR_EMPTY                 | `str == NULL \|\| *(str) == '\0'`                                                |
+| ST_STR_NOT_EMPTY             | `str != NULL && *str != '\0'`                                                    |
+| ST_STR_EQUAL                 | `strcmp(str1, str2) == 0`                                                        |
+| ST_STR_NOT_EQUAL             | `strcmp(str1, str2) != 0`                                                        |
+| ST_STR_EQUAL_I               | `strcasecmp/StrCmpI(str1, str2) == 0`                                            |
+| ST_STR_NOT_EQUAL_I           | `strcasecmp/StrCmpI(str1, str2) != 0`                                            |
+| ST_STR_CONTAINS              | `strstr/StrStr(needle, haystack) != NULL`                                        |
+| ST_STR_NOT_CONTAINS          | `strstr/StrStr(needle, haystack) == NULL`                                        |
+| ST_STR_CONTAINS_I            | `strcasestr/StrStrI(needle, haystack) != NULL`                                   |
+| ST_STR_NOT_CONTAINS_I        | `strcasestr/StrStrI(needle, haystack) == NULL`                                   |
+| ST_STR_BEGINSWITH            | `strncmp/StrCmpN(needle, haystack, needle_len) == 0`                             |
+| ST_STR_NOT_BEGINSWITH        | `strncmp/StrCmpN(needle, haystack, needle_len) != 0`                             |
+| ST_STR_BEGINSWITH_I          | `strncasecmp/StrCmpNI(needle, haystack, needle_len) == 0`                        |
+| ST_STR_NOT_BEGINSWITH_I      | `strncasecmp/StrCmpNI(needle, haystack, needle_len) != 0`                        |
+| ST_STR_BEGINSWITH_WSPACE     | `isspace(str[0])`                                                                |
+| ST_STR_NOT_BEGINSWITH_WSPACE | `!isspace(str[0])`                                                               |
+| ST_STR_ENDSWITH              | `strncmp/StrCmpN(haystack + (haystack_len - needle_len), needle_len) == 0`       |
+| ST_STR_NOT_ENDSWITH          | `strncmp/StrCmpN(haystack + (haystack_len - needle_len), needle_len) != 0`       |
+| ST_STR_ENDSWITH_I            | `strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) == 0`  |
+| ST_STR_NOT_ENDSWITH_I        | `strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) != 0`  |
+| ST_STR_ENDSWITH_WSPACE       | `isspace(p[strlen(p) - 1])`                                                      |
+| ST_STR_NOT_ENDSWITH_WSPACE   | `!isspace(p[strlen(p) - 1])`                                                     |
+| ST_STR_ALPHA                 | `foreach(str) => isalpha`                                                        |
+| ST_STR_NUMERIC               | `foreach(str) => isdigit`                                                        |
+| ST_STR_ALPHANUMERIC          | `foreach(str) => isalnum`                                                        |
+
+### Numeric
+
+| Evaluator              | Expression                  |
+| :--------------------- | :-------------------------- |
+| ST_NUM_POSITIVE        | `num > 0`                   |
+| ST_NUM_NEGATIVE        | `num < 0`                   |
+| ST_NUM_EVEN            | `num % 2 == 0`              |
+| ST_NUM_ODD             | `num % 2 != 0`              |
+| ST_NUM_MULTIPLE_OF     | `num % exp == 0`            |
+| ST_NUM_NOT_MULTIPLE_OF | `num % exp != 0`            |
+| ST_NUM_IN_RANGE        | `num >= low && num <= high` |
+| ST_NUM_NOT_IN_RANGE    | `num < low \|\| num > high` |
+
+### Array
+
+|                    Evaluator | Expression                                                               |
+| :--------------------------- | :----------------------------------------------------------------------- |
+|               ST_ARRAY_EQUAL | `sizeof(arr1[0]) == sizeof(arr2[0]) && count1 == count2 && all elems ==` |
+|           ST_ARRAY_NOT_EQUAL | `sizeof(arr1[0]) != sizeof(arr2[0])`                                     |
+|            ST_ARRAY_CONTAINS | `sizeof(arr[0]) == sizeof(val) && any elem == val`                       |
+|        ST_ARRAY_NOT_CONTAINS | `sizeof(arr[0]) != sizeof(val) && all elems != val`                      |
+|              ST_ARRAY_UNIQUE | `foreach(arr) => (n) foreach(arr) => (j) arr[n] != arr[j]`               |
+
+## Helpers
 
