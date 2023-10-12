@@ -480,27 +480,35 @@
  * Numeric
  */
 
+/** Evaluates whether `num` is positive.*/
 # define ST_NUM_POSITIVE(num) \
     _ST_EVALUATE_EXPR((num) > 0, "ST_NUM_POSITIVE")
 
+/** Evaluates whether `num` is negative.*/
 # define ST_NUM_NEGATIVE(num) \
     _ST_EVALUATE_EXPR((num) < 0, "ST_NUM_NEGATIVE")
 
+/** Evaluates whether `num` is even.*/
 # define ST_NUM_EVEN(num) \
     _ST_EVALUATE_EXPR(div((int)(num), 2).rem == 0, "ST_NUM_EVEN")
 
+/** Evaluates whether `num` is odd.*/
 # define ST_NUM_ODD(num) \
     _ST_EVALUATE_EXPR(div((int)(num), 2).rem != 0, "ST_NUM_ODD")
 
+/** Evaluates whether `num` is a multiple of `mul`.*/
 # define ST_NUM_MULTIPLE_OF(num, mul) \
     _ST_EVALUATE_EXPR(div((int)(num), (int)(mul)).rem == 0, "ST_NUM_MULTIPLE_OF")
 
+/** Evaluates whether `num` is not a multiple of `mul`.*/
 # define ST_NUM_NOT_MULTIPLE_OF(num, mul) \
     _ST_EVALUATE_EXPR(div((int)(num), (int)(mul)).rem != 0, "ST_NUM_NOT_MULTIPLE_OF")
 
+/** Evaluates whether `num` lies inside the range `low`..`high`.*/
 # define ST_NUM_IN_RANGE(num, low, high) \
     _ST_EVALUATE_EXPR((num) >= (low) && (num) <= (high), "ST_NUM_IN_RANGE")
 
+/** Evaluates whether `num` lies outside the range `low`..`high`.*/
 # define ST_NUM_NOT_IN_RANGE(num, low, high) \
     _ST_EVALUATE_EXPR((num) < (low) || (num) > (high), "ST_NUM_NOT_IN_RANGE")
 
@@ -508,6 +516,9 @@
  * Array
  */
 
+/** Evaluates whether `arr1` and `arr2` contain items of the same size, have the
+ * same number of elements, and all elements at the corresponding indices have the
+ * same value. */
 # define ST_ARRAY_EQUAL(arr1, arr2) \
     do { \
         size_t elem_size1 = sizeof((arr1)[0]); \
@@ -530,6 +541,9 @@
         } \
     } while (false)
 
+/** Evaluates whether `arr1` and `arr2` contain elements differing in size,
+ * have differing numbers of elements, or at least one element is not equal to
+ * its correspdonding element in the other array. */
 # define ST_ARRAY_NOT_EQUAL(arr1, arr2) \
     do { \
         size_t elem_size1 = sizeof((arr1)[0]); \
@@ -552,6 +566,7 @@
         _ST_EVALUATE_EXPR(!all_elems_equal, "ST_ARRAY_NOT_EQUAL"); \
     } while (false)
 
+/** Evaluates whether `arr` contains at least one instance of `val`. */
 # define ST_ARRAY_CONTAINS(arr, val) \
     do { \
         size_t elem_size = sizeof((arr)[0]); \
@@ -570,6 +585,7 @@
         _ST_EVALUATE_EXPR(value_found, "ST_ARRAY_CONTAINS"); \
     } while (false)
 
+/** Evaluates whether `arr` does *not* contain `val`. */
 # define ST_ARRAY_NOT_CONTAINS(arr, val) \
     do { \
         size_t elem_size = sizeof((arr)[0]); \
@@ -585,6 +601,7 @@
         } \
     } while (false)
 
+/** Evaluates whether all of the elements in `arr` are unique in value. */
 # define ST_ARRAY_UNIQUE(arr) \
     do { \
         for (size_t n = 0; n < _ST_COUNTOF(arr); n++) { \
