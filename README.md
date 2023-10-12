@@ -47,12 +47,12 @@ ST_DECLARE_TEST(rest_client_get)
  * this statement in the same file. */
 ST_BEGIN_DECLARE_TEST_LIST()
 
-    /** Ensures that widgets are functioning properly. */
-    ST_DECLARE_TEST_LIST_ENTRY(widget-sanity, widget_sanity)
+  /** Ensures that widgets are functioning properly. */
+  ST_DECLARE_TEST_LIST_ENTRY(widget-sanity, widget_sanity)
 
-    /** Checks a REST client's get request functionality (requires an Internet
-     * connection); if not connected to the Internet, the test will be skipped. */
-    ST_DECLARE_TEST_LIST_ENTRY_COND(rest-client-get, rest_client_get, COND_INET)
+  /** Checks a REST client's get request functionality (requires an Internet
+   * connection); if not connected to the Internet, the test will be skipped. */
+  ST_DECLARE_TEST_LIST_ENTRY_COND(rest-client-get, rest_client_get, COND_INET)
 
 ST_END_DECLARE_TEST_LIST()
 
@@ -60,37 +60,37 @@ ST_END_DECLARE_TEST_LIST()
  * captured automatically (must have argc and argv parameters and return int). */
 int main(int argc, char** argv)
 {
-    return ST_MAIN_IMPL("Acme Inc.");
+  return ST_MAIN_IMPL("Acme Inc.");
 }
 
 /** Implementation of the widget-sanity test. */
 ST_BEGIN_TEST_IMPL(widget_sanity)
 {
-    /** An informative message, to show that something is happening. */
-    ST_MESSAGE("creating a %s widget...", "purple");
+  /** An informative message, to show that something is happening. */
+  ST_MESSAGE("creating a %s widget...", "purple");
 
-    /** Create a widget and validate its properties. */
-    acme_widget widget;
-    bool created = acme_create_widget_purple(&widget);
+  /** Create a widget and validate its properties. */
+  acme_widget widget;
+  bool created = acme_create_widget_purple(&widget);
 
-    /** Emits a message printed in green, to show that something postive happened. */
-    if (created) {
-        ST_SUCCESS0("successfully created widget");
-    }
+  /** Emits a message printed in green, to show that something postive happened. */
+  if (created) {
+      ST_SUCCESS0("successfully created widget");
+  }
 
-    /** The following emit red messages and cause the test to fail if the
-     * expression they represent evaluates to false. For a complete list of
-     * available Evaluators, see the documentation. */
-    ST_TRUE(created);
-    ST_NUM_POSITIVE(widget.color);
-    ST_EQUAL(widget.class, WIDGET_CLASS_STANDARD);
-    ST_BITS_HIGH(widget.flags, WIDGET_FLAGS_STANDARD);
+  /** The following emit red messages and cause the test to fail if the
+   * expression they represent evaluates to false. For a complete list of
+   * available Evaluators, see the documentation. */
+  ST_TRUE(created);
+  ST_NUM_POSITIVE(widget.color);
+  ST_EQUAL(widget.class, WIDGET_CLASS_STANDARD);
+  ST_BITS_HIGH(widget.flags, WIDGET_FLAGS_STANDARD);
 
-    /** If it doesn't make sense to continue the test after the failure of any
-     * of the above, causes the test to exit immediately with an error. */
-    ST_TEST_EXIT_IF_FAILED();
+  /** If it doesn't make sense to continue the test after the failure of any
+   * of the above, causes the test to exit immediately with an error. */
+  ST_TEST_EXIT_IF_FAILED();
 
-    /** ... the rest of the test. */
+  /** ... the rest of the test. */
 }
 ST_END_TEST_IMPL()
 
@@ -99,26 +99,26 @@ ST_END_TEST_IMPL()
  * the line in CMakeLists.txt that says ST_SIMULATE_INET_ERROR. */
 ST_BEGIN_TEST_IMPL(rest_client_get)
 {
-    /** Perform an HTTP GET request, retrieving a list of available widgets.  */
-    ST_MESSAGE0("retrieving list of widgets from server...");
+  /** Perform an HTTP GET request, retrieving a list of available widgets.  */
+  ST_MESSAGE0("retrieving list of widgets from server...");
 
-    http_response response;
-    bool result = acme_rest_get_widget_list(&response);
+  http_response response;
+  bool result = acme_rest_get_widget_list(&response);
 
-    /** As in the widget-sanity test, the following emit a red message and cause
-     * the test to fail if the expression they represent evaluates to false. */
-    ST_TRUE(result);
-    ST_EQUAL(response.code, HTTP_OK);
-    ST_STR_NOT_EMPTY(response.body);
-    ST_STR_BEGINSWITH("{\"widgets\":", response.body, 11);
+  /** As in the widget-sanity test, the following emit a red message and cause
+   * the test to fail if the expression they represent evaluates to false. */
+  ST_TRUE(result);
+  ST_EQUAL(response.code, HTTP_OK);
+  ST_STR_NOT_EMPTY(response.body);
+  ST_STR_BEGINSWITH("{\"widgets\":", response.body, 11);
 
-    /** If any of the Evaluators above have failed, exit the test now. */
-    ST_TEST_EXIT_IF_FAILED();
+  /** If any of the Evaluators above have failed, exit the test now. */
+  ST_TEST_EXIT_IF_FAILED();
 
-    /** Visual confirmation that the network request succeeded. */
-    ST_SUCCESS("got HTTP_OK; response len: %zu bytes", strlen(response.body));
+  /** Visual confirmation that the network request succeeded. */
+  ST_SUCCESS("got HTTP_OK; response len: %zu bytes", strlen(response.body));
 
-    /** ... the rest of the test. */
+  /** ... the rest of the test. */
 }
 ST_END_TEST_IMPL()
 ```
