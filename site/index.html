@@ -276,6 +276,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#special" class="md-nav__link">
+    Special
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#general-purpose" class="md-nav__link">
     General Purpose
   </a>
@@ -318,6 +325,13 @@
         <li class="md-nav__item">
   <a href="#helpers" class="md-nav__link">
     Helpers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preprocessor-macros" class="md-nav__link">
+    Preprocessor macros
   </a>
   
 </li>
@@ -365,6 +379,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#special" class="md-nav__link">
+    Special
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#general-purpose" class="md-nav__link">
     General Purpose
   </a>
@@ -411,6 +432,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#preprocessor-macros" class="md-nav__link">
+    Preprocessor macros
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -433,7 +461,23 @@
 <h2 id="evaluators">Evaluators</h2>
 <p>seatest evaluators make writing tests less painful. They provide a straightforward yet verbose way to express what the results of your tests should be&mdash;in a granular fashion. Each evaluator ultimately boils down to a truthy statement about the expression and/or data passed into it. At each step of your test, its state can be positively confirmed to either be correct or incorrect.</p>
 <p>If an evaluator represents a false expression, an error message is emitted which includes the evaluator's name, the line of code at which the expression resides, and the expression that evaluated to false.</p>
-<p>TODO: discuss failing tests/warnings/ST_EXPECT</p>
+<p>Upon the failure of any evaulator[^1], the test is marked as failed.</p>
+<p>[^1]: Other than ST_EXPECT</p>
+<h3 id="special">Special</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Evaluator</th>
+<th style="text-align: left;">Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ST_EXPECT</td>
+<td style="text-align: left;">Any truthy expression. Unlike all other evaluators, marks the test with a warning instead of an error if the expression passed to it evaluates to false</td>
+</tr>
+</tbody>
+</table>
 <h3 id="general-purpose">General Purpose</h3>
 <table>
 <thead>
@@ -706,6 +750,91 @@
 </tbody>
 </table>
 <h2 id="helpers">Helpers</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Helper</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ST_DEBUG</td>
+<td style="text-align: left;">If <code>ST_DEBUG_MESSAGES</code> is defined, emits a diagnotic message in gray</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_MESSAGE</td>
+<td style="text-align: left;">Emits an informative message</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_SUCCESS</td>
+<td style="text-align: left;">Emits a message in green</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_WARNING</td>
+<td style="text-align: left;">Emits a message in orange</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_ERROR</td>
+<td style="text-align: left;">Emits a message in red</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_TEST_IS_FAILED</td>
+<td style="text-align: left;">Returns true if any errors have occurred during the execution of the test</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_TEST_IS_PASSING</td>
+<td style="text-align: left;">Returns true if no errors have occurred during the excecution of the test</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_TEST_LAST_EVAL_FALSE</td>
+<td style="text-align: left;">Returns true if the very last evaluator to execute resulted in a false expression</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_TEST_ERROR_COUNT</td>
+<td style="text-align: left;">Returns the number of errors that have occurred during the excecution of the test</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_TEST_WARNING_COUNT</td>
+<td style="text-align: left;">Returns the number of warnings that have occurred during the excecution of the test</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_TEST_EXIT_IF_FAILED</td>
+<td style="text-align: left;">Exits immediately from the test if any errors have occurred</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_OS_ERROR_MSG</td>
+<td style="text-align: left;">Emits a formatted error message describing an OS/libc error that occcurred</td>
+</tr>
+</tbody>
+</table>
+<h2 id="preprocessor-macros">Preprocessor macros</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Macro</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ST_SIMULATE_FS_ERROR</td>
+<td style="text-align: left;">Simulates a failure to determine available disk space</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_SIMULATE_FS_INSUFFICIENT</td>
+<td style="text-align: left;">Simulates a low disk space condition (<em>mutually exclusive with ST_SIMULATE_FS_ERROR</em>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_SIMULATE_INET_ERROR</td>
+<td style="text-align: left;">Simulates a failure to detect an Internet connection</td>
+</tr>
+<tr>
+<td style="text-align: left;">ST_DEBUG_MESSAGES</td>
+<td style="text-align: left;">Enables the diagnostic output to the terminal</td>
+</tr>
+</tbody>
+</table>
 
 
 
