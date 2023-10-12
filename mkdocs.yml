@@ -17,14 +17,17 @@ theme:
       - navigation.indexes
       - navigation.top
       - content.code.copy
-      - toc.follow
-      - toc.integrate
+      #- toc.follow
+      #- toc.integrate
   palette:
     scheme: slate
     primary: black
     accent: blue
   font:
     code: Source Code Pro
+  nav:
+    - Home: index.md
+    - Documentation: documentation.md
 markdown_extensions:
   - toc
   - pymdownx.highlight:
