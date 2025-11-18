@@ -7,6 +7,10 @@ seatest (ˈsiːtɪst)&mdash;a featherweight cross-platform C17 test framework fo
 
 <img src="https://rml.dev/pub/seatest-logo.png" alt="logo" width="500px" height="auto" />
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=aremmell_seatest&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=aremmell_seatest)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=aremmell_seatest&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=aremmell_seatest)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=aremmell_seatest&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=aremmell_seatest)
+
 Designed with *simplicity*, *completeness*, and *practicality* in mind, perhaps seatest is the right test framework for *your* project.
 
 ## Highlights
