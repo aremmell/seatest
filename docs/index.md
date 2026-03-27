@@ -93,6 +93,50 @@ Upon the failure of any evaulator (*with the exception of ST_EXPECT*), the test 
 |        ST_ARRAY_NOT_CONTAINS | `sizeof(arr[0]) != sizeof(val) && all elems != val`                      |
 |              ST_ARRAY_UNIQUE | `foreach(arr) => (n) foreach(arr) => (j) arr[n] != arr[j]`               |
 
+## Proposed To-Be-Implemented (someday) Evaluators
+
+### Floating Point
+
+| Evaluator | Expression |
+| --- | --- |
+| ST\_FLOAT\_EQUAL | `fabs(a - b) <= epsilon` |
+| ST\_FLOAT\_NOT\_EQUAL | `fabs(a - b) > epsilon` |
+
+### General Purpose (additions)
+
+| Evaluator | Expression |
+| --- | --- |
+| ST\_NUM\_ZERO | `num == 0` |
+| ST\_NUM\_NOT\_ZERO | `num != 0` |
+| ST\_WITHIN | `abs(val - target) <= tolerance` |
+| ST\_POWER\_OF\_TWO | `(num != 0) && ((num & (num - 1)) == 0)` |
+| ST\_SIZEOF | `sizeof(type_or_expr) == expected_size` |
+| ST\_ALIGNOF | `_Alignof(type) == expected_alignment` |
+| ST\_ERRNO | `errno == expected_errno` |
+
+### String (additions)
+
+| Evaluator | Expression |
+| --- | --- |
+| ST\_STR\_LENGTH | `strlen(str) == expected_len` |
+| ST\_STR\_FOREACH | `foreach(str) => predicate_fn(ch) == true` |
+
+### Numeric (additions)
+
+| Evaluator | Expression |
+| --- | --- |
+| ST\_NUM\_POWER\_OF\_TWO | `(num != 0) && ((num & (num - 1)) == 0)` |
+
+### Array (additions)
+
+| Evaluator | Expression |
+| --- | --- |
+| ST\_ARRAY\_LENGTH | `sizeof(arr) / sizeof(arr[0]) == expected_count` |
+| ST\_ARRAY\_SORTED | `foreach(arr) => arr[n] <= arr[n+1]` |
+| ST\_ARRAY\_SORTED\_DESC | `foreach(arr) => arr[n] >= arr[n+1]` |
+| ST\_ARRAY\_ALL | `foreach(arr) => predicate_fn(arr[n]) == true` |
+| ST\_ARRAY\_ANY | `foreach(arr) => predicate_fn(arr[n]) == true (at least one)` |
+
 ## Helpers
 
 | Helper                  | Description                                                                         |

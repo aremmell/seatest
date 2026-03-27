@@ -1,7 +1,7 @@
 # seatest
 
 <!-- SPDX-License-Identifier: MIT -->
-<!-- Copyright (c) 2023 Ryan M. Lederman <lederman@gmail.com> -->
+<!-- Copyright (c) 2026 Ryan M. Lederman <lederman@gmail.com> -->
 
 seatest (ˈsiːtɪst)&mdash;a featherweight cross-platform C17 test framework for C libraries and applications.
 

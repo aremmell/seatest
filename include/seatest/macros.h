@@ -2,8 +2,8 @@
  * macros.h
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
- * Copyright: Copyright (c) 2023
- * Version:   0.1.0
+ * Copyright: Copyright (c) 2026
+ * Version:   1.0.0
  * License:   The MIT License (MIT)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -207,7 +207,7 @@
 # define ST_BITWISE_ZEROED(obj, size) \
     do { \
         for (size_t n = 0; n < size; n++) { \
-            if (((const unsigned char*)(&(obj)) + n) != 0) { \
+            if (*((const unsigned char*)(&(obj)) + n) != 0) { \
                 _ST_EVALUATE_EXPR(((const unsigned char*)(&(obj)) + n) == 0, "ST_BITWISE_ZEROED"); \
                 break; \
             } \
@@ -219,7 +219,7 @@
     do { \
         bool all_bytes_zero = true; \
         for (size_t n = 0; n < size; n++) { \
-            if (((const unsigned char*)(&(obj)) + n) != 0) { \
+            if (*((const unsigned char*)(&(obj)) + n) != 0) { \
                 all_bytes_zero = false; \
                 break; \
             } \

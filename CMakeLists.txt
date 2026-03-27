@@ -2,7 +2,7 @@
 # seatest CMake script
 #
 # SPDX-License-Identifier: MIT
-# SPDX-FileCopyrightText: Copyright (c) 2023 Ryan M. Lederman
+# SPDX-FileCopyrightText: Copyright (c) 2026 Ryan M. Lederman
 
 cmake_minimum_required(VERSION 3.12.0)
 
@@ -14,13 +14,13 @@ set(STATIC_LIBRARY_NAME seatest_static)
 set(SHARED_LIBRARY_NAME seatest_shared)
 
 # versioning
-set(PROJECT_VERSION_SUFFIX -dev)
-set(PROJECT_IS_REL_BUILD false)
+set(PROJECT_VERSION_SUFFIX, "")
+set(PROJECT_IS_REL_BUILD true)
 
 # define the project
 project(
     ${PROJECT_NAME}
-    VERSION 0.1.0
+    VERSION 1.0.0
     LANGUAGES C
     DESCRIPTION ${PROJECT_NAME}
 )
