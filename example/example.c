@@ -6,7 +6,7 @@
  *
  * Author:    Ryan M. Lederman <lederman@gmail.com>
  * Copyright: Copyright (c) 2026
- * Version:   1.0.0
+ * Version:   1.0.1
  * License:   The MIT License (MIT)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of

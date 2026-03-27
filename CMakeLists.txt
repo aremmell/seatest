@@ -14,13 +14,13 @@ set(STATIC_LIBRARY_NAME seatest_static)
 set(SHARED_LIBRARY_NAME seatest_shared)
 
 # versioning
-set(PROJECT_VERSION_SUFFIX, "")
-set(PROJECT_IS_REL_BUILD true)
+set(PROJECT_VERSION_SUFFIX, -dev)
+set(PROJECT_IS_REL_BUILD false)
 
 # define the project
 project(
     ${PROJECT_NAME}
-    VERSION 1.0.0
+    VERSION 1.0.1
     LANGUAGES C
     DESCRIPTION ${PROJECT_NAME}
 )
