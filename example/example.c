@@ -103,6 +103,7 @@ ST_BEGIN_TEST_IMPL(rest_client_get)
      * the test to fail if the expression they represent evaluates to false. */
     ST_TRUE(result);
     ST_EQUAL(response.code, HTTP_OK);
+    ST_NOT_NULL(response.body);
     ST_STR_NOT_EMPTY(response.body);
     ST_STR_BEGINSWITH("{\"widgets\":", response.body, 11);
 

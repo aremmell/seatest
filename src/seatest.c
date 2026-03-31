@@ -108,7 +108,7 @@ bool st_validate_config(const char* app_name, const st_test* tests, size_t num_t
 
     for (size_t n = 0; n < num_tests; n++) {
         /* spaces in test names. */
-        if (st_strstr(tests[n].name, " ")) {
+        if (st_strchr(tests[n].name, ' ') != NULL) {
             _ST_ERROR("%s "ST_LOC_TEST" #%zu ("ST_LOC_NAME": '%s') "
                 ST_LOC_NO_SPACES, _ST_ERROR_PREFIX, n + 1, tests[n].name);
             errors++;
@@ -347,7 +347,7 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
         }
 
         (void)fprintf(stderr, "%s%s%s\n", args[n].usage,
-            strlen(args[n].usage) > 0 ? " " : "", args[n].desc);
+            args[n].usage[0] != '\0' ? " " : "", args[n].desc);
     }
 
     (void)fprintf(stderr, "\n");
@@ -465,7 +465,7 @@ bool st_getchar(char* input) {
         return false;
 
     struct termios new = cur;
-    new.c_lflag &= ~(ICANON | ECHO);
+    new.c_lflag &= ~(tcflag_t)(ICANON | ECHO);
 
     if (0 != tcsetattr(STDIN_FILENO, TCSANOW, &new))
         return false;

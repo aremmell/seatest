@@ -206,25 +206,27 @@
 /** Evaluates whether `obj` is comprised of all zero bytes. */
 # define ST_BITWISE_ZEROED(obj, size) \
     do { \
+        bool all_bytes_zero = true; \
         for (size_t n = 0; n < size; n++) { \
-            if (*((const unsigned char*)(&(obj)) + n) != 0) { \
-                _ST_EVALUATE_EXPR(((const unsigned char*)(&(obj)) + n) == 0, "ST_BITWISE_ZEROED"); \
+            if ((*((const unsigned char*)(&(obj)) + n)) != 0) { \
+                all_bytes_zero = false; \
                 break; \
             } \
         } \
+        _ST_EVALUATE_EXPR(all_bytes_zero, "ST_BITWISE_ZEROED"); \
     } while (false)
 
 /** Evaluates whether `obj` is not comprised of all zero bytes. */
 # define ST_BITWISE_NOT_ZEROED(obj, size) \
     do { \
-        bool all_bytes_zero = true; \
+        bool all_bytes_not_zero = true; \
         for (size_t n = 0; n < size; n++) { \
-            if (*((const unsigned char*)(&(obj)) + n) != 0) { \
-                all_bytes_zero = false; \
+            if ((*((const unsigned char*)(&(obj)) + n)) == 0) { \
+                all_bytes_not_zero = false; \
                 break; \
             } \
         } \
-        _ST_EVALUATE_EXPR(!all_bytes_zero, "ST_BITWISE_NOT_ZEROED"); \
+        _ST_EVALUATE_EXPR(all_bytes_not_zero, "ST_BITWISE_NOT_ZEROED"); \
     } while (false)
 
 /**
@@ -636,12 +638,6 @@
 /** Evaluates whether `arr` contains at least one instance of `val`. */
 # define ST_ARRAY_CONTAINS(arr, val) \
     do { \
-        size_t elem_size = sizeof((arr)[0]); \
-        size_t val_size = sizeof((val)); \
-        if (elem_size != val_size) { \
-            _ST_EVALUATE_EXPR(elem_size == val_size, "ST_ARRAY_CONTAINS"); \
-            break; \
-        } \
         bool value_found = false; \
         for (size_t n = 0; n < _ST_COUNTOF(arr); n++) { \
             if ((arr)[n] == (val)) { \
@@ -655,11 +651,6 @@
 /** Evaluates whether `arr` does not contain `val`. */
 # define ST_ARRAY_NOT_CONTAINS(arr, val) \
     do { \
-        size_t elem_size = sizeof((arr)[0]); \
-        size_t val_size = sizeof((val)); \
-        if (elem_size != val_size) { \
-            break; \
-        } \
         for (size_t n = 0; n < _ST_COUNTOF(arr); n++) { \
             if ((arr)[n] == (val)) { \
                 _ST_EVALUATE_EXPR((arr)[n] != (val), "ST_ARRAY_NOT_CONTAINS"); \

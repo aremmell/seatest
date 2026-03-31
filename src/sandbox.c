@@ -51,9 +51,9 @@ ST_BEGIN_TEST_IMPL(test_tests)
     // should all succeed
     const char* msg = "hello there";
     const char* msg2 = "\ni'm surrounded!\r\n";
+    ST_EXPECT(msg != NULL);
     ST_TRUE(strlen(msg) > 10);
     ST_FALSE(strlen(msg) < 10);
-    ST_EXPECT(msg != NULL);
     ST_EQUAL(1, 1);
     ST_NOT_EQUAL(1, 2);
     ST_LESS_THAN(1, 2);
@@ -65,9 +65,9 @@ ST_BEGIN_TEST_IMPL(test_tests)
 
     // should all fail
     ST_MESSAGE0("expecting the next 12 to fail");
+    ST_EXPECT(msg == NULL);
     ST_TRUE(strlen(msg) < 10);
     ST_FALSE(strlen(msg) > 10);
-    ST_EXPECT(msg == NULL);
     ST_EQUAL(0, 1);
     ST_NOT_EQUAL(1, 1);
     ST_LESS_THAN(2, 2);

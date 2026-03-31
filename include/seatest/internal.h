@@ -41,10 +41,10 @@ typedef struct {
 
 /** Data associated with a test. */
 typedef struct {
-    bool skip;      /**< true if the test is skipped. */
     int skip_conds; /**< If skipped, the condition(s) that caused skippage. */
     int errors;     /**< The number of evaulators that resulted in a false expression. */
     int warnings;   /**< The number of times ST_WARNING() or ST_EXPECT() were called. */
+    bool skip;      /**< true if the test is skipped. */
     bool last_fail; /**< true if the last evaluator executed was false. */
     bool pass;      /**< false if the test encountered error(s) or warning(s). */
     bool fatal;     /**< true if the test encountered error(s). */
@@ -104,11 +104,13 @@ typedef struct {
 #  define st_strnicmp strncasecmp /** Compares two strings for equality, ignoring case. */
 #  define st_strstr   strstr      /** Searches a string for a sub-string. */
 #  define st_stristr  strcasestr  /** Searches a string for a sub-string, ignoring case. */
+#  define st_strchr   strchr       /** Searches a string for a specific character. */
 # else
 #  define st_strncmp  StrCmpNA    /** Compares two strings for equality. */
 #  define st_strnicmp StrCmpNIA   /** Compares two strings for equality, ignoring case. */
 #  define st_strstr   StrStrA     /** Searches a string for a sub-string. */
 #  define st_stristr  StrStrIA    /** Searches a string for a sub-string, ignoring case. */
+#  define st_strchr   StrChrA     /** Searches a string for a specific character. */
 # endif
 
 /**
