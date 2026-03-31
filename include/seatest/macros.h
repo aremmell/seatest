@@ -208,7 +208,7 @@
     do { \
         bool all_bytes_zero = true; \
         for (size_t n = 0; n < size; n++) { \
-            if ((*((const unsigned char*)(&(obj)) + (n))) != 0) { \
+            if (((const unsigned char*)(&(obj)))[n] != 0) { \
                 all_bytes_zero = false; \
                 break; \
             } \
@@ -221,7 +221,7 @@
     do { \
         bool all_bytes_not_zero = true; \
         for (size_t n = 0; n < size; n++) { \
-            if ((*((const unsigned char*)(&(obj)) + (n))) == 0) { \
+            if (((const unsigned char*)(&(obj)))[n] == 0) { \
                 all_bytes_not_zero = false; \
                 break; \
             } \
