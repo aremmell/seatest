@@ -115,7 +115,7 @@ ST_BEGIN_TEST_IMPL(rest_client_get)
   ST_TEST_EXIT_IF_FAILED();
 
   /** Visual confirmation that the network request succeeded. */
-  ST_SUCCESS("got HTTP_OK; response len: %zu bytes", strlen(response.body));
+  ST_SUCCESS("got HTTP_OK; response len: %zu bytes", strnlen(response.body, MAX_BODY_LEN));
 
   /** ... the rest of the test. */
 }

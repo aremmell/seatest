@@ -85,7 +85,7 @@ bool st_clock_gettime(int clock, time_t* tbuf, double* msecbuf);
 double st_msec_since(const st_timer* when, st_timer* out);
 
 /** Retrieves a formatted error message for the specified code. */
-char* st_format_error_msg(int code, char message[ST_MAX_ERROR]);
+char* st_format_error_msg(int code, char message[ST_MAX_ERROR_STR_LEN]);
 
 /** Puts the current thread to sleep for `msec` milliseconds. */
 void st_sleep_msec(uint32_t msec);

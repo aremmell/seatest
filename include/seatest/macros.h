@@ -133,7 +133,7 @@
 
 # define ST_OS_ERROR_MSG(code, context) \
     do { \
-        char message[ST_MAX_ERROR] = {0}; \
+        char message[ST_MAX_ERROR_STR_LEN] = {0}; \
         (void)st_format_error_msg(code, message); \
         ST_ERROR(ST_LOC_ERROR " ("ST_LOC_LINE" %"PRIu32"): %s: %d (%s) ", __LINE__, \
             context, code, message); \
@@ -208,7 +208,7 @@
     do { \
         bool all_bytes_zero = true; \
         for (size_t n = 0; n < size; n++) { \
-            if ((*((const unsigned char*)(&(obj)) + n)) != 0) { \
+            if ((*((const unsigned char*)(&(obj)) + (n))) != 0) { \
                 all_bytes_zero = false; \
                 break; \
             } \
@@ -221,7 +221,7 @@
     do { \
         bool all_bytes_not_zero = true; \
         for (size_t n = 0; n < size; n++) { \
-            if ((*((const unsigned char*)(&(obj)) + n)) == 0) { \
+            if ((*((const unsigned char*)(&(obj)) + (n))) == 0) { \
                 all_bytes_not_zero = false; \
                 break; \
             } \
@@ -484,7 +484,7 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_ENDSWITH_WSPACE"); \
             break; \
         } \
-        _ST_EVALUATE_EXPR(isspace((str)[strlen((str)) - 1]), "ST_STR_ENDSWITH_WSPACE"); \
+        _ST_EVALUATE_EXPR(isspace((str)[_st_eval_input_strlen((str)) - 1]), "ST_STR_ENDSWITH_WSPACE"); \
     } while (false)
 
 /** Evaluates whether `str` does not end with a whitespace character. For further
@@ -495,7 +495,7 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_NOT_ENDSWITH_WSPACE"); \
             break; \
         } \
-        _ST_EVALUATE_EXPR(!isspace((str)[strlen((str)) - 1]), "ST_STR_NOT_ENDSWITH_WSPACE"); \
+        _ST_EVALUATE_EXPR(!isspace((str)[_st_eval_input_strlen((str)) - 1]), "ST_STR_NOT_ENDSWITH_WSPACE"); \
     } while (false)
 
 /** Evaluates whether `str` contains only characters in the alphabet. For further
@@ -506,7 +506,7 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_ALPHA"); \
             break; \
         } \
-        for (size_t n = 0; n < strlen((str)); n++) { \
+        for (size_t n = 0; n < _st_eval_input_strlen((str)); n++) { \
             if (!isalpha((str)[n])) { \
                 _ST_EVALUATE_EXPR(isalpha((str)[n]), "ST_STR_ALPHA"); \
                 break; \
@@ -521,7 +521,7 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_NUMERIC"); \
             break; \
         } \
-        for (size_t n = 0; n < strlen((str)); n++) { \
+        for (size_t n = 0; n < _st_eval_input_strlen((str)); n++) { \
             if (!isdigit((str)[n])) { \
                 _ST_EVALUATE_EXPR(isdigit((str)[n]), "ST_STR_NUMERIC"); \
                 break; \
@@ -537,7 +537,7 @@
             _ST_EVALUATE_EXPR(_ST_NOTNULL(str), "ST_STR_ALPHANUMERIC"); \
             break; \
         } \
-        for (size_t n = 0; n < strlen((str)); n++) { \
+        for (size_t n = 0; n < _st_eval_input_strlen((str)); n++) { \
             if (!isalnum((str)[n])) { \
                 _ST_EVALUATE_EXPR(isalnum((str)[n]), "ST_STR_ALPHANUMERIC"); \
                 break; \

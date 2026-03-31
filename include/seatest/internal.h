@@ -235,7 +235,7 @@ typedef struct {
 
 # define _ST_REPORT_ERROR(code) \
     do { \
-        char message[ST_MAX_ERROR] = {0}; \
+        char message[ST_MAX_ERROR_STR_LEN] = {0}; \
         __ST_REPORT_ERROR(code, st_format_error_msg(code, message)); \
     } while (false)
 
@@ -363,32 +363,38 @@ void _st_strcat(char* const restrict dst, size_t dstsz,
 # endif
 }
 
+static inline
+size_t _st_eval_input_strlen(const char* input)
+{
+    return strnlen(input, ST_MAX_EVAL_STR_LEN);
+}
+
 /** Converts a bitmask of conditions into a string. */
 static inline
-char* _st_conds_to_string(int conds, char str[ST_MAX_COND_STR])
+char* _st_conds_to_string(int conds, char str[ST_MAX_MULTIPLE_COND_STR_LEN])
 {
     str[0] = '\0';
 
     bool first = true;
     if ((conds & COND_DISK) == COND_DISK) {
         const char* cat = _ST_STRIFY(COND_DISK);
-        _st_strcat(str, ST_MAX_COND_STR, cat, strlen(cat));
+        _st_strcat(str, ST_MAX_MULTIPLE_COND_STR_LEN, cat, strnlen(cat, MAX_COND_STR_LEN));
         first = false;
     }
     if ((conds & COND_INET) == COND_INET) {
         if (!first) {
-            _st_strcat(str, ST_MAX_COND_STR, ", ", 2);
+            _st_strcat(str, ST_MAX_MULTIPLE_COND_STR_LEN, ", ", 2);
         }
         const char* cat = _ST_STRIFY(COND_INET);
-        _st_strcat(str, ST_MAX_COND_STR, cat, strlen(cat));
+        _st_strcat(str, ST_MAX_MULTIPLE_COND_STR_LEN, cat, strnlen(cat, MAX_COND_STR_LEN));
         first = false;
     }
     if ((conds & COND_CPUS) == COND_CPUS) {
         if (!first) {
-            _st_strcat(str, ST_MAX_COND_STR, ", ", 2);
+            _st_strcat(str, ST_MAX_MULTIPLE_COND_STR_LEN, ", ", 2);
         }
         const char* cat = _ST_STRIFY(COND_CPUS);
-        _st_strcat(str, ST_MAX_COND_STR, cat, strlen(cat));
+        _st_strcat(str, ST_MAX_MULTIPLE_COND_STR_LEN, cat, strnlen(cat, MAX_COND_STR_LEN));
     }
 
     return &str[0];

@@ -63,6 +63,7 @@ bool acme_create_widget_purple(acme_widget* out) {
  */
 
 # define HTTP_OK 200
+# define MAX_BODY_LEN 2048
 
 typedef struct {
     int code;

@@ -64,8 +64,8 @@ Upon the failure of any evaulator (*with the exception of ST_EXPECT*), the test 
 | ST_STR_NOT_ENDSWITH          | `strncmp/StrCmpN(haystack + (haystack_len - needle_len), needle_len) != 0`       |
 | ST_STR_ENDSWITH_I            | `strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) == 0`  |
 | ST_STR_NOT_ENDSWITH_I        | `strncasecmp/StrCmpNI(haystack + (haystack_len - needle_len), needle_len) != 0`  |
-| ST_STR_ENDSWITH_WSPACE       | `isspace(p[strlen(p) - 1])`                                                      |
-| ST_STR_NOT_ENDSWITH_WSPACE   | `!isspace(p[strlen(p) - 1])`                                                     |
+| ST_STR_ENDSWITH_WSPACE       | `isspace(p[strnlen(p, ST_MAX_EVAL_STR_LEN) - 1])`                                |
+| ST_STR_NOT_ENDSWITH_WSPACE   | `!isspace(p[strnlen(p, ST_MAX_EVAL_STR_LEN)  - 1])`                              |
 | ST_STR_ALPHA                 | `foreach(str) => isalpha`                                                        |
 | ST_STR_NUMERIC               | `foreach(str) => isdigit`                                                        |
 | ST_STR_ALPHANUMERIC          | `foreach(str) => isalnum`                                                        |
@@ -118,7 +118,7 @@ Upon the failure of any evaulator (*with the exception of ST_EXPECT*), the test 
 
 | Evaluator | Expression |
 | --- | --- |
-| ST\_STR\_LENGTH | `strlen(str) == expected_len` |
+| ST\_STR\_LENGTH | `strnlen(str, ST_MAX_EVAL_STR_LEN) == expected_len` |
 | ST\_STR\_FOREACH | `foreach(str) => predicate_fn(ch) == true` |
 
 ### Numeric (additions)

@@ -65,7 +65,7 @@ int st_main(int argc, char** argv, const char* app_name, const st_cl_arg* args,
         if (!tests[n].res.skip) {
             tests[n].res = tests[n].fn();
         } else {
-            char conds[ST_MAX_COND_STR] = {0};
+            char conds[ST_MAX_MULTIPLE_COND_STR_LEN] = {0};
             _ST_SKIPPED(ST_LOC_INDENT ST_LOC_SKIPPED_UNMET": %s",
                 _ST_PLURAL(ST_LOC_CONDITION, _st_conds_count(tests[n].res.skip_conds)),
                 _st_conds_to_string(tests[n].res.skip_conds, conds));
@@ -114,10 +114,10 @@ bool st_validate_config(const char* app_name, const st_test* tests, size_t num_t
             errors++;
         }
         /* length of test names. */
-        size_t name_len = strlen(tests[n].name);
-        if (name_len > ST_MAX_TEST_NAME) {
+        size_t name_len = _st_eval_input_strlen(tests[n].name);
+        if (name_len > ST_MAX_TEST_NAME_STR_LEN) {
             _ST_ERROR("%s "ST_LOC_TEST" #%zu ("ST_LOC_NAME": '%s') "ST_LOC_TOO_LONG,
-                _ST_ERROR_PREFIX, n + 1, tests[n].name, ST_MAX_TEST_NAME, name_len);
+                _ST_ERROR_PREFIX, n + 1, tests[n].name, ST_MAX_TEST_NAME_STR_LEN, name_len);
             errors++;
         }
     }
@@ -287,7 +287,8 @@ void st_print_failed_test(const char* const name)
 bool st_mark_test_to_run(const char* const name, st_test* tests, size_t num_tests)
 {
     for (size_t n = 0; n < num_tests; n++) {
-        if (0 == strncmp(name, tests[n].name, strlen(tests[n].name))) {
+        size_t name_len = strnlen(tests[n].name, ST_MAX_TEST_NAME_STR_LEN);
+        if (0 == st_strncmp(name, tests[n].name, name_len)) {
             tests[n].run = true;
             return true;
         }
@@ -301,7 +302,7 @@ void st_print_test_list(const st_test* tests, size_t num_tests)
 
     size_t longest = 0;
     for (size_t n = 0; n < num_tests; n++) {
-        size_t len = strnlen(tests[n].name, ST_MAX_TEST_NAME);
+        size_t len = strnlen(tests[n].name, ST_MAX_TEST_NAME_STR_LEN);
         if (len > longest)
             longest = len;
     }
@@ -311,7 +312,7 @@ void st_print_test_list(const st_test* tests, size_t num_tests)
     for (size_t n = 0; n < num_tests; n++) {
         (void)printf("\t%s", tests[n].name);
 
-        size_t len = strnlen(tests[n].name, ST_MAX_TEST_NAME);
+        size_t len = strnlen(tests[n].name, ST_MAX_TEST_NAME_STR_LEN);
         if (len < longest + tab_size) {
             for (size_t j = len; j < longest + tab_size; j++)
                 (void)printf(" ");
@@ -328,7 +329,8 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
 {
     size_t longest = 0;
     for (size_t n = 0; n < num_args; n++) {
-        size_t len = strlen(args[n].flag) + strlen(args[n].s_flag);
+        size_t len = strnlen(args[n].flag, ST_MAX_CLI_FLAG_STR_LEN) +
+            strnlen(args[n].s_flag, ST_MAX_CLI_S_FLAG_STR_LEN);
         if (len > longest) {
             longest = len;
         }
@@ -339,7 +341,8 @@ void st_print_usage_info(const st_cl_arg* args, size_t num_args)
     for (size_t n = 0; n < num_args; n++) {
         (void)fprintf(stderr, "\t%s, %s  ", args[n].s_flag, args[n].flag);
 
-        size_t len = strlen(args[n].flag) + strlen(args[n].s_flag);
+        size_t len = strnlen(args[n].flag, ST_MAX_CLI_FLAG_STR_LEN) +
+            strnlen(args[n].s_flag, ST_MAX_CLI_S_FLAG_STR_LEN);
         if (len < longest) {
             for (size_t j = len; j < longest; j++) {
                 (void)fprintf(stderr, " ");
@@ -386,8 +389,8 @@ void st_print_seatest_ansi(bool bold)
 
 bool st_is_cl_arg(const st_cl_arg* arg, const char* flag)
 {
-    return 0 == st_strncmp(flag, arg->flag, strlen(arg->flag)) ||
-           0 == st_strncmp(flag, arg->s_flag, strlen(arg->s_flag));
+    return 0 == st_strncmp(flag, arg->flag, strnlen(arg->flag, ST_MAX_CLI_FLAG_STR_LEN)) ||
+           0 == st_strncmp(flag, arg->s_flag, strnlen(arg->s_flag, ST_MAX_CLI_S_FLAG_STR_LEN));
 }
 
 const st_cl_arg* st_find_cl_arg(const char* flag, const st_cl_arg* args, size_t num_args)
@@ -600,14 +603,14 @@ double st_msec_since(const st_timer* when, st_timer* out)
 #endif
 }
 
-char* st_format_error_msg(int code, char message[ST_MAX_ERROR])
+char* st_format_error_msg(int code, char message[ST_MAX_ERROR_STR_LEN])
 {
     message[0] = '\0';
 
 #if !defined(__WIN__)
     int finderr = -1;
 # if defined(__HAVE_XSI_STRERROR_R__)
-    finderr = strerror_r(code, message, ST_MAX_ERROR);
+    finderr = strerror_r(code, message, ST_MAX_ERROR_STR_LEN);
 #  if defined(__HAVE_XSI_STRERROR_R_ERRNO__)
     if (finderr == -1) {
         finderr = errno;

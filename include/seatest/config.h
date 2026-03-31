@@ -27,14 +27,31 @@
 # define _SEATEST_CONFIG_H_INCLUDED
 
 /** The maximum size, in characters, of an error message produced by the system. */
-# define ST_MAX_ERROR 256
+# define ST_MAX_ERROR_STR_LEN 256
 
 /** The maximum size, in characters, of a test's human-readable name. */
-# define ST_MAX_TEST_NAME 32
+# define ST_MAX_TEST_NAME_STR_LEN 32
+
+/** The maximum size, in characters, of a string input to any of of ST_STR_ evaluators. */
+# define ST_MAX_EVAL_STR_LEN 4096
+
+/**
+ * The maximum size, in characters, of buffers containing an individual condition
+ * converted to string (e.g. 'COND_INET'). */
+# define MAX_COND_STR_LEN 16
 
 /** The maximum size, in characters, of buffers containing condition bitmasks
- * in string format. */
-# define ST_MAX_COND_STR 256
+ * in string format. NOTE: if additional conditions are added beyond n *
+ * (MAX_COND_STR_LEN + 2), this value must be incremented. */
+# define ST_MAX_MULTIPLE_COND_STR_LEN 256
+
+/** The maximum size, in characters, of a long form command-line flag, including
+ * the '--' prefix. */
+# define ST_MAX_CLI_FLAG_STR_LEN 32
+
+/** The maximum size, in characters, of a short form command-line flag, including
+ * the '-' prefix. */
+# define ST_MAX_CLI_S_FLAG_STR_LEN 3
 
 /** The minimum amount, in bytes, of available disk space for COND_DISK. Default
  * value: 500 MiB. */
