@@ -617,14 +617,14 @@ char* st_format_error_msg(int code, char message[ST_MAX_ERROR_STR_LEN])
     }
 #  endif
 # elif defined(__HAVE_GNU_STRERROR_R__)
-    const char* tmp = strerror_r(code, message, ST_MAX_ERROR);
+    const char* tmp = strerror_r(code, message, ST_MAX_ERROR_STR_LEN;
     if (tmp != message)
-        _st_strcpy(message, ST_MAX_ERROR, tmp, strnlen(tmp, ST_MAX_ERROR));
+        _st_strcpy(message, ST_MAX_ERROR_STR_LEN tmp, strnlen(tmp, ST_MAX_ERROR_STR_LEN);
 # elif defined(__HAVE_STRERROR_S__)
-    finderr = (int)strerror_s(msg, ST_MAX_ERROR, code);
+    finderr = (int)strerror_s(msg, ST_MAX_ERROR_STR_LEN code);
 # else
     const char* tmp = strerror(code);
-    _st_strcpy(message, ST_MAX_ERROR, tmp, strnlen(tmp, ST_MAX_ERROR));
+    _st_strcpy(message, ST_MAX_ERROR_STR_LEN tmp, strnlen(tmp, ST_MAX_ERROR_STR_LEN);
 # endif
 # if defined(__HAVE_XSI_STRERROR_R__) || defined(__HAVE_STRERROR_S__)
     assert(0 == finderr);
@@ -635,7 +635,7 @@ char* st_format_error_msg(int code, char message[ST_MAX_ERROR_STR_LEN])
 #else /* __WIN__ */
     DWORD flags = FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS |
                   FORMAT_MESSAGE_MAX_WIDTH_MASK;
-    DWORD fmt = FormatMessageA(flags, NULL, (DWORD)code, 0UL, message, ST_MAX_ERROR, NULL);
+    DWORD fmt = FormatMessageA(flags, NULL, (DWORD)code, 0UL, message, ST_MAX_ERROR_STR_LEN NULL);
     assert(0UL != fmt);
     if (fmt > 0UL) {
         if (message[fmt - 1] == '\n' || message[fmt - 1] == ' ') {
