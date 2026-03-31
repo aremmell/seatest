@@ -635,7 +635,7 @@ char* st_format_error_msg(int code, char message[ST_MAX_ERROR_STR_LEN])
 #else /* __WIN__ */
     DWORD flags = FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS |
                   FORMAT_MESSAGE_MAX_WIDTH_MASK;
-    DWORD fmt = FormatMessageA(flags, NULL, (DWORD)code, 0UL, message, ST_MAX_ERROR_STR_LEN NULL);
+    DWORD fmt = FormatMessageA(flags, NULL, (DWORD)code, 0UL, message, ST_MAX_ERROR_STR_LEN, NULL);
     assert(0UL != fmt);
     if (fmt > 0UL) {
         if (message[fmt - 1] == '\n' || message[fmt - 1] == ' ') {
