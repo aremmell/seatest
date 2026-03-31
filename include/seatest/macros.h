@@ -207,8 +207,9 @@
 # define ST_BITWISE_ZEROED(obj, size) \
     do { \
         bool all_bytes_zero = true; \
-        for (size_t n = 0; n < size; n++) { \
-            if (((const unsigned char*)(&(obj)))[n] != 0) { \
+        const unsigned char* ptr = (const void*)(&obj); \
+        for (uintptr_t n = 0; n < (uintptr_t)size; n++) { \
+            if (*(ptr + n) != 0) { \
                 all_bytes_zero = false; \
                 break; \
             } \
@@ -220,8 +221,9 @@
 # define ST_BITWISE_NOT_ZEROED(obj, size) \
     do { \
         bool all_bytes_not_zero = true; \
-        for (size_t n = 0; n < size; n++) { \
-            if (((const unsigned char*)(&(obj)))[n] == 0) { \
+        const unsigned char* ptr = (const void*)(&obj); \
+        for (uintptr_t n = 0; n < (uintptr_t)size; n++) { \
+            if (*(ptr + n) == 0) { \
                 all_bytes_not_zero = false; \
                 break; \
             } \
