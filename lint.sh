@@ -143,7 +143,7 @@ run_pvs_studio()
         fi
     done
 
-    if [ -z "${_NO_PVS_STUDIO:-}" ]; then {
+    if [[ -z "${_NO_PVS_STUDIO:-}" ]]; then {
         rebuild_project || return 1
         echo "Running PVS-Studio..."
         rm -rf ./pvsreport
@@ -184,7 +184,7 @@ _RUN_PVS_STUDIO=false
 
 _args=("$@")
 
-if [ ${#_args[@]} -eq 0 ]; then
+if [[ ${#_args[@]} -eq 0 ]]; then
     echo_error "No arguments provided."
     print_usage
 fi
@@ -216,18 +216,18 @@ for _arg in "${_args[@]}"; do
     esac
 done
 
-if [ ${_RUN_CPPCHECK} = true ]; then
+if [[ ${_RUN_CPPCHECK} = true ]]; then
     run_cppcheck || exit $?
 fi
 
-if [ ${_RUN_CLANG_TIDY} = true ]; then
+if [[ ${_RUN_CLANG_TIDY} = true ]]; then
     run_clang_tidy || exit $?
 fi
 
-if [ ${_RUN_ANALYZE_BUILD} = true ]; then
+if [[ ${_RUN_ANALYZE_BUILD} = true ]]; then
     run_analyze_build || exit $?
 fi
 
-if [ ${_RUN_PVS_STUDIO} = true ]; then
+if [[${_RUN_PVS_STUDIO} = true ]]; then
     run_pvs_studio || exit $?
 fi
