@@ -245,6 +245,7 @@ __strlcpy(char *dst, const char *src, size_t dsize)
 # endif
 
 # if !defined(__HAVE_STRLCAT__) && !defined(__HAVE_STRNCAT_S__)
+#  define __STRLCAT_MAX_STR_LEN 4096
 /*
  * Appends src to string dst of size dsize (unlike strncat, dsize is the
  * full size of dst, not space left).  At most dsize-1 characters
@@ -268,7 +269,7 @@ __strlcat(char *dst, const char *src, size_t dsize)
   n     = dsize - dlen;
 
   if (n-- == 0)
-    return dlen + strlen(src);
+    return dlen + strnlen(src, __STRLCAT_MAX_STR_LEN);
 
   while (*src != '\0') {
     if (n != 0) {
