@@ -20,7 +20,7 @@ set(PROJECT_IS_REL_BUILD true)
 # define the project
 project(
     ${PROJECT_NAME}
-    VERSION 1.0.2
+    VERSION 1.1.0
     LANGUAGES C
     DESCRIPTION ${PROJECT_NAME}
 )
