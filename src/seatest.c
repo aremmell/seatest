@@ -617,9 +617,9 @@ char* st_format_error_msg(int code, char message[ST_MAX_ERROR_STR_LEN])
     }
 #  endif
 # elif defined(__HAVE_GNU_STRERROR_R__)
-    const char* tmp = strerror_r(code, message, ST_MAX_ERROR_STR_LEN;
+    const char* tmp = strerror_r(code, message, ST_MAX_ERROR_STR_LEN);
     if (tmp != message)
-        _st_strcpy(message, ST_MAX_ERROR_STR_LEN tmp, strnlen(tmp, ST_MAX_ERROR_STR_LEN);
+        _st_strcpy(message, ST_MAX_ERROR_STR_LEN tmp, strnlen(tmp, ST_MAX_ERROR_STR_LEN));
 # elif defined(__HAVE_STRERROR_S__)
     finderr = (int)strerror_s(msg, ST_MAX_ERROR_STR_LEN code);
 # else
