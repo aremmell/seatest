@@ -1,6 +1,6 @@
 # Simple workflow for deploying static content to GitHub Pages
 name: 'Deploy Docs to GitHub Pages'
-description: 'Deploy Documentation to GitHub Pages, which is linked to our custom domain'
+description: 'Deploy Documentation to GitHub Pages, which is linked to our custom domain (seatest.rml.dev)'
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
