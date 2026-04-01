@@ -373,6 +373,78 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#proposed-to-be-implemented-someday-evaluators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed To-Be-Implemented (someday) Evaluators
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proposed To-Be-Implemented (someday) Evaluators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#floating-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Floating Point
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#general-purpose-additions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General Purpose (additions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#string-additions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        String (additions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#numeric-additions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Numeric (additions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-additions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Array (additions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -619,11 +691,11 @@
 </tr>
 <tr>
 <td style="text-align: left;">ST_STR_ENDSWITH_WSPACE</td>
-<td style="text-align: left;"><code>isspace(p[strlen(p) - 1])</code></td>
+<td style="text-align: left;"><code>isspace(p[strnlen(p, ST_MAX_EVAL_STR_LEN) - 1])</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">ST_STR_NOT_ENDSWITH_WSPACE</td>
-<td style="text-align: left;"><code>!isspace(p[strlen(p) - 1])</code></td>
+<td style="text-align: left;"><code>!isspace(p[strnlen(p, ST_MAX_EVAL_STR_LEN)  - 1])</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">ST_STR_ALPHA</td>
@@ -710,6 +782,130 @@
 <tr>
 <td style="text-align: left;">ST_ARRAY_UNIQUE</td>
 <td style="text-align: left;"><code>foreach(arr) =&gt; (n) foreach(arr) =&gt; (j) arr[n] != arr[j]</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="proposed-to-be-implemented-someday-evaluators">Proposed To-Be-Implemented (someday) Evaluators</h2>
+<h3 id="floating-point">Floating Point</h3>
+<table>
+<thead>
+<tr>
+<th>Evaluator</th>
+<th>Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ST_FLOAT_EQUAL</td>
+<td><code>fabs(a - b) &lt;= epsilon</code></td>
+</tr>
+<tr>
+<td>ST_FLOAT_NOT_EQUAL</td>
+<td><code>fabs(a - b) &gt; epsilon</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="general-purpose-additions">General Purpose (additions)</h3>
+<table>
+<thead>
+<tr>
+<th>Evaluator</th>
+<th>Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ST_NUM_ZERO</td>
+<td><code>num == 0</code></td>
+</tr>
+<tr>
+<td>ST_NUM_NOT_ZERO</td>
+<td><code>num != 0</code></td>
+</tr>
+<tr>
+<td>ST_WITHIN</td>
+<td><code>abs(val - target) &lt;= tolerance</code></td>
+</tr>
+<tr>
+<td>ST_POWER_OF_TWO</td>
+<td><code>(num != 0) &amp;&amp; ((num &amp; (num - 1)) == 0)</code></td>
+</tr>
+<tr>
+<td>ST_SIZEOF</td>
+<td><code>sizeof(type_or_expr) == expected_size</code></td>
+</tr>
+<tr>
+<td>ST_ALIGNOF</td>
+<td><code>_Alignof(type) == expected_alignment</code></td>
+</tr>
+<tr>
+<td>ST_ERRNO</td>
+<td><code>errno == expected_errno</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="string-additions">String (additions)</h3>
+<table>
+<thead>
+<tr>
+<th>Evaluator</th>
+<th>Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ST_STR_LENGTH</td>
+<td><code>strnlen(str, ST_MAX_EVAL_STR_LEN) == expected_len</code></td>
+</tr>
+<tr>
+<td>ST_STR_FOREACH</td>
+<td><code>foreach(str) =&gt; predicate_fn(ch) == true</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="numeric-additions">Numeric (additions)</h3>
+<table>
+<thead>
+<tr>
+<th>Evaluator</th>
+<th>Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ST_NUM_POWER_OF_TWO</td>
+<td><code>(num != 0) &amp;&amp; ((num &amp; (num - 1)) == 0)</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="array-additions">Array (additions)</h3>
+<table>
+<thead>
+<tr>
+<th>Evaluator</th>
+<th>Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ST_ARRAY_LENGTH</td>
+<td><code>sizeof(arr) / sizeof(arr[0]) == expected_count</code></td>
+</tr>
+<tr>
+<td>ST_ARRAY_SORTED</td>
+<td><code>foreach(arr) =&gt; arr[n] &lt;= arr[n+1]</code></td>
+</tr>
+<tr>
+<td>ST_ARRAY_SORTED_DESC</td>
+<td><code>foreach(arr) =&gt; arr[n] &gt;= arr[n+1]</code></td>
+</tr>
+<tr>
+<td>ST_ARRAY_ALL</td>
+<td><code>foreach(arr) =&gt; predicate_fn(arr[n]) == true</code></td>
+</tr>
+<tr>
+<td>ST_ARRAY_ANY</td>
+<td><code>foreach(arr) =&gt; predicate_fn(arr[n]) == true (at least one)</code></td>
 </tr>
 </tbody>
 </table>
