@@ -1,8 +1,10 @@
 site_name: seatest
-site_description: "seatest: a featherweight cross-platform C17 test framework for C libraries and applications."
+site_description: "A featherweight, comprehensive cross-platform test framework wrriten in C, for C."
 site_author: Ryan M. Lederman
 site_url: https://seatest.rml.dev
 repo_url: https://github.com/aremmell/seatest
+plugins:
+  - search
 theme:
   name: material
   language: en
@@ -16,6 +18,7 @@ theme:
       - navigation.expand
       - navigation.indexes
       - navigation.top
+      - navigation.footer
       - content.code.copy
       - toc.follow
       - toc.integrate
